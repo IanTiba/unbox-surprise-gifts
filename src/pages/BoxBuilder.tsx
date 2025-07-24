@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,15 +16,22 @@ import {
   Sparkles, 
   Music,
   ArrowLeft,
-  Eye
+  Eye,
+  X,
+  Play,
+  Square,
+  Volume2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface GiftCard {
   id: string;
   message: string;
   image?: File;
-  audio?: File;
+  imagePreview?: string;
+  audio?: Blob;
+  audioUrl?: string;
   unlockDelay?: number;
 }
 
@@ -38,6 +45,12 @@ interface GiftBox {
 
 const BoxBuilder = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [isRecording, setIsRecording] = useState<string | null>(null);
+  const [recordingCardId, setRecordingCardId] = useState<string | null>(null);
+  
   const [box, setBox] = useState<GiftBox>({
     title: "",
     cards: [{ id: "1", message: "" }],
@@ -76,6 +89,106 @@ const BoxBuilder = () => {
 
   const updateBox = (field: keyof GiftBox, value: any) => {
     setBox({ ...box, [field]: value });
+  };
+
+  // Image Upload Functions
+  const handleImageUpload = (cardId: string) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          toast({
+            title: "File too large",
+            description: "Please select an image smaller than 5MB.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imagePreview = e.target?.result as string;
+          updateCard(cardId, 'image', file);
+          updateCard(cardId, 'imagePreview', imagePreview);
+        };
+        reader.readAsDataURL(file);
+        
+        toast({
+          title: "Image uploaded",
+          description: "Your image has been added to the card.",
+        });
+      }
+    };
+    input.click();
+  };
+
+  const removeImage = (cardId: string) => {
+    updateCard(cardId, 'image', undefined);
+    updateCard(cardId, 'imagePreview', undefined);
+  };
+
+  // Audio Recording Functions
+  const startRecording = async (cardId: string) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      const audioChunks: BlobPart[] = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        updateCard(cardId, 'audio', audioBlob);
+        updateCard(cardId, 'audioUrl', audioUrl);
+        
+        stream.getTracks().forEach(track => track.stop());
+        
+        toast({
+          title: "Recording saved",
+          description: "Your audio message has been recorded.",
+        });
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      setIsRecording(cardId);
+      setRecordingCardId(cardId);
+      mediaRecorder.start();
+
+      toast({
+        title: "Recording started",
+        description: "Speak your message now...",
+      });
+    } catch (error) {
+      toast({
+        title: "Recording failed",
+        description: "Could not access microphone. Please check permissions.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(null);
+      setRecordingCardId(null);
+    }
+  };
+
+  const removeAudio = (cardId: string) => {
+    const card = box.cards.find(c => c.id === cardId);
+    if (card?.audioUrl) {
+      URL.revokeObjectURL(card.audioUrl);
+    }
+    updateCard(cardId, 'audio', undefined);
+    updateCard(cardId, 'audioUrl', undefined);
   };
 
   const handlePreviewAndCheckout = () => {
@@ -195,26 +308,79 @@ const BoxBuilder = () => {
                         <div className="grid grid-cols-2 gap-3">
                           <div>
                             <Label className="text-sm text-muted-foreground">Image (optional)</Label>
-                            <div className="mt-1 flex items-center space-x-2">
-                              <Button variant="outline" size="sm">
-                                <Image className="w-4 h-4 mr-2" />
-                                Upload
-                              </Button>
-                              {card.image && (
-                                <span className="text-sm text-green-600">✓ Added</span>
+                            <div className="mt-1 space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => handleImageUpload(card.id)}
+                                >
+                                  <Image className="w-4 h-4 mr-2" />
+                                  Upload
+                                </Button>
+                                {card.image && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeImage(card.id)}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                )}
+                              </div>
+                              {card.imagePreview && (
+                                <img 
+                                  src={card.imagePreview} 
+                                  alt="Preview" 
+                                  className="w-16 h-16 object-cover rounded-lg border border-border"
+                                />
                               )}
                             </div>
                           </div>
 
                           <div>
                             <Label className="text-sm text-muted-foreground">Audio (optional)</Label>
-                            <div className="mt-1 flex items-center space-x-2">
-                              <Button variant="outline" size="sm">
-                                <Mic className="w-4 h-4 mr-2" />
-                                Record
-                              </Button>
-                              {card.audio && (
-                                <span className="text-sm text-green-600">✓ Added</span>
+                            <div className="mt-1 space-y-2">
+                              <div className="flex items-center space-x-2">
+                                {isRecording === card.id ? (
+                                  <Button 
+                                    variant="destructive" 
+                                    size="sm"
+                                    onClick={stopRecording}
+                                  >
+                                    <Square className="w-4 h-4 mr-2" />
+                                    Stop
+                                  </Button>
+                                ) : (
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => startRecording(card.id)}
+                                  >
+                                    <Mic className="w-4 h-4 mr-2" />
+                                    Record
+                                  </Button>
+                                )}
+                                {card.audio && !isRecording && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeAudio(card.id)}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                )}
+                              </div>
+                              {card.audioUrl && (
+                                <audio controls className="w-full h-8">
+                                  <source src={card.audioUrl} type="audio/wav" />
+                                </audio>
+                              )}
+                              {isRecording === card.id && (
+                                <div className="flex items-center space-x-2 text-red-500">
+                                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                                  <span className="text-xs">Recording...</span>
+                                </div>
                               )}
                             </div>
                           </div>
@@ -348,17 +514,34 @@ const BoxBuilder = () => {
                           key={card.id}
                           className="bg-white/20 backdrop-blur-sm rounded-lg p-3 text-left"
                         >
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium">
                               Card {index + 1}
                             </span>
-                            {card.unlockDelay && card.unlockDelay > 0 && (
-                              <Clock className="w-3 h-3" />
-                            )}
+                            <div className="flex items-center space-x-1">
+                              {card.image && (
+                                <Image className="w-3 h-3 text-white/80" />
+                              )}
+                              {card.audio && (
+                                <Volume2 className="w-3 h-3 text-white/80" />
+                              )}
+                              {card.unlockDelay && card.unlockDelay > 0 && (
+                                <Clock className="w-3 h-3 text-white/80" />
+                              )}
+                            </div>
                           </div>
-                          <p className="text-xs opacity-80 mt-1 truncate">
+                          <p className="text-xs opacity-80 truncate">
                             {card.message || 'Your message here...'}
                           </p>
+                          {card.imagePreview && (
+                            <div className="mt-2">
+                              <img 
+                                src={card.imagePreview} 
+                                alt="Card preview" 
+                                className="w-full h-16 object-cover rounded opacity-90"
+                              />
+                            </div>
+                          )}
                         </div>
                       ))}
                       
