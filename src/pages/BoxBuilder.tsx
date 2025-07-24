@@ -41,6 +41,7 @@ interface GiftBox {
   theme: string;
   hasConfetti: boolean;
   hasBackgroundMusic: boolean;
+  emoji: string;
 }
 
 const BoxBuilder = () => {
@@ -57,6 +58,7 @@ const BoxBuilder = () => {
     theme: "purple-pink",
     hasConfetti: false,
     hasBackgroundMusic: false,
+    emoji: "🎁",
   });
 
   const addCard = () => {
@@ -419,27 +421,44 @@ const BoxBuilder = () => {
                 <h2 className="text-xl font-semibold">Customization</h2>
                 
                 <div className="space-y-4">
-                  <div>
-                    <Label>Visual Theme</Label>
-                    <div className="mt-2 grid grid-cols-3 gap-2">
-                      {['purple-pink', 'blue-teal', 'warm-sunset'].map((theme) => (
-                        <button
-                          key={theme}
-                          onClick={() => updateBox('theme', theme)}
-                          className={`h-12 rounded-lg border-2 transition-all ${
-                            box.theme === theme ? 'border-primary' : 'border-border'
-                          }`}
-                          style={{
-                            background: theme === 'purple-pink' 
-                              ? 'linear-gradient(135deg, #a855f7, #ec4899)'
-                              : theme === 'blue-teal'
-                              ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
-                              : 'linear-gradient(135deg, #f97316, #eab308)'
-                          }}
-                        />
-                      ))}
-                    </div>
+                <div>
+                  <Label>Box Icon</Label>
+                  <div className="mt-2 grid grid-cols-6 gap-2">
+                    {['🎁', '🎉', '💝', '🎂', '🎊', '💐', '🌟', '💎', '🏆', '🎈', '🍰', '💌'].map((emoji) => (
+                      <button
+                        key={emoji}
+                        onClick={() => updateBox('emoji', emoji)}
+                        className={`h-12 w-12 rounded-lg border-2 transition-all text-2xl hover:scale-110 ${
+                          box.emoji === emoji ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
                   </div>
+                </div>
+
+                <div>
+                  <Label>Visual Theme</Label>
+                  <div className="mt-2 grid grid-cols-3 gap-2">
+                    {['purple-pink', 'blue-teal', 'warm-sunset'].map((theme) => (
+                      <button
+                        key={theme}
+                        onClick={() => updateBox('theme', theme)}
+                        className={`h-12 rounded-lg border-2 transition-all ${
+                          box.theme === theme ? 'border-primary' : 'border-border'
+                        }`}
+                        style={{
+                          background: theme === 'purple-pink' 
+                            ? 'linear-gradient(135deg, #a855f7, #ec4899)'
+                            : theme === 'blue-teal'
+                            ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
+                            : 'linear-gradient(135deg, #f97316, #eab308)'
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
 
                   <Separator />
 
@@ -500,7 +519,7 @@ const BoxBuilder = () => {
                   }}
                 >
                   <div className="p-6 text-white text-center">
-                    <Gift className="w-12 h-12 mx-auto mb-4 opacity-90" />
+                    <div className="text-6xl mb-4">{box.emoji}</div>
                     <h3 className="text-lg font-bold mb-2">
                       {box.title || 'Your Gift Box'}
                     </h3>
