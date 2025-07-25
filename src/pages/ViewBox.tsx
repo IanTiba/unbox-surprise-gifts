@@ -49,12 +49,17 @@ const ViewBox = () => {
 
   // Load box data from localStorage or database
   useEffect(() => {
+    console.log('ViewBox: boxId is:', boxId);
+    console.log('ViewBox: Looking for key:', `box_${boxId}`);
+    
     // Try to get box data from localStorage first
     const savedBox = localStorage.getItem(`box_${boxId}`);
+    console.log('ViewBox: savedBox from localStorage:', savedBox);
     
     if (savedBox) {
       try {
         const parsedBox = JSON.parse(savedBox);
+        console.log('ViewBox: parsed box data:', parsedBox);
         // Convert createdAt back to Date object
         parsedBox.createdAt = new Date(parsedBox.createdAt);
         setBox(parsedBox);
@@ -64,6 +69,7 @@ const ViewBox = () => {
         setBox(createDemoBox());
       }
     } else {
+      console.log('ViewBox: No saved data found, using demo box');
       // If no saved data, create a demo box
       setBox(createDemoBox());
     }

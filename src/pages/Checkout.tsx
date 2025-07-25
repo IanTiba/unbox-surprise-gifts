@@ -82,7 +82,7 @@ const Checkout = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Generate unique box ID
-      const boxId = 'box_' + Math.random().toString(36).substr(2, 9);
+      const boxId = Math.random().toString(36).substr(2, 9);
       const shareLink = `${window.location.origin}/box/${boxId}`;
       
       // Simulate payment verification
@@ -100,7 +100,10 @@ const Checkout = () => {
           id: boxId,
           createdAt: new Date()
         };
+        console.log('Checkout: Saving box data with boxId:', boxId);
+        console.log('Checkout: Box data being saved:', boxData);
         localStorage.setItem(`box_${boxId}`, JSON.stringify(boxData));
+        console.log('Checkout: Data saved to localStorage with key:', `box_${boxId}`);
         
         // Navigate to success page with box data
         navigate('/success', {
