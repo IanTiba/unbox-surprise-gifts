@@ -77,18 +77,46 @@ const Checkout = () => {
 
     setIsProcessing(true);
     
-    // Simulate payment processing
-    setTimeout(() => {
-      const boxId = Math.random().toString(36).substring(2, 8);
-      navigate('/success', { 
-        state: { 
-          box, 
-          boxId, 
-          email,
-          shareLink: `https://unboxme.app/${boxId}`
-        } 
+    try {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Generate unique box ID
+      const boxId = 'box_' + Math.random().toString(36).substr(2, 9);
+      const shareLink = `${window.location.origin}/box/${boxId}`;
+      
+      // Simulate payment verification
+      const paymentSuccessful = true; // In real app, this would be actual payment verification
+      
+      if (paymentSuccessful) {
+        toast({
+          title: "Payment successful! 🎉",
+          description: "Your gift box has been created.",
+        });
+        
+        // In a real app, save the box data to database here
+        
+        // Navigate to success page with box data
+        navigate('/success', {
+          state: {
+            box: box,
+            boxId: boxId,
+            email: email,
+            shareLink: shareLink
+          }
+        });
+      } else {
+        throw new Error("Payment verification failed");
+      }
+    } catch (error) {
+      toast({
+        title: "Payment failed",
+        description: "There was an issue processing your payment. Please try again.",
+        variant: "destructive",
       });
-    }, 2000);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const tier = getPriceTier();

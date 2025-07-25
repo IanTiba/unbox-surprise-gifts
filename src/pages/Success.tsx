@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +14,7 @@ import {
   Mail
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import QRCodeLib from "qrcode";
 
 interface SuccessData {
   box: any;
@@ -26,6 +28,7 @@ const Success = () => {
   const location = useLocation();
   const { toast } = useToast();
   const data = location.state as SuccessData;
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
   if (!data) {
     navigate('/');
@@ -33,6 +36,27 @@ const Success = () => {
   }
 
   const { box, boxId, email, shareLink } = data;
+
+  // Generate QR code on component mount
+  useEffect(() => {
+    const generateQRCode = async () => {
+      try {
+        const qrDataUrl = await QRCodeLib.toDataURL(shareLink, {
+          width: 256,
+          margin: 2,
+          color: {
+            dark: '#6366f1',
+            light: '#ffffff'
+          }
+        });
+        setQrCodeDataUrl(qrDataUrl);
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+      }
+    };
+    
+    generateQRCode();
+  }, [shareLink]);
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareLink);
@@ -43,7 +67,15 @@ const Success = () => {
   };
 
   const downloadQR = () => {
-    // In a real app, this would generate and download a QR code
+    if (!qrCodeDataUrl) return;
+    
+    const link = document.createElement('a');
+    link.download = `gift-box-${boxId}-qr.png`;
+    link.href = qrCodeDataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
     toast({
       title: "QR Code Downloaded",
       description: "QR code saved to your downloads folder.",
@@ -91,7 +123,24 @@ const Success = () => {
         <Card className="p-6 mb-6 bg-gradient-card border-0 shadow-card animate-fade-in">
           <h2 className="text-lg font-semibold mb-4">Share Your Gift Box</h2>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
+            {/* QR Code Display */}
+            {qrCodeDataUrl && (
+              <div className="text-center">
+                <label className="text-sm font-medium mb-2 block">QR Code</label>
+                <div className="bg-white p-4 rounded-lg inline-block shadow-inner">
+                  <img 
+                    src={qrCodeDataUrl} 
+                    alt="Gift Box QR Code" 
+                    className="w-48 h-48 mx-auto"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Scan with any QR code reader to open the gift box
+                </p>
+              </div>
+            )}
+
             {/* Share Link */}
             <div>
               <label className="text-sm font-medium mb-2 block">Gift Box Link</label>
@@ -107,8 +156,13 @@ const Success = () => {
 
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-3">
-              <Button onClick={downloadQR} variant="outline" className="w-full">
-                <QrCode className="w-4 h-4 mr-2" />
+              <Button 
+                onClick={downloadQR} 
+                variant="outline" 
+                className="w-full"
+                disabled={!qrCodeDataUrl}
+              >
+                <Download className="w-4 h-4 mr-2" />
                 Download QR Code
               </Button>
               <Button onClick={copyLink} variant="outline" className="w-full">

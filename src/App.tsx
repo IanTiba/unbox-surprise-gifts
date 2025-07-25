@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import BoxBuilder from "./pages/BoxBuilder";
 import Checkout from "./pages/Checkout";
 import Success from "./pages/Success";
+import ViewBox from "./pages/ViewBox";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/builder" element={<BoxBuilder />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/box/:boxId" element={<ViewBox />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
