@@ -494,7 +494,6 @@ const BoxBuilder = () => {
               variant="hero"
               size="lg"
               className="w-full text-lg py-6"
-              disabled={!box.title.trim() || box.cards.some(card => !card.message.trim())}
             >
               <Eye className="w-5 h-5 mr-2" />
               Preview & Checkout (${getPrice()})
