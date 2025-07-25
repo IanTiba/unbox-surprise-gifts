@@ -47,39 +47,54 @@ const ViewBox = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [confettiTriggered, setConfettiTriggered] = useState(false);
 
-  // Mock data - In real app, this would fetch from database
+  // Load box data from localStorage or database
   useEffect(() => {
-    // Simulate loading box data
-    const mockBox: GiftBox = {
-      id: boxId || "demo",
-      title: "Happy Birthday Maria! 🎂",
-      emoji: "🎁",
-      theme: "purple-pink",
-      hasConfetti: true,
-      hasBackgroundMusic: false,
-      createdAt: new Date(),
-      cards: [
-        {
-          id: "1",
-          message: "Happy Birthday! 🎉 I hope your special day is filled with happiness and joy!",
-          unlockDelay: 0
-        },
-        {
-          id: "2", 
-          message: "Remember when we went to that amazing concert last year? Such great memories! 🎵",
-          unlockDelay: 24
-        },
-        {
-          id: "3",
-          message: "You're such an amazing friend and I'm so grateful to have you in my life! 💕",
-          unlockDelay: 48
-        }
-      ]
-    };
-    setBox(mockBox);
+    // Try to get box data from localStorage first
+    const savedBox = localStorage.getItem(`box_${boxId}`);
+    
+    if (savedBox) {
+      try {
+        const parsedBox = JSON.parse(savedBox);
+        // Convert createdAt back to Date object
+        parsedBox.createdAt = new Date(parsedBox.createdAt);
+        setBox(parsedBox);
+      } catch (error) {
+        console.error('Error parsing saved box data:', error);
+        // Fallback to demo box if parsing fails
+        setBox(createDemoBox());
+      }
+    } else {
+      // If no saved data, create a demo box
+      setBox(createDemoBox());
+    }
+  }, [boxId]);
 
-    // Simulate confetti effect on first load
-    if (mockBox.hasConfetti && !confettiTriggered) {
+  // Create demo box for testing
+  const createDemoBox = (): GiftBox => ({
+    id: boxId || "demo",
+    title: "Demo Gift Box 🎁",
+    emoji: "🎁", 
+    theme: "purple-pink",
+    hasConfetti: true,
+    hasBackgroundMusic: false,
+    createdAt: new Date(),
+    cards: [
+      {
+        id: "1",
+        message: "Welcome to your demo gift box! This is what your recipients will see.",
+        unlockDelay: 0
+      },
+      {
+        id: "2", 
+        message: "Cards can be unlocked after a delay that you set when creating the box.",
+        unlockDelay: 24
+      }
+    ]
+  });
+
+  // Load the box and trigger confetti
+  useEffect(() => {
+    if (box?.hasConfetti && !confettiTriggered) {
       setTimeout(() => {
         setConfettiTriggered(true);
         toast({
@@ -88,7 +103,7 @@ const ViewBox = () => {
         });
       }, 1000);
     }
-  }, [boxId, confettiTriggered, toast]);
+  }, [box, confettiTriggered, toast]);
 
   const getThemeGradient = (theme: string) => {
     switch (theme) {

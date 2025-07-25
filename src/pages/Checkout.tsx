@@ -94,7 +94,13 @@ const Checkout = () => {
           description: "Your gift box has been created.",
         });
         
-        // In a real app, save the box data to database here
+        // Save box data to localStorage for now (in real app, would save to database)
+        const boxData = {
+          ...box,
+          id: boxId,
+          createdAt: new Date()
+        };
+        localStorage.setItem(`box_${boxId}`, JSON.stringify(boxData));
         
         // Navigate to success page with box data
         navigate('/success', {
