@@ -23,7 +23,7 @@ const App = () => (
           <Route path="/builder" element={<BoxBuilder />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/success" element={<Success />} />
-          <Route path="/box/:boxId" element={<ViewBox />} />
+          <Route path="/gift/:slug" element={<ViewBox />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

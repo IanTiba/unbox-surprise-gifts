@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,7 @@ interface GiftBox {
 }
 
 const ViewBox = () => {
-  const { boxId } = useParams<{ boxId: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -47,56 +48,62 @@ const ViewBox = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [confettiTriggered, setConfettiTriggered] = useState(false);
 
-  // Load box data from localStorage or database
+  // Load box data from Supabase
   useEffect(() => {
-    console.log('ViewBox: boxId is:', boxId);
-    console.log('ViewBox: Looking for key:', `box_${boxId}`);
-    
-    // Try to get box data from localStorage first
-    const savedBox = localStorage.getItem(`box_${boxId}`);
-    console.log('ViewBox: savedBox from localStorage:', savedBox);
-    
-    if (savedBox) {
-      try {
-        const parsedBox = JSON.parse(savedBox);
-        console.log('ViewBox: parsed box data:', parsedBox);
-        // Convert createdAt back to Date object
-        parsedBox.createdAt = new Date(parsedBox.createdAt);
-        setBox(parsedBox);
-      } catch (error) {
-        console.error('Error parsing saved box data:', error);
-        // Fallback to demo box if parsing fails
-        setBox(createDemoBox());
+    const loadGift = async () => {
+      if (!slug) {
+        navigate('/');
+        return;
       }
-    } else {
-      console.log('ViewBox: No saved data found, using demo box');
-      // If no saved data, create a demo box
-      setBox(createDemoBox());
-    }
-  }, [boxId]);
 
-  // Create demo box for testing
-  const createDemoBox = (): GiftBox => ({
-    id: boxId || "demo",
-    title: "Demo Gift Box 🎁",
-    emoji: "🎁", 
-    theme: "purple-pink",
-    hasConfetti: true,
-    hasBackgroundMusic: false,
-    createdAt: new Date(),
-    cards: [
-      {
-        id: "1",
-        message: "Welcome to your demo gift box! This is what your recipients will see.",
-        unlockDelay: 0
-      },
-      {
-        id: "2", 
-        message: "Cards can be unlocked after a delay that you set when creating the box.",
-        unlockDelay: 24
+      try {
+        const { data: gift, error } = await supabase
+          .from('gifts')
+          .select('*')
+          .eq('slug', slug)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error loading gift:', error);
+          navigate('/');
+          return;
+        }
+
+        if (!gift) {
+          // Gift not found, show 404
+          navigate('/');
+          return;
+        }
+
+        // Convert database format to component format
+        const boxData: GiftBox = {
+          id: gift.id,
+          title: gift.title,
+          emoji: gift.emoji,
+          theme: gift.theme,
+          hasConfetti: gift.has_confetti,
+          hasBackgroundMusic: gift.has_background_music,
+          cards: Array.isArray(gift.cards) ? gift.cards.map((card: any) => ({
+            id: card.id,
+            message: card.message,
+            unlockDelay: card.unlockDelay || 0,
+            // Note: In a full implementation, you'd load actual files from storage
+            image: card.hasImage ? 'placeholder-image' : undefined,
+            audio: card.hasAudio ? 'placeholder-audio' : undefined
+          })) : [],
+          createdAt: new Date(gift.created_at)
+        };
+
+        setBox(boxData);
+      } catch (error) {
+        console.error('Error loading gift:', error);
+        navigate('/');
       }
-    ]
-  });
+    };
+
+    loadGift();
+  }, [slug, navigate]);
+
 
   // Load the box and trigger confetti
   useEffect(() => {

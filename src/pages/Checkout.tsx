@@ -17,6 +17,7 @@ import {
   Mail
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GiftCard {
   id: string;
@@ -32,6 +33,7 @@ interface GiftBox {
   theme: string;
   hasConfetti: boolean;
   hasBackgroundMusic: boolean;
+  emoji: string;
 }
 
 const Checkout = () => {
@@ -75,52 +77,77 @@ const Checkout = () => {
       return;
     }
 
+    if (!box.title.trim()) {
+      toast({
+        title: "Box title required",
+        description: "Please add a title to your gift box.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsProcessing(true);
     
     try {
       // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Generate unique box ID
-      const boxId = Math.random().toString(36).substr(2, 9);
-      const shareLink = `${window.location.origin}/box/${boxId}`;
+      // Generate unique slug from title
+      const { data: slugData, error: slugError } = await supabase
+        .rpc('generate_unique_slug', { title_input: box.title });
       
-      // Simulate payment verification
-      const paymentSuccessful = true; // In real app, this would be actual payment verification
+      if (slugError) throw slugError;
+      const slug = slugData;
+
+      // Convert cards to JSONB format for database
+      const cardsData = box.cards.map(card => ({
+        id: card.id,
+        message: card.message,
+        unlockDelay: card.unlockDelay || 0,
+        // Note: Files would need to be uploaded to storage in a real implementation
+        hasImage: !!card.image,
+        hasAudio: !!card.audio
+      }));
+
+      // Save gift to Supabase
+      const { data: gift, error: giftError } = await supabase
+        .from('gifts')
+        .insert({
+          slug,
+          title: box.title,
+          emoji: box.emoji,
+          theme: box.theme,
+          has_confetti: box.hasConfetti,
+          has_background_music: box.hasBackgroundMusic,
+          cards: cardsData,
+          user_id: null // Allow guest creation for now
+        })
+        .select()
+        .single();
+
+      if (giftError) throw giftError;
+
+      const shareLink = `${window.location.origin}/gift/${slug}`;
       
-      if (paymentSuccessful) {
-        toast({
-          title: "Payment successful! 🎉",
-          description: "Your gift box has been created.",
-        });
-        
-        // Save box data to localStorage for now (in real app, would save to database)
-        const boxData = {
-          ...box,
-          id: boxId,
-          createdAt: new Date()
-        };
-        console.log('Checkout: Saving box data with boxId:', boxId);
-        console.log('Checkout: Box data being saved:', boxData);
-        localStorage.setItem(`box_${boxId}`, JSON.stringify(boxData));
-        console.log('Checkout: Data saved to localStorage with key:', `box_${boxId}`);
-        
-        // Navigate to success page with box data
-        navigate('/success', {
-          state: {
-            box: box,
-            boxId: boxId,
-            email: email,
-            shareLink: shareLink
-          }
-        });
-      } else {
-        throw new Error("Payment verification failed");
-      }
-    } catch (error) {
       toast({
-        title: "Payment failed",
-        description: "There was an issue processing your payment. Please try again.",
+        title: "Payment successful! 🎉",
+        description: "Your gift box has been created.",
+      });
+      
+      // Navigate to success page with gift data
+      navigate('/success', {
+        state: {
+          box: box,
+          slug: slug,
+          email: email,
+          shareLink: shareLink
+        }
+      });
+    } catch (error) {
+      console.error('Payment/Save error:', error);
+      toast({
+        title: "Something went wrong",
+        description: "There was an issue creating your gift box. Please try again.",
         variant: "destructive",
       });
     } finally {

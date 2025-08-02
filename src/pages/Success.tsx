@@ -14,11 +14,11 @@ import {
   Mail
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import QRCodeLib from "qrcode";
+import { generateQRCode } from "@/utils/qrCode";
 
 interface SuccessData {
   box: any;
-  boxId: string;
+  slug: string;
   email: string;
   shareLink: string;
 }
@@ -35,27 +35,20 @@ const Success = () => {
     return null;
   }
 
-  const { box, boxId, email, shareLink } = data;
+  const { box, slug, email, shareLink } = data;
 
   // Generate QR code on component mount
   useEffect(() => {
-    const generateQRCode = async () => {
+    const generateQR = async () => {
       try {
-        const qrDataUrl = await QRCodeLib.toDataURL(shareLink, {
-          width: 256,
-          margin: 2,
-          color: {
-            dark: '#6366f1',
-            light: '#ffffff'
-          }
-        });
+        const qrDataUrl = await generateQRCode(shareLink);
         setQrCodeDataUrl(qrDataUrl);
       } catch (error) {
         console.error('Error generating QR code:', error);
       }
     };
     
-    generateQRCode();
+    generateQR();
   }, [shareLink]);
 
   const copyLink = () => {
@@ -70,7 +63,7 @@ const Success = () => {
     if (!qrCodeDataUrl) return;
     
     const link = document.createElement('a');
-    link.download = `gift-box-${boxId}-qr.png`;
+    link.download = `gift-box-${slug}-qr.png`;
     link.href = qrCodeDataUrl;
     document.body.appendChild(link);
     link.click();
@@ -103,7 +96,7 @@ const Success = () => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Gift Box Details</h2>
             <Badge variant="secondary" className="bg-gradient-primary text-white">
-              ID: {boxId}
+              {slug}
             </Badge>
           </div>
           
