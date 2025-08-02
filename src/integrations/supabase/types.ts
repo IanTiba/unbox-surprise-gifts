@@ -14,13 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      gifts: {
+        Row: {
+          cards: Json
+          created_at: string
+          emoji: string | null
+          has_background_music: boolean | null
+          has_confetti: boolean | null
+          id: string
+          slug: string
+          theme: string | null
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          cards?: Json
+          created_at?: string
+          emoji?: string | null
+          has_background_music?: boolean | null
+          has_confetti?: boolean | null
+          id?: string
+          slug: string
+          theme?: string | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          cards?: Json
+          created_at?: string
+          emoji?: string | null
+          has_background_music?: boolean | null
+          has_confetti?: boolean | null
+          id?: string
+          slug?: string
+          theme?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_unique_slug: {
+        Args: { title_input: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
