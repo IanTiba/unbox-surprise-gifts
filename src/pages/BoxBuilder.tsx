@@ -630,30 +630,30 @@ const BoxBuilder = () => {
                             <span className="text-sm font-medium">
                               Card {index + 1}
                             </span>
-                            <div className="flex items-center space-x-1">
-                              {card.image && (
-                                <Image className="w-3 h-3 text-white/80" />
-                              )}
-                              {card.audio && (
-                                <Volume2 className="w-3 h-3 text-white/80" />
-                              )}
-                              {card.unlockDelay && card.unlockDelay > 0 && (
-                                <Clock className="w-3 h-3 text-white/80" />
-                              )}
-                            </div>
+                           <div className="flex items-center space-x-1">
+                             {(card.image || card.image_url) && (
+                               <Image className="w-3 h-3 text-white/80" />
+                             )}
+                             {card.audio && (
+                               <Volume2 className="w-3 h-3 text-white/80" />
+                             )}
+                             {card.unlockDelay && card.unlockDelay > 0 && (
+                               <Clock className="w-3 h-3 text-white/80" />
+                             )}
+                           </div>
                           </div>
                           <p className="text-xs opacity-80 truncate">
                             {card.message || 'Your message here...'}
                           </p>
-                          {card.imagePreview && (
-                            <div className="mt-2">
-                              <img 
-                                src={card.imagePreview} 
-                                alt="Card preview" 
-                                className="w-full h-16 object-cover rounded opacity-90"
-                              />
-                            </div>
-                          )}
+                           {(card.imagePreview || card.image_url) && (
+                             <div className="mt-2">
+                               <img 
+                                 src={card.image_url || card.imagePreview} 
+                                 alt="Card preview" 
+                                 className="w-full h-16 object-cover rounded opacity-90"
+                               />
+                             </div>
+                           )}
                         </div>
                       ))}
                       

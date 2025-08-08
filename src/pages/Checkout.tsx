@@ -110,6 +110,8 @@ const Checkout = () => {
         unlock_delay: card.unlockDelay || 0
       }));
 
+      console.log('Box data being saved:', { box, cardsData });
+
       // Save gift to Supabase
       const { data: gift, error: giftError } = await supabase
         .from('gifts')
