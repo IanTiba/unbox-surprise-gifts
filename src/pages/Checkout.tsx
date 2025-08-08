@@ -23,7 +23,9 @@ interface GiftCard {
   id: string;
   message: string;
   image?: File;
+  image_url?: string;
   audio?: File;
+  audio_url?: string;
   unlockDelay?: number;
 }
 
@@ -103,10 +105,9 @@ const Checkout = () => {
       const cardsData = box.cards.map(card => ({
         id: card.id,
         message: card.message,
-        unlockDelay: card.unlockDelay || 0,
-        // Note: Files would need to be uploaded to storage in a real implementation
-        hasImage: !!card.image,
-        hasAudio: !!card.audio
+        image_url: card.image_url,
+        audio_url: card.audio_url,
+        unlock_delay: card.unlockDelay || 0
       }));
 
       // Save gift to Supabase

@@ -24,13 +24,16 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GiftCard {
   id: string;
   message: string;
   image?: File;
+  image_url?: string;
   imagePreview?: string;
   audio?: Blob;
+  audio_url?: string;
   audioUrl?: string;
   unlockDelay?: number;
 }
@@ -51,6 +54,8 @@ const BoxBuilder = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState<string | null>(null);
   const [recordingCardId, setRecordingCardId] = useState<string | null>(null);
+  const [uploadingImages, setUploadingImages] = useState<Set<string>>(new Set());
+  const [uploadErrors, setUploadErrors] = useState<Map<string, string>>(new Map());
   
   const [box, setBox] = useState<GiftBox>({
     title: "",
@@ -94,11 +99,11 @@ const BoxBuilder = () => {
   };
 
   // Image Upload Functions
-  const handleImageUpload = (cardId: string) => {
+  const handleImageUpload = async (cardId: string) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         // Check file size (max 5MB)
@@ -111,18 +116,69 @@ const BoxBuilder = () => {
           return;
         }
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const imagePreview = e.target?.result as string;
-          updateCard(cardId, 'image', file);
-          updateCard(cardId, 'imagePreview', imagePreview);
-        };
-        reader.readAsDataURL(file);
-        
-        toast({
-          title: "Image uploaded",
-          description: "Your image has been added to the card.",
+        // Add to uploading set
+        setUploadingImages(prev => new Set([...prev, cardId]));
+        setUploadErrors(prev => {
+          const newErrors = new Map(prev);
+          newErrors.delete(cardId);
+          return newErrors;
         });
+
+        try {
+          // Create a temporary slug for organizing files
+          const tempSlug = box.title.toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .slice(0, 40) || 'untitled';
+          
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${tempSlug}/${cardId}-${Date.now()}.${fileExt}`;
+
+          const { data, error } = await supabase.storage
+            .from('gift-media')
+            .upload(fileName, file);
+
+          if (error) {
+            throw error;
+          }
+
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('gift-media')
+            .getPublicUrl(fileName);
+
+          // Set preview for immediate display
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const imagePreview = e.target?.result as string;
+            updateCard(cardId, 'imagePreview', imagePreview);
+          };
+          reader.readAsDataURL(file);
+
+          // Update card with image URL
+          updateCard(cardId, 'image', file);
+          updateCard(cardId, 'image_url', publicUrl);
+          
+          toast({
+            title: "Image uploaded!",
+            description: "Your image has been added to the card.",
+          });
+        } catch (error) {
+          console.error('Upload error:', error);
+          setUploadErrors(prev => new Map([...prev, [cardId, 'Upload failed. Please try again.']]));
+          toast({
+            title: "Upload failed",
+            description: "Please try uploading the image again.",
+            variant: "destructive",
+          });
+        } finally {
+          // Remove from uploading set
+          setUploadingImages(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(cardId);
+            return newSet;
+          });
+        }
       }
     };
     input.click();
@@ -130,6 +186,7 @@ const BoxBuilder = () => {
 
   const removeImage = (cardId: string) => {
     updateCard(cardId, 'image', undefined);
+    updateCard(cardId, 'image_url', undefined);
     updateCard(cardId, 'imagePreview', undefined);
   };
 
@@ -194,6 +251,16 @@ const BoxBuilder = () => {
   };
 
   const handlePreviewAndCheckout = () => {
+    // Check if any uploads are still pending
+    if (uploadingImages.size > 0) {
+      toast({
+        title: "Upload in progress",
+        description: "Please wait for all images to finish uploading.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Navigate to checkout with box data
     navigate('/checkout', { state: { box } });
   };
@@ -312,31 +379,54 @@ const BoxBuilder = () => {
                             <Label className="text-sm text-muted-foreground">Image (optional)</Label>
                             <div className="mt-1 space-y-2">
                               <div className="flex items-center space-x-2">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => handleImageUpload(card.id)}
-                                >
-                                  <Image className="w-4 h-4 mr-2" />
-                                  Upload
-                                </Button>
-                                {card.image && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => removeImage(card.id)}
-                                  >
-                                    <X className="w-4 h-4" />
-                                  </Button>
-                                )}
-                              </div>
-                              {card.imagePreview && (
-                                <img 
-                                  src={card.imagePreview} 
-                                  alt="Preview" 
-                                  className="w-16 h-16 object-cover rounded-lg border border-border"
-                                />
-                              )}
+                                 <Button 
+                                   variant="outline" 
+                                   size="sm"
+                                   onClick={() => handleImageUpload(card.id)}
+                                   disabled={uploadingImages.has(card.id)}
+                                 >
+                                   <Image className="w-4 h-4 mr-2" />
+                                   {uploadingImages.has(card.id) ? 'Uploading...' : 'Upload'}
+                                 </Button>
+                                 {(card.image || card.image_url) && !uploadingImages.has(card.id) && (
+                                   <Button
+                                     variant="ghost"
+                                     size="sm"
+                                     onClick={() => removeImage(card.id)}
+                                   >
+                                     <X className="w-4 h-4" />
+                                   </Button>
+                                 )}
+                               </div>
+                               
+                               {uploadingImages.has(card.id) && (
+                                 <div className="flex items-center space-x-2 p-2 bg-muted rounded-lg">
+                                   <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                                   <span className="text-sm">Uploading image...</span>
+                                 </div>
+                               )}
+                               
+                               {uploadErrors.has(card.id) && (
+                                 <div className="p-2 bg-destructive/10 rounded-lg">
+                                   <p className="text-sm text-destructive">{uploadErrors.get(card.id)}</p>
+                                   <Button
+                                     variant="outline"
+                                     size="sm"
+                                     className="mt-2"
+                                     onClick={() => handleImageUpload(card.id)}
+                                   >
+                                     Retry Upload
+                                   </Button>
+                                 </div>
+                               )}
+                               
+                               {card.imagePreview && !uploadingImages.has(card.id) && (
+                                 <img 
+                                   src={card.imagePreview} 
+                                   alt="Preview" 
+                                   className="w-16 h-16 object-cover rounded-lg border border-border"
+                                 />
+                               )}
                             </div>
                           </div>
 
@@ -494,9 +584,13 @@ const BoxBuilder = () => {
               variant="hero"
               size="lg"
               className="w-full text-lg py-6"
+              disabled={uploadingImages.size > 0 || !box.title.trim() || !box.cards.some(card => card.message.trim())}
             >
               <Eye className="w-5 h-5 mr-2" />
-              Preview & Checkout (${getPrice()})
+              {uploadingImages.size > 0 
+                ? `Uploading ${uploadingImages.size} image${uploadingImages.size > 1 ? 's' : ''}...`
+                : `Preview & Checkout ($${getPrice()})`
+              }
             </Button>
           </div>
 

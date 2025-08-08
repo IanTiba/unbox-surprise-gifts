@@ -20,8 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 interface GiftCard {
   id: string;
   message: string;
-  image?: File | string;
-  audio?: File | string;
+  image_url?: string;
+  audio_url?: string;
   unlockDelay: number;
 }
 
@@ -84,12 +84,11 @@ const ViewBox = () => {
           hasConfetti: gift.has_confetti,
           hasBackgroundMusic: gift.has_background_music,
           cards: Array.isArray(gift.cards) ? gift.cards.map((card: any) => ({
-            id: card.id,
+            id: card.id || card.index?.toString() || Date.now().toString(),
             message: card.message,
-            unlockDelay: card.unlockDelay || 0,
-            // Note: In a full implementation, you'd load actual files from storage
-            image: card.hasImage ? 'placeholder-image' : undefined,
-            audio: card.hasAudio ? 'placeholder-audio' : undefined
+            unlockDelay: card.unlock_delay || 0,
+            image_url: card.image_url,
+            audio_url: card.audio_url
           })) : [],
           createdAt: new Date(gift.created_at)
         };
@@ -221,7 +220,7 @@ const ViewBox = () => {
                   <Badge variant="secondary" className="bg-white/20 text-white">
                     Card {currentCardIndex + 1}
                   </Badge>
-                  {currentCard.audio && (
+                  {currentCard.audio_url && (
                     <Button
                       variant="ghost"
                       size="sm"
@@ -232,11 +231,11 @@ const ViewBox = () => {
                     </Button>
                   )}
                 </div>
-                
-                {currentCard.image && typeof currentCard.image === 'string' && (
+                 
+                {currentCard.image_url && (
                   <div className="rounded-lg overflow-hidden mb-4">
                     <img 
-                      src={currentCard.image} 
+                      src={currentCard.image_url} 
                       alt="Card attachment" 
                       className="w-full h-48 object-cover"
                     />
@@ -245,10 +244,15 @@ const ViewBox = () => {
                 
                 <p className="text-lg leading-relaxed">{currentCard.message}</p>
                 
-                {currentCard.audio && (
-                  <div className="flex items-center space-x-2 bg-white/20 rounded-lg p-3">
-                    <Volume2 className="w-4 h-4" />
-                    <span className="text-sm">Audio message available</span>
+                {currentCard.audio_url && (
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 bg-white/20 rounded-lg p-3">
+                      <Volume2 className="w-4 h-4" />
+                      <span className="text-sm">Audio message available</span>
+                    </div>
+                    <audio controls className="w-full">
+                      <source src={currentCard.audio_url} type="audio/wav" />
+                    </audio>
                   </div>
                 )}
               </div>
