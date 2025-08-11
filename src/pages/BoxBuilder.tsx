@@ -86,11 +86,16 @@ const BoxBuilder = () => {
   };
 
   const updateCard = (cardId: string, field: keyof GiftCard, value: any) => {
-    setBox({
-      ...box,
-      cards: box.cards.map(card =>
-        card.id === cardId ? { ...card, [field]: value } : card
-      ),
+    console.log('updateCard called:', { cardId, field, value });
+    setBox(prevBox => {
+      const updatedBox = {
+        ...prevBox,
+        cards: prevBox.cards.map(card =>
+          card.id === cardId ? { ...card, [field]: value } : card
+        ),
+      };
+      console.log('Updated box after updateCard:', updatedBox);
+      return updatedBox;
     });
   };
 
@@ -159,7 +164,14 @@ const BoxBuilder = () => {
           updateCard(cardId, 'image', file);
           updateCard(cardId, 'image_url', publicUrl);
           
-          console.log('Image uploaded successfully. Public URL:', publicUrl);
+          console.log('Image uploaded successfully. Card ID:', cardId, 'Public URL:', publicUrl);
+          console.log('Updated card should have image_url:', publicUrl);
+          
+          // Force a state update check
+          setTimeout(() => {
+            const updatedCard = box.cards.find(c => c.id === cardId);
+            console.log('Card after update:', updatedCard);
+          }, 100);
           
           toast({
             title: "Image uploaded!",
