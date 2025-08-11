@@ -105,8 +105,8 @@ const Checkout = () => {
       const cardsData = box.cards.map(card => ({
         id: card.id,
         message: card.message,
-        image_url: card.image_url,
-        audio_url: card.audio_url,
+        image_url: card.image_url || null,
+        audio_url: card.audio_url || null,
         unlock_delay: card.unlockDelay || 0
       }));
 
