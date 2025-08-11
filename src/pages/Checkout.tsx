@@ -110,7 +110,9 @@ const Checkout = () => {
         unlock_delay: card.unlockDelay || 0
       }));
 
+      console.log('Box cards before mapping:', box.cards);
       console.log('Box data being saved:', { box, cardsData });
+      console.log('Image URLs being saved:', cardsData.map(c => ({ id: c.id, image_url: c.image_url })));
 
       // Save gift to Supabase
       const { data: gift, error: giftError } = await supabase

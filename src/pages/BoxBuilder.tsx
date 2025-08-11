@@ -147,7 +147,7 @@ const BoxBuilder = () => {
             .from('gift-media')
             .getPublicUrl(fileName);
 
-          // Set preview for immediate display
+          // Set preview for immediate display AND upload to Supabase
           const reader = new FileReader();
           reader.onload = (e) => {
             const imagePreview = e.target?.result as string;
@@ -155,9 +155,11 @@ const BoxBuilder = () => {
           };
           reader.readAsDataURL(file);
 
-          // Update card with image URL
+          // Update card with image URL from Supabase storage
           updateCard(cardId, 'image', file);
           updateCard(cardId, 'image_url', publicUrl);
+          
+          console.log('Image uploaded successfully. Public URL:', publicUrl);
           
           toast({
             title: "Image uploaded!",
