@@ -237,7 +237,7 @@ const ViewBox = () => {
                     <img 
                       src={currentCard.image_url} 
                       alt="Card attachment" 
-                      className="w-full h-48 object-cover"
+                      className="w-full h-auto object-contain"
                     />
                   </div>
                 )}
