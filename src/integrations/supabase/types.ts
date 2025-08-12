@@ -22,6 +22,7 @@ export type Database = {
           has_background_music: boolean | null
           has_confetti: boolean | null
           id: string
+          is_public: boolean | null
           slug: string
           theme: string | null
           title: string
@@ -35,6 +36,7 @@ export type Database = {
           has_background_music?: boolean | null
           has_confetti?: boolean | null
           id?: string
+          is_public?: boolean | null
           slug: string
           theme?: string | null
           title: string
@@ -48,6 +50,7 @@ export type Database = {
           has_background_music?: boolean | null
           has_confetti?: boolean | null
           id?: string
+          is_public?: boolean | null
           slug?: string
           theme?: string | null
           title?: string
