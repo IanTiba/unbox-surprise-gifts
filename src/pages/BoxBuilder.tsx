@@ -627,29 +627,20 @@ const BoxBuilder = () => {
 
                   <div>
                     <Label htmlFor="spotify" className="text-sm font-medium mb-3 block">Spotify Music (Optional)</Label>
-                    <Textarea 
-                      id="spotify" 
-                      placeholder="Paste your Spotify link or embed code here..." 
-                      value={box.spotifyEmbed || ''} 
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        // Check if it's a Spotify link and convert to embed
-                        const spotifyLinkRegex = /https:\/\/open\.spotify\.com\/(track|album|playlist)\/([a-zA-Z0-9]+)/;
-                        const match = value.match(spotifyLinkRegex);
-                        
-                        if (match) {
-                          const [, type, id] = match;
-                          const embedCode = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${type}/${id}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
-                          updateBox('spotifyEmbed', embedCode);
-                        } else {
-                          updateBox('spotifyEmbed', value);
-                        }
-                      }} 
-                      className="bg-white/80 backdrop-blur-sm border-purple-200 focus:border-purple-400 transition-colors h-16 sm:h-20 text-sm" 
-                    />
-                    <p className="text-xs text-gray-500 mt-2">
-                      Paste a Spotify link (track, album, or playlist) and it will automatically convert to an embed
-                    </p>
+                    <Textarea id="spotify" placeholder="Paste your Spotify link or embed code here..." value={box.spotifyEmbed || ''} onChange={e => {
+                    const value = e.target.value;
+                    // Check if it's a Spotify link and convert to embed
+                    const spotifyLinkRegex = /https:\/\/open\.spotify\.com\/(track|album|playlist)\/([a-zA-Z0-9]+)/;
+                    const match = value.match(spotifyLinkRegex);
+                    if (match) {
+                      const [, type, id] = match;
+                      const embedCode = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/${type}/${id}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+                      updateBox('spotifyEmbed', embedCode);
+                    } else {
+                      updateBox('spotifyEmbed', value);
+                    }
+                  }} className="bg-white/80 backdrop-blur-sm border-purple-200 focus:border-purple-400 transition-colors h-16 sm:h-20 text-sm" />
+                    <p className="text-xs text-gray-500 mt-2">Paste a Spotify track link </p>
                   </div>
                 </div>
               </div>
