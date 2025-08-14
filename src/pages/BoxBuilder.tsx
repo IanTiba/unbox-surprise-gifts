@@ -623,12 +623,9 @@ const BoxBuilder = () => {
                         
                         {/* Cards Section - showing first card like in ViewBox */}
                         <div className="flex-1 mb-6">
-                          {box.cards.length > 0 && (
-                            <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                              background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 
-                                         box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
-                                         'linear-gradient(135deg, #f97316, #eab308)'
-                            }}>
+                          {box.cards.length > 0 && <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                            background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                          }}>
                               <div className="p-4 h-full flex flex-col text-white relative">
                                 {/* Decorative elements like in ViewBox */}
                                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
@@ -641,15 +638,9 @@ const BoxBuilder = () => {
                                   </div>
                                   
                                   {/* Image if available */}
-                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && (
-                                    <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                      <img 
-                                        src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} 
-                                        alt="Card preview" 
-                                        className="w-full h-12 object-cover rounded" 
-                                      />
-                                    </div>
-                                  )}
+                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                      <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full h-12 object-cover rounded" />
+                                    </div>}
                                   
                                   {/* Message */}
                                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
@@ -659,16 +650,13 @@ const BoxBuilder = () => {
                                   </div>
                                   
                                   {/* Audio indicator */}
-                                  {box.cards[0]?.audio && (
-                                    <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                  {box.cards[0]?.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
                                       <Volume2 className="w-3 h-3" />
                                       <span className="text-xs">Audio Message</span>
-                                    </div>
-                                  )}
+                                    </div>}
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            </div>}
                         </div>
                         
                         {/* Action Buttons - matching ViewBox */}
@@ -684,11 +672,7 @@ const BoxBuilder = () => {
                         
                         {/* Footer - matching ViewBox */}
                         <div className="text-center mt-3">
-                          <div className="inline-flex items-center space-x-1 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1">
-                            <Heart className="w-3 h-3 text-red-500" />
-                            <span className="text-xs text-gray-700">Made with love using My Hidden Gift</span>
-                            <Sparkles className="w-3 h-3 text-purple-500" />
-                          </div>
+                          
                         </div>
                       </div>
                     </div>
@@ -764,12 +748,9 @@ const BoxBuilder = () => {
                         
                         {/* Cards Section - showing first card like in ViewBox */}
                         <div className="flex-1 mb-6">
-                          {box.cards.length > 0 && (
-                            <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                              background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 
-                                         box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
-                                         'linear-gradient(135deg, #f97316, #eab308)'
-                            }}>
+                          {box.cards.length > 0 && <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                          background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                        }}>
                               <div className="p-4 h-full flex flex-col text-white relative">
                                 {/* Decorative elements like in ViewBox */}
                                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
@@ -782,15 +763,9 @@ const BoxBuilder = () => {
                                   </div>
                                   
                                   {/* Image if available */}
-                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && (
-                                    <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                      <img 
-                                        src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} 
-                                        alt="Card preview" 
-                                        className="w-full h-12 object-cover rounded" 
-                                      />
-                                    </div>
-                                  )}
+                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                      <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full h-12 object-cover rounded" />
+                                    </div>}
                                   
                                   {/* Message */}
                                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
@@ -800,16 +775,13 @@ const BoxBuilder = () => {
                                   </div>
                                   
                                   {/* Audio indicator */}
-                                  {box.cards[0]?.audio && (
-                                    <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                  {box.cards[0]?.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
                                       <Volume2 className="w-3 h-3" />
                                       <span className="text-xs">Audio Message</span>
-                                    </div>
-                                  )}
+                                    </div>}
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            </div>}
                         </div>
                         
                         {/* Action Buttons - matching ViewBox */}
