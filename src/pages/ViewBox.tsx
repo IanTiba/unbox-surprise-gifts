@@ -304,22 +304,16 @@ const ViewBox = () => {
         </div>
 
         {/* Spotify Embed */}
-        {box.spotifyEmbed && (
-          <div className={`mb-8 ${cardsAnimation ? 'animate-fade-in' : 'opacity-50'}`}>
+        {box.spotifyEmbed && <div className={`mb-8 ${cardsAnimation ? 'animate-fade-in' : 'opacity-50'}`}>
             <Card className={`border-0 shadow-xl overflow-hidden bg-white/80 backdrop-blur-sm`}>
               <div className="p-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  <div className="w-5 h-5 bg-green-500 rounded-full"></div>
-                  <h3 className="text-lg font-semibold text-gray-800">Featured Music</h3>
-                </div>
-                <div 
-                  dangerouslySetInnerHTML={{ __html: box.spotifyEmbed }}
-                  className="spotify-embed"
-                />
+                
+                <div dangerouslySetInnerHTML={{
+              __html: box.spotifyEmbed
+            }} className="spotify-embed" />
               </div>
             </Card>
-          </div>
-        )}
+          </div>}
 
         {/* Card Carousel Navigation */}
         <div className="flex items-center justify-between mb-4">
