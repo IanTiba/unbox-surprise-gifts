@@ -763,7 +763,7 @@ const BoxBuilder = () => {
                   <div>
                     <Label className="text-sm font-medium mb-3 block">Emoji</Label>
                     <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
-                      {['🎁', '💝', '🎉', '💖', '✨', '🌟', '💫', '🎊', '🌈', '💕', '🌸', '🦋'].map(emoji => <button key={emoji} onClick={() => updateBox('emoji', emoji)} className={`p-3 text-2xl rounded-lg border-2 transition-all duration-200 hover:scale-110 ${box.emoji === emoji ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
+                      {['🎁', '💝', '🎉', '💖', '✨', '🌟', '💫', '🎊', '🌈', '💕', '🌸', '🦋'].map(emoji => <button key={emoji} onClick={() => updateBox('emoji', emoji)} className={`p-3 text-2xl rounded-lg border-2 transition-all duration-200 hover:scale-110 flex items-center justify-center ${box.emoji === emoji ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
                           {emoji}
                         </button>)}
                     </div>
