@@ -13,8 +13,8 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Stripe - using the exact secret name from Supabase
-    const stripe = new Stripe(Deno.env.get("Stripe Secret Key") || "", {
+    // Initialize Stripe
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2023-10-16",
     });
 
