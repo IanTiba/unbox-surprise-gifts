@@ -790,12 +790,12 @@ const BoxBuilder = () => {
                       name: 'romantic-red',
                       gradient: 'linear-gradient(135deg, #dc2626, #ef4444)',
                       label: 'Romantic Red'
-                    }].map(theme => <button key={theme.name} onClick={() => updateBox('theme', theme.name)} className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-gray-200'}`} style={{
+                        }].map(theme => <button key={theme.name} onClick={() => updateBox('theme', theme.name)} className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-gray-200'}`} style={{
                       background: theme.gradient
                     }}>
                           <div className="absolute inset-0 bg-black/20"></div>
                           <div className="relative h-full flex items-center justify-center">
-                            <span className="text-white text-xs sm:text-sm font-medium text-center px-2">
+                            <span className="text-white text-sm sm:text-lg font-medium text-center px-2">
                               {theme.label}
                             </span>
                           </div>
