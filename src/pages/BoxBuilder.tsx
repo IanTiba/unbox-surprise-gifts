@@ -339,9 +339,9 @@ const BoxBuilder = () => {
       </header>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
           {/* Enhanced Builder Form */}
-          <div className="space-y-6 sm:space-y-8 animate-fade-in">
+          <div className="space-y-6 sm:space-y-8 animate-fade-in order-1">
             {/* Box Title Section */}
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
@@ -701,8 +701,125 @@ const BoxBuilder = () => {
               }
             </Button>
 
-            {/* Enhanced Live Preview - Moved below payment button */}
-            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm animate-scale-in">
+            {/* Live Preview for Mobile - Below payment button */}
+            <div className="xl:hidden">
+              <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm animate-scale-in">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+              
+              <div className="relative p-6 sm:p-8">
+                <div className="text-center mb-4 sm:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                    Live Preview
+                  </h2>
+                  <p className="text-xs sm:text-sm text-gray-600">See how recipients will experience your gift</p>
+                </div>
+                
+                {/* Enhanced Mobile Mockup */}
+                <div className="mx-auto w-64 sm:w-72 h-80 sm:h-[400px] bg-gray-900 rounded-3xl p-2 sm:p-3 shadow-2xl relative">
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 sm:w-16 h-1 bg-gray-700 rounded-full mt-1 sm:mt-2"></div>
+                  
+                  <div 
+                    className="w-full h-full rounded-2xl overflow-hidden relative shadow-inner"
+                    style={{
+                      background: box.theme === 'purple-pink' 
+                        ? 'linear-gradient(135deg, #a855f7, #ec4899)'
+                        : box.theme === 'blue-teal'
+                        ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
+                        : 'linear-gradient(135deg, #f97316, #eab308)'
+                    }}
+                  >
+                    {/* Ambient elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                      <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+                      <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+                    </div>
+                    
+                    <div className="relative p-4 sm:p-6 text-white text-center h-full flex flex-col">
+                      <div className="text-4xl sm:text-6xl mb-3 sm:mb-4 animate-bounce-in">{box.emoji}</div>
+                      <h3 className="text-base sm:text-lg font-bold mb-2 leading-tight">
+                        {box.title || 'Your Gift Box'}
+                      </h3>
+                      <p className="text-xs sm:text-sm opacity-80 mb-4 sm:mb-6">
+                        {box.cards.length} magical surprise{box.cards.length !== 1 ? 's' : ''} waiting
+                      </p>
+                      
+                      <div className="space-y-2 sm:space-y-3 flex-1 overflow-hidden">
+                        {box.cards.slice(0, 3).map((card, index) => (
+                          <div
+                            key={card.id}
+                            className="bg-white/20 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-left transform hover:scale-105 transition-all duration-200"
+                          >
+                            <div className="flex items-center justify-between mb-1 sm:mb-2">
+                              <span className="text-xs sm:text-sm font-medium">
+                                Card {index + 1}
+                              </span>
+                              <div className="flex items-center space-x-1">
+                                {(card.image || card.image_url) && (
+                                  <Image className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
+                                )}
+                                {card.audio && (
+                                  <Volume2 className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
+                                )}
+                                {card.unlockDelay && card.unlockDelay > 0 && (
+                                  <Clock className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
+                                )}
+                              </div>
+                            </div>
+                            <p className="text-xs opacity-80 line-clamp-2">
+                              {card.message || 'Your heartfelt message here...'}
+                            </p>
+                            {(card.imagePreview || card.image_url) && (
+                              <div className="mt-1 sm:mt-2">
+                                <img 
+                                  src={card.image_url || card.imagePreview} 
+                                  alt="Card preview" 
+                                  className="w-full h-10 sm:h-12 object-cover rounded opacity-90"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        
+                        {box.cards.length > 3 && (
+                          <div className="text-xs opacity-60 mt-2 bg-white/10 rounded-lg p-2">
+                            +{box.cards.length - 3} more magical cards ✨
+                          </div>
+                        )}
+                      </div>
+
+                      {(box.hasConfetti || box.hasBackgroundMusic) && (
+                        <div className="flex items-center justify-center space-x-2 sm:space-x-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/20">
+                          {box.hasConfetti && (
+                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                              <Sparkles className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
+                              <span className="text-xs">Confetti</span>
+                            </div>
+                          )}
+                          {box.hasBackgroundMusic && (
+                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                              <Music className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
+                              <span className="text-xs">Music</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 sm:mt-6 text-center">
+                  <p className="text-xs sm:text-sm text-gray-600 bg-purple-50 rounded-lg p-2 sm:p-3 border border-purple-200">
+                    ✨ This is how recipients will see your magical gift box
+                  </p>
+                </div>
+              </div>
+              </Card>
+            </div>
+          </div>
+
+          {/* Enhanced Live Preview for Desktop - Right side */}
+          <div className="hidden xl:block xl:sticky xl:top-8 animate-scale-in order-2">
+            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               
               <div className="relative p-6 sm:p-8">
