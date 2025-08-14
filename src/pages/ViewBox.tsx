@@ -234,7 +234,7 @@ const ViewBox = () => {
           <div className="flex items-center justify-center space-x-3">
             <Badge className={`${themeColors.accent} text-white px-4 py-2 shadow-lg`}>
               <Gift className="w-4 h-4 mr-2" />
-              you have {box.cards.length} Special Cards
+              You have {box.cards.length} special Cards
             </Badge>
             
           </div>
