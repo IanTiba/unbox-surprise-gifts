@@ -582,6 +582,18 @@ const BoxBuilder = () => {
                       name: 'warm-sunset',
                       gradient: 'linear-gradient(135deg, #f97316, #eab308)',
                       label: 'Warm Sunset'
+                    }, {
+                      name: 'emerald-green',
+                      gradient: 'linear-gradient(135deg, #10b981, #22c55e)',
+                      label: 'Emerald Green'
+                    }, {
+                      name: 'elegant-black',
+                      gradient: 'linear-gradient(135deg, #374151, #1f2937)',
+                      label: 'Elegant Black'
+                    }, {
+                      name: 'romantic-red',
+                      gradient: 'linear-gradient(135deg, #dc2626, #ef4444)',
+                      label: 'Romantic Red'
                     }].map(theme => <button key={theme.name} onClick={() => updateBox('theme', theme.name)} className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-purple-200'}`} style={{
                       background: theme.gradient
                     }}>
