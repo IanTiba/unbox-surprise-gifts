@@ -21,6 +21,7 @@ interface GiftBox {
   hasConfetti: boolean;
   hasBackgroundMusic: boolean;
   emoji: string;
+  spotifyEmbed?: string;
   createdAt: Date;
 }
 const ViewBox = () => {
@@ -74,6 +75,7 @@ const ViewBox = () => {
           theme: gift.theme,
           hasConfetti: gift.has_confetti,
           hasBackgroundMusic: gift.has_background_music,
+          spotifyEmbed: (gift as any).spotify_embed || null,
           cards: Array.isArray(gift.cards) ? gift.cards.map((card: any) => ({
             id: card.id || card.index?.toString() || Date.now().toString(),
             message: card.message,
@@ -389,6 +391,24 @@ const ViewBox = () => {
                 </Card>;
         })()}
         </div>
+
+        {/* Spotify Embed */}
+        {box.spotifyEmbed && (
+          <div className={`mb-8 ${cardsAnimation ? 'animate-fade-in' : 'opacity-50'}`}>
+            <Card className={`border-0 shadow-xl overflow-hidden bg-white/80 backdrop-blur-sm`}>
+              <div className="p-6">
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="w-5 h-5 bg-green-500 rounded-full"></div>
+                  <h3 className="text-lg font-semibold text-gray-800">Featured Music</h3>
+                </div>
+                <div 
+                  dangerouslySetInnerHTML={{ __html: box.spotifyEmbed }}
+                  className="spotify-embed"
+                />
+              </div>
+            </Card>
+          </div>
+        )}
 
         {/* Enhanced Actions */}
         <div className="space-y-3">
