@@ -822,10 +822,48 @@ const BoxBuilder = () => {
                   <div>
                     <Label className="text-sm font-medium mb-3 block">Effects</Label>
                     <div className="space-y-3">
-                      <label className="flex items-center space-x-3 cursor-pointer">
-                        <input type="checkbox" checked={box.hasConfetti} onChange={e => updateBox('hasConfetti', e.target.checked)} className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" />
-                        <span className="text-sm">Confetti Animation</span>
-                      </label>
+                      <div 
+                        onClick={() => updateBox('hasConfetti', !box.hasConfetti)}
+                        className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                          box.hasConfetti 
+                            ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg' 
+                            : 'border-gray-200 bg-white hover:border-purple-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className={`p-2 rounded-lg ${box.hasConfetti ? 'bg-purple-100' : 'bg-gray-100'}`}>
+                              <Sparkles className={`w-5 h-5 ${box.hasConfetti ? 'text-purple-600' : 'text-gray-400'}`} />
+                            </div>
+                            <div>
+                              <div className="font-medium text-sm">Confetti Animation</div>
+                              <div className="text-xs text-gray-500">Add magical falling confetti</div>
+                            </div>
+                          </div>
+                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                            box.hasConfetti 
+                              ? 'border-purple-500 bg-purple-500' 
+                              : 'border-gray-300'
+                          }`}>
+                            {box.hasConfetti && (
+                              <div className="w-2 h-2 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                        </div>
+                        {box.hasConfetti && (
+                          <div className="absolute top-2 right-2 flex space-x-1">
+                            {[...Array(3)].map((_, i) => (
+                              <div
+                                key={i}
+                                className="w-1 h-1 bg-purple-400 rounded-full animate-pulse"
+                                style={{
+                                  animationDelay: `${i * 0.2}s`
+                                }}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
