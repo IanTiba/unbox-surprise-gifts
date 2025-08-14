@@ -305,8 +305,8 @@ const BoxBuilder = () => {
           </div>
           <div className="text-center sm:text-right">
             <div className="px-3 sm:px-4 py-2">
-              <p className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">{getPriceTier()}</p>
-              <p className="text-base sm:text-lg font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">${getPrice()}</p>
+               <p className="text-sm sm:text-base font-semibold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">{getPriceTier()}</p>
+               <p className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">${getPrice()}</p>
             </div>
           </div>
         </div>
