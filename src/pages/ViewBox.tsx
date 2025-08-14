@@ -118,13 +118,9 @@ const ViewBox = () => {
     if (box?.hasConfetti && !confettiTriggered) {
       setTimeout(() => {
         setConfettiTriggered(true);
-        toast({
-          title: "🎉 Magical Surprise!",
-          description: "Your beautiful gift box awaits exploration!",
-        });
       }, 1500);
     }
-  }, [box, confettiTriggered, toast]);
+  }, [box, confettiTriggered]);
 
   const getThemeColors = (theme: string) => {
     switch (theme) {
@@ -201,20 +197,12 @@ const ViewBox = () => {
   const unlockCard = (cardIndex: number) => {
     if (canUnlockCard(cardIndex)) {
       setUnlockedCards(prev => new Set([...prev, cardIndex]));
-      toast({
-        title: "✨ Card Unlocked!",
-        description: `Card ${cardIndex + 1} reveals its magical secret!`,
-      });
     }
   };
 
   const shareBox = () => {
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl);
-    toast({
-      title: "🔗 Link Copied!",
-      description: "Share this magical gift box with anyone!",
-    });
   };
 
   if (isLoading) {
