@@ -603,7 +603,7 @@ const BoxBuilder = () => {
                           <div className="w-20 h-20 mx-auto mb-4 relative">
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg transform rotate-3 shadow-lg"></div>
                             <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 rounded-lg transform -rotate-3 shadow-lg"></div>
-                            <div className="relative bg-gradient-to-br from-orange-500 to-red-500 rounded-lg w-full h-full flex items-center justify-center shadow-xl">
+                            <div className="relative w-full h-full flex items-center justify-center">
                               <div className="text-2xl">{box.emoji}</div>
                             </div>
                           </div>
@@ -728,7 +728,7 @@ const BoxBuilder = () => {
                           <div className="w-20 h-20 mx-auto mb-4 relative">
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg transform rotate-3 shadow-lg"></div>
                             <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 rounded-lg transform -rotate-3 shadow-lg"></div>
-                            <div className="relative bg-gradient-to-br from-orange-500 to-red-500 rounded-lg w-full h-full flex items-center justify-center shadow-xl">
+                            <div className="relative w-full h-full flex items-center justify-center">
                               <div className="text-2xl">{box.emoji}</div>
                             </div>
                           </div>
