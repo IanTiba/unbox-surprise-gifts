@@ -9,11 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Plus, Trash2, Upload, Mic, MicOff, Play, Pause, ArrowLeft, 
-  Gift, Heart, Sparkles, Volume2, Clock, Lock, ArrowRight, Loader2 
-} from "lucide-react";
-
+import { Plus, Trash2, Upload, Mic, MicOff, Play, Pause, ArrowLeft, Gift, Heart, Sparkles, Volume2, Clock, Lock, ArrowRight, Loader2 } from "lucide-react";
 interface GiftCard {
   id: string;
   message: string;
@@ -25,7 +21,6 @@ interface GiftCard {
   audio_url?: string;
   unlockDelay: number;
 }
-
 interface GiftBox {
   title: string;
   cards: GiftCard[];
@@ -35,12 +30,12 @@ interface GiftBox {
   emoji: string;
   spotifyEmbed?: string;
 }
-
 const BoxBuilder = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
   const [box, setBox] = useState<GiftBox>({
     title: "",
     cards: [],
@@ -50,13 +45,11 @@ const BoxBuilder = () => {
     emoji: "🎁",
     spotifyEmbed: ""
   });
-
   const [isRecording, setIsRecording] = useState<string | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [uploadingImages, setUploadingImages] = useState<Set<string>>(new Set());
   const [uploadingAudio, setUploadingAudio] = useState<Set<string>>(new Set());
-
   const addCard = () => {
     const newCard: GiftCard = {
       id: Date.now().toString(),
@@ -68,41 +61,38 @@ const BoxBuilder = () => {
       cards: [...prev.cards, newCard]
     }));
   };
-
   const removeCard = (id: string) => {
     setBox(prev => ({
       ...prev,
       cards: prev.cards.filter(card => card.id !== id)
     }));
   };
-
   const updateCard = (id: string, field: keyof GiftCard, value: any) => {
     setBox(prev => ({
       ...prev,
-      cards: prev.cards.map(card => 
-        card.id === id ? { ...card, [field]: value } : card
-      )
+      cards: prev.cards.map(card => card.id === id ? {
+        ...card,
+        [field]: value
+      } : card)
     }));
   };
-
   const updateBox = (field: keyof GiftBox, value: any) => {
-    setBox(prev => ({ ...prev, [field]: value }));
+    setBox(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
-
   const handleImageUpload = async (cardId: string, file: File) => {
     if (!file) return;
-
     setUploadingImages(prev => new Set([...prev, cardId]));
-
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${cardId}-${Date.now()}.${fileExt}`;
       const filePath = `gift-images/${fileName}`;
-
-      const { data, error } = await supabase.storage
-        .from('gift-images')
-        .upload(filePath, file);
-
+      const {
+        data,
+        error
+      } = await supabase.storage.from('gift-images').upload(filePath, file);
       if (error) {
         console.error('Upload error:', error);
         toast({
@@ -112,14 +102,13 @@ const BoxBuilder = () => {
         });
         return;
       }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('gift-images')
-        .getPublicUrl(filePath);
-
+      const {
+        data: {
+          publicUrl
+        }
+      } = supabase.storage.from('gift-images').getPublicUrl(filePath);
       updateCard(cardId, 'image_url', publicUrl);
       updateCard(cardId, 'imagePreview', URL.createObjectURL(file));
-
       toast({
         title: "Image uploaded",
         description: "Your image has been uploaded successfully!"
@@ -139,34 +128,33 @@ const BoxBuilder = () => {
       });
     }
   };
-
   const removeImage = (cardId: string) => {
     updateCard(cardId, 'image', undefined);
     updateCard(cardId, 'imagePreview', undefined);
     updateCard(cardId, 'image_url', undefined);
   };
-
   const startRecording = async (cardId: string) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
       const recorder = new MediaRecorder(stream);
-      
-      recorder.ondataavailable = (event) => {
+      recorder.ondataavailable = event => {
         if (event.data.size > 0) {
           setAudioChunks(prev => [...prev, event.data]);
         }
       };
-
       recorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunks, {
+          type: 'audio/wav'
+        });
         updateCard(cardId, 'audio', audioBlob);
         updateCard(cardId, 'audioPreview', URL.createObjectURL(audioBlob));
         setAudioChunks([]);
-        
+
         // Upload audio to Supabase
         uploadAudio(cardId, audioBlob);
       };
-
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(cardId);
@@ -179,7 +167,6 @@ const BoxBuilder = () => {
       });
     }
   };
-
   const stopRecording = () => {
     if (mediaRecorder && isRecording) {
       mediaRecorder.stop();
@@ -188,18 +175,15 @@ const BoxBuilder = () => {
       setIsRecording(null);
     }
   };
-
   const uploadAudio = async (cardId: string, audioBlob: Blob) => {
     setUploadingAudio(prev => new Set([...prev, cardId]));
-
     try {
       const fileName = `${cardId}-${Date.now()}.wav`;
       const filePath = `gift-audio/${fileName}`;
-
-      const { data, error } = await supabase.storage
-        .from('gift-audio')
-        .upload(filePath, audioBlob);
-
+      const {
+        data,
+        error
+      } = await supabase.storage.from('gift-audio').upload(filePath, audioBlob);
       if (error) {
         console.error('Audio upload error:', error);
         toast({
@@ -209,13 +193,12 @@ const BoxBuilder = () => {
         });
         return;
       }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('gift-audio')
-        .getPublicUrl(filePath);
-
+      const {
+        data: {
+          publicUrl
+        }
+      } = supabase.storage.from('gift-audio').getPublicUrl(filePath);
       updateCard(cardId, 'audio_url', publicUrl);
-
       toast({
         title: "Audio uploaded",
         description: "Your audio message has been uploaded successfully!"
@@ -235,15 +218,12 @@ const BoxBuilder = () => {
       });
     }
   };
-
   const removeAudio = (cardId: string) => {
     updateCard(cardId, 'audio', undefined);
     updateCard(cardId, 'audioPreview', undefined);
     updateCard(cardId, 'audio_url', undefined);
   };
-
   const uploadsPending = uploadingImages.size > 0 || uploadingAudio.size > 0;
-
   const handlePreviewAndCheckout = () => {
     if (uploadsPending) {
       toast({
@@ -253,10 +233,12 @@ const BoxBuilder = () => {
       });
       return;
     }
-
-    navigate('/checkout', { state: { box } });
+    navigate('/checkout', {
+      state: {
+        box
+      }
+    });
   };
-
   const getPrice = () => {
     const cardCount = box.cards.length;
     const hasAudio = box.cards.some(card => card.audio || card.audio_url);
@@ -265,7 +247,6 @@ const BoxBuilder = () => {
     if (cardCount > 5 || hasAudio || box.hasConfetti) return 7.99;
     return 4.99;
   };
-
   const getPriceTier = () => {
     const price = getPrice();
     if (price === 9.99) return "Time Capsule";
@@ -404,12 +385,9 @@ const BoxBuilder = () => {
         };
     }
   };
-
   const themeColors = getThemeColors(box.theme);
   const [currentPreviewCard, setCurrentPreviewCard] = useState(0);
-
-  return (
-    <div className={`min-h-screen bg-gradient-to-br ${themeColors.secondary} relative overflow-hidden`}>
+  return <div className={`min-h-screen bg-gradient-to-br ${themeColors.secondary} relative overflow-hidden`}>
       {/* Ambient Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className={`absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br ${themeColors.ambient.primary} rounded-full blur-3xl`}></div>
@@ -428,13 +406,7 @@ const BoxBuilder = () => {
           
           <div className="flex items-center space-x-3 text-center sm:text-left">
             <div className="relative">
-              <Input
-                type="text"
-                placeholder="Your Gift Box Title"
-                value={box.title}
-                onChange={(e) => updateBox('title', e.target.value)}
-                className="text-lg sm:text-xl font-bold text-center sm:text-left w-full sm:w-auto min-w-[200px] bg-white/50 border-purple-200 focus:border-purple-400 shadow-sm"
-              />
+              <Input type="text" placeholder="Your Gift Box Title" value={box.title} onChange={e => updateBox('title', e.target.value)} className="text-lg sm:text-xl font-bold text-center sm:text-left w-full sm:w-auto min-w-[200px] bg-white/50 border-purple-200 focus:border-purple-400 shadow-sm" />
             </div>
             
             <div className="flex flex-col items-center sm:items-end">
@@ -465,13 +437,7 @@ const BoxBuilder = () => {
                     <Label htmlFor="spotify-embed" className="text-sm font-medium text-gray-700 mb-2 block">
                       Spotify Embed (Optional)
                     </Label>
-                    <Textarea
-                      id="spotify-embed"
-                      placeholder="Paste your Spotify embed code here..."
-                      value={box.spotifyEmbed || ""}
-                      onChange={(e) => updateBox('spotifyEmbed', e.target.value)}
-                      className="min-h-[80px] resize-none"
-                    />
+                    <Textarea id="spotify-embed" placeholder="Paste your Spotify embed code here..." value={box.spotifyEmbed || ""} onChange={e => updateBox('spotifyEmbed', e.target.value)} className="min-h-[80px] resize-none" />
                     <p className="text-xs text-gray-500 mt-1">
                       Copy embed code from Spotify (Share → Embed track/playlist)
                     </p>
@@ -494,17 +460,11 @@ const BoxBuilder = () => {
                 </div>
 
                 <div className="space-y-6">
-                  {box.cards.map((card, index) => (
-                    <Card key={card.id} className="border border-purple-100 bg-gradient-to-br from-white to-purple-50/30">
+                  {box.cards.map((card, index) => <Card key={card.id} className="border border-purple-100 bg-gradient-to-br from-white to-purple-50/30">
                       <div className="p-4 sm:p-6">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="font-semibold text-purple-800">Card {index + 1}</h3>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeCard(card.id)}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                          >
+                          <Button variant="ghost" size="sm" onClick={() => removeCard(card.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50">
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
@@ -514,115 +474,61 @@ const BoxBuilder = () => {
                             <Label htmlFor={`message-${card.id}`} className="text-sm font-medium mb-2 block">
                               Message
                             </Label>
-                            <Textarea
-                              id={`message-${card.id}`}
-                              placeholder="Write your heartfelt message here..."
-                              value={card.message}
-                              onChange={(e) => updateCard(card.id, 'message', e.target.value)}
-                              className="min-h-[100px] resize-none"
-                            />
+                            <Textarea id={`message-${card.id}`} placeholder="Write your heartfelt message here..." value={card.message} onChange={e => updateCard(card.id, 'message', e.target.value)} className="min-h-[100px] resize-none" />
                           </div>
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                               <Label className="text-sm font-medium mb-2 block">Image</Label>
                               <div className="space-y-2">
-                                {card.imagePreview || card.image_url ? (
-                                  <div className="relative">
-                                    <img 
-                                      src={card.image_url || card.imagePreview} 
-                                      alt="Preview" 
-                                      className="w-full h-32 object-cover rounded-lg border border-purple-200" 
-                                    />
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => removeImage(card.id)}
-                                      className="absolute top-2 right-2 bg-white/80 hover:bg-white text-red-500 hover:text-red-700"
-                                    >
+                                {card.imagePreview || card.image_url ? <div className="relative">
+                                    <img src={card.image_url || card.imagePreview} alt="Preview" className="w-full h-32 object-cover rounded-lg border border-purple-200" />
+                                    <Button variant="ghost" size="sm" onClick={() => removeImage(card.id)} className="absolute top-2 right-2 bg-white/80 hover:bg-white text-red-500 hover:text-red-700">
                                       <Trash2 className="w-3 h-3" />
                                     </Button>
-                                  </div>
-                                ) : (
-                                  <div className="border-2 border-dashed border-purple-200 rounded-lg p-4 text-center">
-                                    <input
-                                      ref={fileInputRef}
-                                      type="file"
-                                      accept="image/*"
-                                      onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        if (file) handleImageUpload(card.id, file);
-                                      }}
-                                      className="hidden"
-                                    />
-                                    <Button
-                                      variant="ghost"
-                                      onClick={() => fileInputRef.current?.click()}
-                                      disabled={uploadingImages.has(card.id)}
-                                      className="w-full"
-                                    >
-                                      {uploadingImages.has(card.id) ? (
-                                        <>
+                                  </div> : <div className="border-2 border-dashed border-purple-200 rounded-lg p-4 text-center">
+                                    <input ref={fileInputRef} type="file" accept="image/*" onChange={e => {
+                                const file = e.target.files?.[0];
+                                if (file) handleImageUpload(card.id, file);
+                              }} className="hidden" />
+                                    <Button variant="ghost" onClick={() => fileInputRef.current?.click()} disabled={uploadingImages.has(card.id)} className="w-full">
+                                      {uploadingImages.has(card.id) ? <>
                                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                           Uploading...
-                                        </>
-                                      ) : (
-                                        <>
+                                        </> : <>
                                           <Upload className="w-4 h-4 mr-2" />
                                           Upload Image
-                                        </>
-                                      )}
+                                        </>}
                                     </Button>
-                                  </div>
-                                )}
+                                  </div>}
                               </div>
                             </div>
 
                             <div>
                               <Label className="text-sm font-medium mb-2 block">Audio Message</Label>
                               <div className="space-y-2">
-                                {card.audioPreview || card.audio_url ? (
-                                  <div className="space-y-2">
+                                {card.audioPreview || card.audio_url ? <div className="space-y-2">
                                     <audio controls className="w-full">
                                       <source src={card.audio_url || card.audioPreview} type="audio/wav" />
                                     </audio>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => removeAudio(card.id)}
-                                      className="w-full text-red-500 hover:text-red-700 hover:bg-red-50"
-                                    >
+                                    <Button variant="ghost" size="sm" onClick={() => removeAudio(card.id)} className="w-full text-red-500 hover:text-red-700 hover:bg-red-50">
                                       <Trash2 className="w-3 h-3 mr-2" />
                                       Remove Audio
                                     </Button>
-                                  </div>
-                                ) : (
-                                  <div className="space-y-2">
-                                    <Button
-                                      variant="outline"
-                                      onClick={() => isRecording === card.id ? stopRecording() : startRecording(card.id)}
-                                      disabled={uploadingAudio.has(card.id)}
-                                      className="w-full"
-                                    >
-                                      {uploadingAudio.has(card.id) ? (
-                                        <>
+                                  </div> : <div className="space-y-2">
+                                    <Button variant="outline" onClick={() => isRecording === card.id ? stopRecording() : startRecording(card.id)} disabled={uploadingAudio.has(card.id)} className="w-full">
+                                      {uploadingAudio.has(card.id) ? <>
                                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                           Uploading...
-                                        </>
-                                      ) : isRecording === card.id ? (
-                                        <>
+                                        </> : isRecording === card.id ? <>
                                           <MicOff className="w-4 h-4 mr-2" />
                                           Stop Recording
-                                        </>
-                                      ) : (
-                                        <>
+                                        </> : <>
                                           <Mic className="w-4 h-4 mr-2" />
                                           Record Audio
-                                        </>
-                                      )}
+                                        </>}
                                     </Button>
-                                  </div>
-                                )}
+                                  </div>}
                               </div>
                             </div>
                           </div>
@@ -631,34 +537,23 @@ const BoxBuilder = () => {
                             <Label htmlFor={`unlock-delay-${card.id}`} className="text-sm font-medium mb-2 block">
                               Unlock Delay (Days)
                             </Label>
-                            <Input
-                              id={`unlock-delay-${card.id}`}
-                              type="number"
-                              min="0"
-                              max="365"
-                              value={card.unlockDelay}
-                              onChange={(e) => updateCard(card.id, 'unlockDelay', parseInt(e.target.value) || 0)}
-                              className="w-full"
-                            />
+                            <Input id={`unlock-delay-${card.id}`} type="number" min="0" max="365" value={card.unlockDelay} onChange={e => updateCard(card.id, 'unlockDelay', parseInt(e.target.value) || 0)} className="w-full" />
                             <p className="text-xs text-gray-500 mt-1">
                               Set to 0 for immediate unlock, or specify days to wait
                             </p>
                           </div>
                         </div>
                       </div>
-                    </Card>
-                  ))}
+                    </Card>)}
 
-                  {box.cards.length === 0 && (
-                    <div className="text-center py-12 border-2 border-dashed border-purple-200 rounded-xl">
+                  {box.cards.length === 0 && <div className="text-center py-12 border-2 border-dashed border-purple-200 rounded-xl">
                       <Gift className="w-12 h-12 mx-auto mb-4 text-purple-300" />
                       <p className="text-gray-500 mb-4">No cards added yet</p>
                       <Button onClick={addCard} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
                         <Plus className="w-4 h-4 mr-2" />
                         Add Your First Card
                       </Button>
-                    </div>
-                  )}
+                    </div>}
                 </div>
               </div>
             </Card>
@@ -674,17 +569,9 @@ const BoxBuilder = () => {
                   <div>
                     <Label className="text-sm font-medium mb-3 block">Emoji</Label>
                     <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
-                      {['🎁', '💝', '🎉', '💖', '✨', '🌟', '💫', '🎊', '🌈', '💕', '🌸', '🦋'].map(emoji => (
-                        <button
-                          key={emoji}
-                          onClick={() => updateBox('emoji', emoji)}
-                          className={`p-3 text-2xl rounded-lg border-2 transition-all duration-200 hover:scale-110 ${
-                            box.emoji === emoji ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
-                          }`}
-                        >
+                      {['🎁', '💝', '🎉', '💖', '✨', '🌟', '💫', '🎊', '🌈', '💕', '🌸', '🦋'].map(emoji => <button key={emoji} onClick={() => updateBox('emoji', emoji)} className={`p-3 text-2xl rounded-lg border-2 transition-all duration-200 hover:scale-110 ${box.emoji === emoji ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
                           {emoji}
-                        </button>
-                      ))}
+                        </button>)}
                     </div>
                   </div>
 
@@ -692,46 +579,39 @@ const BoxBuilder = () => {
                     <Label className="text-sm font-medium mb-3 block">Theme</Label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       {[{
-                        name: 'purple-pink',
-                        gradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
-                        label: 'Purple Pink'
-                      }, {
-                        name: 'blue-teal',
-                        gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
-                        label: 'Blue Teal'
-                      }, {
-                        name: 'warm-sunset',
-                        gradient: 'linear-gradient(135deg, #f97316, #eab308)',
-                        label: 'Warm Sunset'
-                      }, {
-                        name: 'emerald-green',
-                        gradient: 'linear-gradient(135deg, #10b981, #22c55e)',
-                        label: 'Emerald Green'
-                      }, {
-                        name: 'elegant-black',
-                        gradient: 'linear-gradient(135deg, #374151, #1f2937)',
-                        label: 'Elegant Black'
-                      }, {
-                        name: 'romantic-red',
-                        gradient: 'linear-gradient(135deg, #dc2626, #ef4444)',
-                        label: 'Romantic Red'
-                      }].map(theme => (
-                        <button
-                          key={theme.name}
-                          onClick={() => updateBox('theme', theme.name)}
-                          className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${
-                            box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-gray-200'
-                          }`}
-                          style={{ background: theme.gradient }}
-                        >
+                      name: 'purple-pink',
+                      gradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
+                      label: 'Purple Pink'
+                    }, {
+                      name: 'blue-teal',
+                      gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+                      label: 'Blue Teal'
+                    }, {
+                      name: 'warm-sunset',
+                      gradient: 'linear-gradient(135deg, #f97316, #eab308)',
+                      label: 'Warm Sunset'
+                    }, {
+                      name: 'emerald-green',
+                      gradient: 'linear-gradient(135deg, #10b981, #22c55e)',
+                      label: 'Emerald Green'
+                    }, {
+                      name: 'elegant-black',
+                      gradient: 'linear-gradient(135deg, #374151, #1f2937)',
+                      label: 'Elegant Black'
+                    }, {
+                      name: 'romantic-red',
+                      gradient: 'linear-gradient(135deg, #dc2626, #ef4444)',
+                      label: 'Romantic Red'
+                    }].map(theme => <button key={theme.name} onClick={() => updateBox('theme', theme.name)} className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-gray-200'}`} style={{
+                      background: theme.gradient
+                    }}>
                           <div className="absolute inset-0 bg-black/20"></div>
                           <div className="relative h-full flex items-center justify-center">
                             <span className="text-white text-xs sm:text-sm font-medium text-center px-2">
                               {theme.label}
                             </span>
                           </div>
-                        </button>
-                      ))}
+                        </button>)}
                     </div>
                   </div>
 
@@ -739,12 +619,7 @@ const BoxBuilder = () => {
                     <Label className="text-sm font-medium mb-3 block">Effects</Label>
                     <div className="space-y-3">
                       <label className="flex items-center space-x-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={box.hasConfetti}
-                          onChange={(e) => updateBox('hasConfetti', e.target.checked)}
-                          className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                        />
+                        <input type="checkbox" checked={box.hasConfetti} onChange={e => updateBox('hasConfetti', e.target.checked)} className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" />
                         <span className="text-sm">Confetti Animation</span>
                       </label>
                     </div>
@@ -755,22 +630,14 @@ const BoxBuilder = () => {
 
             {/* Checkout Button */}
             <div className="xl:hidden">
-              <Button 
-                onClick={handlePreviewAndCheckout}
-                disabled={!box.title.trim() || box.cards.length === 0 || uploadsPending}
-                className={`w-full bg-gradient-to-r ${themeColors.shareButton} text-white font-medium py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                {uploadsPending ? (
-                  <>
+              <Button onClick={handlePreviewAndCheckout} disabled={!box.title.trim() || box.cards.length === 0 || uploadsPending} className={`w-full bg-gradient-to-r ${themeColors.shareButton} text-white font-medium py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}>
+                {uploadsPending ? <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                     Processing uploads...
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     <Sparkles className="w-5 h-5 mr-2" />
                     Preview & Checkout • ${getPrice()}
-                  </>
-                )}
+                  </>}
               </Button>
             </div>
           </div>
@@ -795,9 +662,7 @@ const BoxBuilder = () => {
                     <div className="relative bg-black rounded-[3.5rem] p-2 shadow-2xl">
                       <div className="bg-white rounded-[2.8rem] overflow-hidden relative">
                         {/* Status Bar */}
-                        <div className="bg-black h-8 flex items-center justify-center">
-                          <div className="text-white text-xs">9:41</div>
-                        </div>
+                        
                         
                         {/* Content Area */}
                         <div className={`h-[600px] overflow-y-auto bg-gradient-to-br ${themeColors.secondary} p-4 relative`}>
@@ -808,26 +673,18 @@ const BoxBuilder = () => {
                           </div>
 
                           {/* Confetti Animation */}
-                          {box.hasConfetti && (
-                            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                              {[...Array(20)].map((_, i) => (
-                                <div
-                                  key={i}
-                                  className={`absolute w-1 h-1 bg-gradient-to-r ${themeColors.primary} rounded-full opacity-80`}
-                                  style={{
-                                    left: `${Math.random() * 100}%`,
-                                    animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
-                                  }}
-                                />
-                              ))}
+                          {box.hasConfetti && <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                              {[...Array(20)].map((_, i) => <div key={i} className={`absolute w-1 h-1 bg-gradient-to-r ${themeColors.primary} rounded-full opacity-80`} style={{
+                            left: `${Math.random() * 100}%`,
+                            animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
+                          }} />)}
                               <style>{`
                                 @keyframes confetti-fall {
                                   0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
                                   100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
                                 }
                               `}</style>
-                            </div>
-                          )}
+                            </div>}
 
                           <div className="relative z-10">
                             {/* Header Section - matching ViewBox structure */}
@@ -850,49 +707,25 @@ const BoxBuilder = () => {
                             </div>
 
                             {/* Spotify Embed */}
-                            {box.spotifyEmbed && (
-                              <div className="mb-4">
-                                <div 
-                                  dangerouslySetInnerHTML={{
-                                    __html: box.spotifyEmbed.replace(/utm_source=generator/g, 'utm_source=generator&autoplay=1&auto_play=true')
-                                  }} 
-                                  className="spotify-embed [&>iframe]:!h-[80px] [&>iframe]:!w-full [&>iframe]:rounded-lg" 
-                                />
-                              </div>
-                            )}
+                            {box.spotifyEmbed && <div className="mb-4">
+                                <div dangerouslySetInnerHTML={{
+                              __html: box.spotifyEmbed.replace(/utm_source=generator/g, 'utm_source=generator&autoplay=1&auto_play=true')
+                            }} className="spotify-embed [&>iframe]:!h-[80px] [&>iframe]:!w-full [&>iframe]:rounded-lg" />
+                              </div>}
 
                             {/* Card Navigation */}
-                            {box.cards.length > 0 && (
-                              <>
+                            {box.cards.length > 0 && <>
                                 <div className="flex items-center justify-between mb-3">
-                                  <button 
-                                    onClick={() => setCurrentPreviewCard(Math.max(0, currentPreviewCard - 1))} 
-                                    disabled={currentPreviewCard === 0} 
-                                    className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}
-                                  >
+                                  <button onClick={() => setCurrentPreviewCard(Math.max(0, currentPreviewCard - 1))} disabled={currentPreviewCard === 0} className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}>
                                     <ArrowLeft className="w-3 h-3 mr-1" />
                                     Prev
                                   </button>
                                   
                                   <div className="flex space-x-1">
-                                    {box.cards.map((_, index) => (
-                                      <button
-                                        key={index}
-                                        onClick={() => setCurrentPreviewCard(index)}
-                                        className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                                          index === currentPreviewCard 
-                                            ? `${themeColors.dots} scale-110` 
-                                            : `${themeColors.dotsInactive}`
-                                        }`}
-                                      />
-                                    ))}
+                                    {box.cards.map((_, index) => <button key={index} onClick={() => setCurrentPreviewCard(index)} className={`w-2 h-2 rounded-full transition-all duration-200 ${index === currentPreviewCard ? `${themeColors.dots} scale-110` : `${themeColors.dotsInactive}`}`} />)}
                                   </div>
                                   
-                                  <button 
-                                    onClick={() => setCurrentPreviewCard(Math.min(box.cards.length - 1, currentPreviewCard + 1))} 
-                                    disabled={currentPreviewCard === box.cards.length - 1} 
-                                    className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}
-                                  >
+                                  <button onClick={() => setCurrentPreviewCard(Math.min(box.cards.length - 1, currentPreviewCard + 1))} disabled={currentPreviewCard === box.cards.length - 1} className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}>
                                     Next
                                     <ArrowRight className="w-3 h-3 ml-1" />
                                   </button>
@@ -901,19 +734,16 @@ const BoxBuilder = () => {
                                 {/* Single Card Display */}
                                 <div className="mb-4">
                                   {(() => {
-                                    const card = box.cards[currentPreviewCard];
-                                    if (!card) return null;
-                                    
-                                    return (
-                                      <div className={`w-full min-h-40 rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
+                                const card = box.cards[currentPreviewCard];
+                                if (!card) return null;
+                                return <div className={`w-full min-h-40 rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
                                         {/* Decorative elements */}
                                         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
                                         <div className="absolute -top-2 -right-2 w-3 h-3 bg-white/20 rounded-full"></div>
                                         <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white/15 rounded-full"></div>
                                         
                                         <div className="p-3 flex flex-col text-white relative min-h-40">
-                                          {card.unlockDelay > 0 ? (
-                                            <div className="text-center py-6">
+                                          {card.unlockDelay > 0 ? <div className="text-center py-6">
                                               <div className="mb-3">
                                                 <div className="relative inline-block">
                                                   <Lock className="w-8 h-8 mx-auto mb-2 opacity-60" />
@@ -924,67 +754,48 @@ const BoxBuilder = () => {
                                               <p className="text-white/80 text-xs">
                                                 This card unlocks in {card.unlockDelay} day{card.unlockDelay > 1 ? 's' : ''}
                                               </p>
-                                            </div>
-                                          ) : (
-                                            <div className="relative space-y-2">
+                                            </div> : <div className="relative space-y-2">
                                               <div className="flex items-center justify-between">
                                                 <div className="bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
                                                   <span className="text-xs font-medium">Card {currentPreviewCard + 1} of {box.cards.length}</span>
                                                 </div>
-                                                {(card.audio || card.audio_url) && (
-                                                  <div className="text-white/80 p-1">
+                                                {(card.audio || card.audio_url) && <div className="text-white/80 p-1">
                                                     <Play className="w-3 h-3" />
-                                                  </div>
-                                                )}
+                                                  </div>}
                                               </div>
                                               
                                               {/* Image if available */}
-                                              {(card.imagePreview || card.image_url) && (
-                                                <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                                  <img 
-                                                    src={card.image_url || card.imagePreview} 
-                                                    alt="Card preview" 
-                                                    className="w-full object-cover rounded"
-                                                  />
-                                                </div>
-                                              )}
+                                              {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                                  <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full object-cover rounded" />
+                                                </div>}
                                               
                                               {/* Message */}
-                                              {card.message && card.message.trim() && (
-                                                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 flex-1">
+                                              {card.message && card.message.trim() && <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 flex-1">
                                                   <p className="text-xs leading-relaxed text-white/95">
                                                     {card.message}
                                                   </p>
-                                                </div>
-                                              )}
+                                                </div>}
                                               
                                               {/* Audio indicator */}
-                                              {(card.audio || card.audio_url) && (
-                                                <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                              {(card.audio || card.audio_url) && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
                                                   <Volume2 className="w-3 h-3" />
                                                   <div>
                                                     <p className="text-xs font-medium">Audio Message</p>
                                                     <p className="text-xs text-white/80">Tap play to listen</p>
                                                   </div>
-                                                </div>
-                                              )}
-                                            </div>
-                                          )}
+                                                </div>}
+                                            </div>}
                                         </div>
-                                      </div>
-                                    );
-                                  })()}
+                                      </div>;
+                              })()}
                                 </div>
-                              </>
-                            )}
+                              </>}
 
                             {/* Empty state when no cards */}
-                            {box.cards.length === 0 && (
-                              <div className="mb-4 text-center py-8">
+                            {box.cards.length === 0 && <div className="mb-4 text-center py-8">
                                 <Gift className="w-12 h-12 mx-auto mb-3 text-gray-400" />
                                 <p className="text-sm text-gray-500">Add your first card to see the preview</p>
-                              </div>
-                            )}
+                              </div>}
 
                             {/* Action Buttons - matching ViewBox */}
                             <div className="space-y-2">
@@ -1013,30 +824,20 @@ const BoxBuilder = () => {
 
                 <Separator className="my-6" />
 
-                <Button 
-                  onClick={handlePreviewAndCheckout}
-                  disabled={!box.title.trim() || box.cards.length === 0 || uploadsPending}
-                  className={`w-full bg-gradient-to-r ${themeColors.shareButton} text-white font-medium py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {uploadsPending ? (
-                    <>
+                <Button onClick={handlePreviewAndCheckout} disabled={!box.title.trim() || box.cards.length === 0 || uploadsPending} className={`w-full bg-gradient-to-r ${themeColors.shareButton} text-white font-medium py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}>
+                  {uploadsPending ? <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                       Processing uploads...
-                    </>
-                  ) : (
-                    <>
+                    </> : <>
                       <Sparkles className="w-5 h-5 mr-2" />
                       Preview & Checkout • ${getPrice()}
-                    </>
-                  )}
+                    </>}
                 </Button>
               </div>
             </Card>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default BoxBuilder;
