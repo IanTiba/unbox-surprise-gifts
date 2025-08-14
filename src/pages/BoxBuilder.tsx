@@ -408,6 +408,9 @@ const BoxBuilder = () => {
             <span className="sm:hidden">Back</span>
           </Button>
           
+          <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            My Hidden Gift
+          </div>
         </div>
       </header>
 
