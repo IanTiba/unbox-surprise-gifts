@@ -281,7 +281,7 @@ const ViewBox = () => {
         {/* Enhanced Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="relative mb-6">
-            <div className="text-8xl mb-4 animate-bounce-in filter drop-shadow-lg">{box.emoji}</div>
+            <div className="text-8xl mb-4 animate-pulse filter drop-shadow-lg">{box.emoji}</div>
             
           </div>
           
