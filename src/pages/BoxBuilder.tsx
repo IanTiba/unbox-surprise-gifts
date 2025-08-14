@@ -712,7 +712,7 @@ const BoxBuilder = () => {
                               <Label className="text-sm font-medium mb-2 block">Audio Message</Label>
                               <div className="space-y-2">
                                 {card.audioPreview || card.audio_url ? <div className="space-y-2">
-                                    <audio controls className="w-full">
+                                    <audio controls preload="metadata" className="w-full">
                                       <source src={card.audio_url || card.audioPreview} type="audio/wav" />
                                     </audio>
                                     <Button variant="ghost" size="sm" onClick={() => removeAudio(card.id)} className="w-full text-red-500 hover:text-red-700 hover:bg-red-50">
