@@ -623,10 +623,10 @@ const BoxBuilder = () => {
                         
                         {/* Cards Section - showing first card like in ViewBox */}
                         <div className="flex-1 mb-6">
-                          {box.cards.length > 0 && <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                            background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
-                          }}>
-                              <div className="p-4 h-full flex flex-col text-white relative">
+                           {box.cards.length > 0 && <div className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                             background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                           }}>
+                               <div className="p-4 flex flex-col text-white relative min-h-48">
                                 {/* Decorative elements like in ViewBox */}
                                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
                                 <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
@@ -748,10 +748,10 @@ const BoxBuilder = () => {
                         
                         {/* Cards Section - showing first card like in ViewBox */}
                         <div className="flex-1 mb-6">
-                          {box.cards.length > 0 && <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                          background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
-                        }}>
-                              <div className="p-4 h-full flex flex-col text-white relative">
+                           {box.cards.length > 0 && <div className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                           background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                         }}>
+                              <div className="p-4 flex flex-col text-white relative min-h-48">
                                 {/* Decorative elements like in ViewBox */}
                                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
                                 <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
