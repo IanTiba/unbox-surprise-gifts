@@ -712,9 +712,8 @@ const BoxBuilder = () => {
                   <p className="text-xs sm:text-sm text-gray-600">See how recipients will experience your gift</p>
                 </div>
                 
-                {/* iPhone Mockup */}
-                <div className="mx-auto relative">
-                  {/* iPhone Frame */}
+                 <div className="flex justify-center items-start">
+                   {/* iPhone Frame */}
                   <div className="w-72 h-[580px] bg-black rounded-[3rem] p-3 shadow-2xl relative">
                     {/* Notch */}
                     <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-10"></div>
