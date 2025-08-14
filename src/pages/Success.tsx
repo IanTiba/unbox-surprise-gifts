@@ -11,10 +11,12 @@ import {
   Share2, 
   Home,
   QrCode,
-  Mail
+  Mail,
+  Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { generateQRCode } from "@/utils/qrCode";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SuccessData {
   box: any;
@@ -29,19 +31,100 @@ const Success = () => {
   const { toast } = useToast();
   const data = location.state as SuccessData;
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  if (!data) {
-    navigate('/');
-    return null;
-  }
-
-  const { box, slug, email, shareLink } = data;
-
-  // Generate QR code on component mount
+  // Handle Stripe payment completion
   useEffect(() => {
+    const handleStripeReturn = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionId = urlParams.get('session_id');
+      
+      // Check if this is a return from Stripe and we have pending data
+      if (sessionId) {
+        const pendingData = sessionStorage.getItem('pendingGiftBox');
+        if (pendingData) {
+          setIsProcessing(true);
+          try {
+            const { box, email } = JSON.parse(pendingData);
+            
+            // Clear pending data
+            sessionStorage.removeItem('pendingGiftBox');
+            
+            // Generate unique slug from title
+            const { data: slugData, error: slugError } = await supabase
+              .rpc('generate_unique_slug', { title_input: box.title });
+            
+            if (slugError) throw slugError;
+            const slug = slugData;
+
+            // Convert cards to JSONB format for database
+            const cardsData = box.cards.map((card: any) => ({
+              id: card.id,
+              message: card.message,
+              image_url: card.image_url || null,
+              audio_url: card.audio_url || null,
+              unlock_delay: card.unlockDelay || 0
+            }));
+
+            // Save gift to Supabase
+            const { data: gift, error: giftError } = await supabase
+              .from('gifts')
+              .insert({
+                slug,
+                title: box.title,
+                emoji: box.emoji,
+                theme: box.theme,
+                has_confetti: box.hasConfetti,
+                has_background_music: box.hasBackgroundMusic,
+                cards: cardsData,
+                user_id: null,
+                is_public: true // Mark as public for sharing
+              })
+              .select()
+              .single();
+
+            if (giftError) throw giftError;
+
+            const shareLink = `${window.location.origin}/gift/${slug}`;
+            
+            // Update location state with the created gift data and clear URL
+            window.history.replaceState({}, document.title, '/success');
+            navigate('/success', {
+              state: {
+                box: box,
+                slug: slug,
+                email: email,
+                shareLink: shareLink
+              },
+              replace: true
+            });
+            
+          } catch (error) {
+            console.error('Gift creation error:', error);
+            toast({
+              title: "Error creating gift box",
+              description: "Your payment was successful, but there was an issue creating your gift box. Please contact support.",
+              variant: "destructive",
+            });
+            navigate('/');
+          } finally {
+            setIsProcessing(false);
+          }
+        }
+        return;
+      }
+    };
+
+    handleStripeReturn();
+  }, [navigate, toast]);
+
+  // Generate QR code when data is available
+  useEffect(() => {
+    if (!data?.shareLink) return;
+    
     const generateQR = async () => {
       try {
-        const qrDataUrl = await generateQRCode(shareLink);
+        const qrDataUrl = await generateQRCode(data.shareLink);
         setQrCodeDataUrl(qrDataUrl);
       } catch (error) {
         console.error('Error generating QR code:', error);
@@ -49,7 +132,28 @@ const Success = () => {
     };
     
     generateQR();
-  }, [shareLink]);
+  }, [data]);
+
+  if (isProcessing) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
+        <Card className="p-8 bg-gradient-card border-0 shadow-elegant">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+            <h2 className="text-xl font-semibold mb-2">Creating your gift box...</h2>
+            <p className="text-muted-foreground">Payment successful! Setting up your beautiful gift box.</p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!data) {
+    navigate('/');
+    return null;
+  }
+
+  const { box, slug, email, shareLink } = data;
 
   const copyLink = () => {
     navigator.clipboard.writeText(shareLink);

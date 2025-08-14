@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Gift, 
   ArrowLeft, 
@@ -14,7 +15,8 @@ import {
   Sparkles, 
   Music, 
   Clock,
-  Mail
+  Mail,
+  AlertCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,6 +48,17 @@ const Checkout = () => {
   
   const [email, setEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showCancelAlert, setShowCancelAlert] = useState(false);
+
+  // Check for canceled payment on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('canceled') === 'true') {
+      setShowCancelAlert(true);
+      // Clear the URL parameter
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   if (!box) {
     navigate('/builder');
@@ -91,68 +104,42 @@ const Checkout = () => {
     setIsProcessing(true);
     
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Generate unique slug from title
-      const { data: slugData, error: slugError } = await supabase
-        .rpc('generate_unique_slug', { title_input: box.title });
-      
-      if (slugError) throw slugError;
-      const slug = slugData;
-
-      // Convert cards to JSONB format for database
-      const cardsData = box.cards.map(card => ({
-        id: card.id,
-        message: card.message,
-        image_url: card.image_url || null,
-        audio_url: card.audio_url || null,
-        unlock_delay: card.unlockDelay || 0
-      }));
-
-      console.log('Box cards before mapping:', box.cards);
-      console.log('Box data being saved:', { box, cardsData });
-      console.log('Image URLs being saved:', cardsData.map(c => ({ id: c.id, image_url: c.image_url })));
-
-      // Save gift to Supabase
-      const { data: gift, error: giftError } = await supabase
-        .from('gifts')
-        .insert({
-          slug,
-          title: box.title,
-          emoji: box.emoji,
-          theme: box.theme,
-          has_confetti: box.hasConfetti,
-          has_background_music: box.hasBackgroundMusic,
-          cards: cardsData,
-          user_id: null // Allow guest creation for now
-        })
-        .select()
-        .single();
-
-      if (giftError) throw giftError;
-
-      const shareLink = `${window.location.origin}/gift/${slug}`;
-      
-      toast({
-        title: "Payment successful! 🎉",
-        description: "Your gift box has been created.",
-      });
-      
-      // Navigate to success page with gift data
-      navigate('/success', {
-        state: {
-          box: box,
-          slug: slug,
+      // Create Stripe payment session
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          amount: getPrice(),
           email: email,
-          shareLink: shareLink
+          giftBox: box
         }
       });
-    } catch (error) {
-      console.error('Payment/Save error:', error);
+
+      if (error) throw error;
+
+      if (!data.url) {
+        throw new Error("No checkout URL returned from payment service");
+      }
+
+      // Store gift box data in session storage for after payment
+      sessionStorage.setItem('pendingGiftBox', JSON.stringify({
+        box,
+        email,
+        sessionId: data.session_id
+      }));
+
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+
+      // Show message about payment in new tab
       toast({
-        title: "Something went wrong",
-        description: "There was an issue creating your gift box. Please try again.",
+        title: "Redirecting to payment",
+        description: "Complete your payment in the new tab that opened.",
+      });
+
+    } catch (error) {
+      console.error('Payment creation error:', error);
+      toast({
+        title: "Payment setup failed",
+        description: "There was an issue setting up your payment. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -334,6 +321,15 @@ const Checkout = () => {
                 </>
               )}
             </Button>
+
+            {showCancelAlert && (
+              <Alert className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Payment was canceled. No charge was made to your card. You can try again when ready.
+                </AlertDescription>
+              </Alert>
+            )}
 
             <p className="text-xs text-center text-muted-foreground">
               Secure payment powered by Stripe. Your payment information is encrypted and secure.
