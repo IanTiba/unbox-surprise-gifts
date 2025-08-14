@@ -13,7 +13,11 @@ import {
   ArrowRight,
   Volume2,
   VolumeX,
-  Share2
+  Share2,
+  Heart,
+  Sparkles,
+  Gift,
+  Download
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -47,6 +51,8 @@ const ViewBox = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [confettiTriggered, setConfettiTriggered] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [cardAnimation, setCardAnimation] = useState(false);
 
   // Load box data from Supabase
   useEffect(() => {
@@ -70,7 +76,6 @@ const ViewBox = () => {
         }
 
         if (!gift) {
-          // Gift not found, show 404
           navigate('/');
           return;
         }
@@ -94,6 +99,12 @@ const ViewBox = () => {
         };
 
         setBox(boxData);
+        setIsLoading(false);
+
+        // Trigger entrance animation
+        setTimeout(() => {
+          setCardAnimation(true);
+        }, 500);
       } catch (error) {
         console.error('Error loading gift:', error);
         navigate('/');
@@ -103,30 +114,49 @@ const ViewBox = () => {
     loadGift();
   }, [slug, navigate]);
 
-
   // Load the box and trigger confetti
   useEffect(() => {
     if (box?.hasConfetti && !confettiTriggered) {
       setTimeout(() => {
         setConfettiTriggered(true);
         toast({
-          title: "🎉 Surprise!",
-          description: "Your gift box is ready to explore!",
+          title: "🎉 Magical Surprise!",
+          description: "Your beautiful gift box awaits exploration!",
         });
-      }, 1000);
+      }, 1500);
     }
   }, [box, confettiTriggered, toast]);
 
-  const getThemeGradient = (theme: string) => {
+  const getThemeColors = (theme: string) => {
     switch (theme) {
       case 'purple-pink':
-        return 'linear-gradient(135deg, #a855f7, #ec4899)';
+        return {
+          primary: 'from-purple-500 via-pink-500 to-rose-400',
+          secondary: 'from-purple-100 to-pink-100',
+          accent: 'bg-purple-500',
+          glow: 'shadow-purple-500/30'
+        };
       case 'blue-teal':
-        return 'linear-gradient(135deg, #3b82f6, #06b6d4)';
+        return {
+          primary: 'from-blue-500 via-cyan-500 to-teal-400',
+          secondary: 'from-blue-100 to-teal-100',
+          accent: 'bg-blue-500',
+          glow: 'shadow-blue-500/30'
+        };
       case 'warm-sunset':
-        return 'linear-gradient(135deg, #f97316, #eab308)';
+        return {
+          primary: 'from-orange-500 via-amber-500 to-yellow-400',
+          secondary: 'from-orange-100 to-yellow-100',
+          accent: 'bg-orange-500',
+          glow: 'shadow-orange-500/30'
+        };
       default:
-        return 'linear-gradient(135deg, #a855f7, #ec4899)';
+        return {
+          primary: 'from-purple-500 via-pink-500 to-rose-400',
+          secondary: 'from-purple-100 to-pink-100',
+          accent: 'bg-purple-500',
+          glow: 'shadow-purple-500/30'
+        };
     }
   };
 
@@ -148,204 +178,285 @@ const ViewBox = () => {
       setUnlockedCards(prev => new Set([...prev, cardIndex]));
       setCurrentCardIndex(cardIndex);
       toast({
-        title: "Card Unlocked! 🔓",
-        description: `Card ${cardIndex + 1} is now available to view.`,
+        title: "✨ Card Unlocked!",
+        description: `Card ${cardIndex + 1} reveals its magical secret!`,
       });
     }
+  };
+
+  const navigateCard = (direction: 'prev' | 'next') => {
+    setCardAnimation(false);
+    setTimeout(() => {
+      if (direction === 'prev') {
+        setCurrentCardIndex(Math.max(0, currentCardIndex - 1));
+      } else {
+        setCurrentCardIndex(Math.min(box!.cards.length - 1, currentCardIndex + 1));
+      }
+      setCardAnimation(true);
+    }, 150);
   };
 
   const shareBox = () => {
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl);
     toast({
-      title: "Link copied!",
-      description: "Gift box link has been copied to your clipboard.",
+      title: "🔗 Link Copied!",
+      description: "Share this magical gift box with anyone!",
     });
   };
 
-  if (!box) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p>Loading your gift box...</p>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto"></div>
+            <Gift className="w-6 h-6 text-purple-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+          </div>
+          <div className="space-y-2">
+            <p className="text-lg font-medium text-gray-700">Opening your magical gift box...</p>
+            <p className="text-sm text-gray-500">Preparing something special</p>
+          </div>
         </div>
       </div>
     );
   }
 
+  if (!box) return null;
+
   const currentCard = box.cards[currentCardIndex];
   const isCardUnlocked = unlockedCards.has(currentCardIndex);
+  const themeColors = getThemeColors(box.theme);
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      {/* Confetti Effect */}
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 relative overflow-hidden">
+      {/* Ambient Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-pink-300/10 to-rose-300/10 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Enhanced Confetti Effect */}
       {confettiTriggered && box.hasConfetti && (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          {[...Array(50)].map((_, i) => (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
+          {[...Array(100)].map((_, i) => (
             <div
               key={i}
               className="absolute animate-bounce"
               style={{
                 left: `${Math.random() * 100}%`,
+                top: `-${Math.random() * 100}px`,
                 animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 3}s`
+                animationDuration: `${3 + Math.random() * 4}s`,
+                fontSize: `${12 + Math.random() * 8}px`
               }}
             >
-              🎉
+              {['🎉', '✨', '🎊', '💝', '🌟', '💫', '🎈'][Math.floor(Math.random() * 7)]}
             </div>
           ))}
         </div>
       )}
 
-      <div className="max-w-md mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">{box.emoji}</div>
-          <h1 className="text-2xl font-bold mb-2">{box.title}</h1>
-          <Badge variant="secondary" className="bg-gradient-primary text-white">
-            {box.cards.length} Cards
-          </Badge>
+      <div className="relative z-10 max-w-md mx-auto px-6 py-8">
+        {/* Enhanced Header */}
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="relative mb-6">
+            <div className="text-8xl mb-4 animate-bounce-in filter drop-shadow-lg">{box.emoji}</div>
+            <div className="absolute -inset-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-xl animate-glow-pulse"></div>
+          </div>
+          
+          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
+            {box.title}
+          </h1>
+          
+          <div className="flex items-center justify-center space-x-3">
+            <Badge className={`${themeColors.accent} text-white px-4 py-2 shadow-lg`}>
+              <Gift className="w-4 h-4 mr-2" />
+              {box.cards.length} Special Cards
+            </Badge>
+            <Badge variant="outline" className="px-4 py-2 bg-white/50 backdrop-blur-sm border-purple-200">
+              <Sparkles className="w-4 h-4 mr-2 text-purple-500" />
+              Gift Box
+            </Badge>
+          </div>
         </div>
 
-        {/* Main Card */}
-        <Card 
-          className="mb-6 border-0 shadow-elegant overflow-hidden"
-          style={{ background: getThemeGradient(box.theme) }}
-        >
-          <div className="p-6 text-white">
-            {isCardUnlocked ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Badge variant="secondary" className="bg-white/20 text-white">
-                    Card {currentCardIndex + 1}
-                  </Badge>
+        {/* Enhanced Main Card */}
+        <div className={`mb-8 transform transition-all duration-500 ${cardAnimation ? 'animate-scale-in' : 'opacity-50 scale-95'}`}>
+          <Card className={`border-0 shadow-2xl overflow-hidden bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} shadow-xl relative`}>
+            {/* Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+            <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full"></div>
+            <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/15 rounded-full"></div>
+            
+            <div className="relative p-8 text-white">
+              {isCardUnlocked ? (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-2">
+                      <Heart className="w-4 h-4 mr-2" />
+                      Card {currentCardIndex + 1} of {box.cards.length}
+                    </Badge>
+                    {currentCard.audio_url && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsPlaying(!isPlaying)}
+                        className="text-white hover:bg-white/20 backdrop-blur-sm"
+                      >
+                        {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                      </Button>
+                    )}
+                  </div>
+                   
+                  {currentCard.image_url && (
+                    <div className="rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-sm p-2">
+                      <img 
+                        src={currentCard.image_url} 
+                        alt="Card attachment" 
+                        className="w-full h-auto object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <p className="text-lg leading-relaxed font-medium text-white/95">
+                      {currentCard.message}
+                    </p>
+                  </div>
+                  
                   {currentCard.audio_url && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      className="text-white hover:bg-white/20"
-                    >
-                      {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                    </Button>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-sm rounded-xl p-4">
+                        <Volume2 className="w-5 h-5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium">Audio Message</p>
+                          <p className="text-sm text-white/80">Tap play to listen</p>
+                        </div>
+                      </div>
+                      <audio controls className="w-full rounded-lg">
+                        <source src={currentCard.audio_url} type="audio/wav" />
+                      </audio>
+                    </div>
                   )}
                 </div>
-                 
-                {currentCard.image_url && (
-                  <div className="rounded-lg overflow-hidden mb-4">
-                    <img 
-                      src={currentCard.image_url} 
-                      alt="Card attachment" 
-                      className="w-full h-auto object-contain"
-                    />
-                  </div>
-                )}
-                
-                <p className="text-lg leading-relaxed">{currentCard.message}</p>
-                
-                {currentCard.audio_url && (
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2 bg-white/20 rounded-lg p-3">
-                      <Volume2 className="w-4 h-4" />
-                      <span className="text-sm">Audio message available</span>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="mb-6">
+                    <div className="relative inline-block">
+                      <Lock className="w-16 h-16 mx-auto mb-4 opacity-60" />
+                      <div className="absolute -inset-2 bg-white/10 rounded-full blur-lg"></div>
                     </div>
-                    <audio controls className="w-full">
-                      <source src={currentCard.audio_url} type="audio/wav" />
-                    </audio>
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <Lock className="w-12 h-12 mx-auto mb-4 opacity-60" />
-                <h3 className="text-lg font-semibold mb-2">This Card is Locked</h3>
-                <p className="text-white/80 mb-4">
-                  {canUnlockCard(currentCardIndex) 
-                    ? "Tap to unlock this card!"
-                    : `Wait ${currentCard.unlockDelay} hours to unlock`
-                  }
-                </p>
-                {canUnlockCard(currentCardIndex) && (
-                  <Button 
-                    onClick={() => unlockCard(currentCardIndex)}
-                    variant="secondary"
-                    className="bg-white text-gray-800 hover:bg-white/90"
-                  >
-                    🔓 Unlock Card
-                  </Button>
-                )}
-                {!canUnlockCard(currentCardIndex) && (
-                  <div className="flex items-center justify-center space-x-2 text-white/60">
-                    <Clock className="w-4 h-4" />
-                    <span>Coming soon...</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </Card>
+                  
+                  <h3 className="text-2xl font-bold mb-3">Locked with Love</h3>
+                  <p className="text-white/80 mb-6 text-lg">
+                    {canUnlockCard(currentCardIndex) 
+                      ? "This special moment is ready to be revealed!"
+                      : `This card unlocks in ${currentCard.unlockDelay} hours`
+                    }
+                  </p>
+                  
+                  {canUnlockCard(currentCardIndex) && (
+                    <Button 
+                      onClick={() => unlockCard(currentCardIndex)}
+                      className="bg-white text-gray-800 hover:bg-white/90 shadow-lg px-8 py-3 text-lg font-medium"
+                    >
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Unlock Magic
+                    </Button>
+                  )}
+                  
+                  {!canUnlockCard(currentCardIndex) && (
+                    <div className="flex items-center justify-center space-x-2 text-white/60 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                      <Clock className="w-5 h-5" />
+                      <span className="font-medium">Patience makes it sweeter...</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </Card>
+        </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Enhanced Navigation */}
+        <div className="flex items-center justify-between mb-8">
           <Button
             variant="outline"
-            onClick={() => setCurrentCardIndex(Math.max(0, currentCardIndex - 1))}
+            onClick={() => navigateCard('prev')}
             disabled={currentCardIndex === 0}
+            className="bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Previous
           </Button>
 
+          {/* Enhanced Progress Dots */}
           <div className="flex space-x-2">
             {box.cards.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentCardIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all ${
+                onClick={() => {
+                  setCardAnimation(false);
+                  setTimeout(() => {
+                    setCurrentCardIndex(index);
+                    setCardAnimation(true);
+                  }, 150);
+                }}
+                className={`relative transition-all duration-300 ${
                   index === currentCardIndex 
-                    ? 'bg-primary' 
+                    ? 'w-8 h-4 bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg' 
                     : unlockedCards.has(index)
-                    ? 'bg-primary/50'
-                    : 'bg-gray-300'
-                }`}
-              />
+                    ? 'w-4 h-4 bg-purple-300 hover:bg-purple-400'
+                    : 'w-4 h-4 bg-gray-300 hover:bg-gray-400'
+                } rounded-full`}
+              >
+                {unlockedCards.has(index) && index !== currentCardIndex && (
+                  <div className="absolute inset-0 bg-white/30 rounded-full"></div>
+                )}
+              </button>
             ))}
           </div>
 
           <Button
             variant="outline"
-            onClick={() => setCurrentCardIndex(Math.min(box.cards.length - 1, currentCardIndex + 1))}
+            onClick={() => navigateCard('next')}
             disabled={currentCardIndex === box.cards.length - 1}
+            className="bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg"
           >
             Next
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
 
-        {/* Actions */}
-        <div className="space-y-3">
+        {/* Enhanced Actions */}
+        <div className="space-y-4">
           <Button 
             onClick={shareBox}
-            variant="hero" 
-            className="w-full"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl py-6 text-lg font-medium"
           >
-            <Share2 className="w-4 h-4 mr-2" />
-            Share This Gift Box
+            <Share2 className="w-5 h-5 mr-3" />
+            Share This Magical Experience
           </Button>
           
           <Button 
             onClick={() => navigate('/')}
             variant="outline" 
-            className="w-full"
+            className="w-full bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg py-4"
           >
+            <Gift className="w-4 h-4 mr-2" />
             Create Your Own Gift Box
           </Button>
         </div>
 
-        {/* Footer */}
-        <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>Made with 💝 using Unbox Me</p>
+        {/* Enhanced Footer */}
+        <div className="mt-12 text-center">
+          <div className="inline-flex items-center space-x-2 bg-white/60 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+            <Heart className="w-4 h-4 text-red-500" />
+            <span className="text-sm font-medium text-gray-700">Made with love using Unbox Me</span>
+            <Sparkles className="w-4 h-4 text-purple-500" />
+          </div>
         </div>
       </div>
     </div>
