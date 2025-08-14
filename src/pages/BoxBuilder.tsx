@@ -387,6 +387,7 @@ const BoxBuilder = () => {
   };
   const themeColors = getThemeColors(box.theme);
   const [currentPreviewCard, setCurrentPreviewCard] = useState(0);
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
   return <div className={`min-h-screen bg-gradient-to-br ${themeColors.secondary} relative overflow-hidden`}>
       {/* Ambient Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -422,9 +423,268 @@ const BoxBuilder = () => {
       </header>
 
       <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6">
-        <div className="flex flex-col xl:flex-row gap-6 xl:gap-8">
-          {/* Builder Form */}
-          <div className="flex-1 space-y-6 xl:space-y-8 order-1">
+        <div className="flex flex-col xl:flex-row gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex-1 space-y-6 order-1">
+            {/* Mobile Preview Toggle */}
+            <div className="xl:hidden">
+              <Button
+                onClick={() => setShowMobilePreview(!showMobilePreview)}
+                variant="outline"
+                className="w-full mb-4"
+              >
+                {showMobilePreview ? "Hide Preview" : "Show Preview"}
+              </Button>
+            </div>
+
+            {/* Mobile Preview */}
+            {showMobilePreview && (
+              <div className="xl:hidden mb-6">
+                <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
+                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+                  
+                  <div className="relative p-4">
+                    <div className="text-center mb-4">
+                      <h2 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                        Live Preview
+                      </h2>
+                      <p className="text-xs text-gray-600">See how recipients will experience your gift</p>
+                    </div>
+                    
+                    {/* Mobile Preview Content */}
+                    <div className={`rounded-xl overflow-hidden bg-gradient-to-br ${themeColors.secondary} p-4 relative min-h-[400px]`}>
+                      {/* Ambient Background Elements */}
+                      <div className="absolute inset-0 overflow-hidden">
+                        <div className={`absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br ${themeColors.ambient.primary} rounded-full blur-xl opacity-60`}></div>
+                        <div className={`absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br ${themeColors.ambient.secondary} rounded-full blur-xl opacity-60`}></div>
+                      </div>
+
+                      {/* Confetti Animation */}
+                      {box.hasConfetti && (
+                        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                          {[...Array(15)].map((_, i) => (
+                            <div
+                              key={i}
+                              className={`absolute w-1 h-1 bg-gradient-to-r ${themeColors.primary} rounded-full opacity-80`}
+                              style={{
+                                left: `${Math.random() * 100}%`,
+                                animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
+                              }}
+                            />
+                          ))}
+                          <style>{`
+                            @keyframes confetti-fall {
+                              0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+                              100% { transform: translateY(400px) rotate(360deg); opacity: 0; }
+                            }
+                          `}</style>
+                        </div>
+                      )}
+
+                      <div className="relative z-10">
+                        {/* Header Section */}
+                        <div className="text-center mb-4">
+                          <div className="text-4xl mb-2 filter drop-shadow-lg">{box.emoji}</div>
+                          <h1 className={`text-lg font-bold mb-2 leading-tight bg-gradient-to-r ${themeColors.text} bg-clip-text text-transparent`}>
+                            {box.title || 'Your Gift Box'}
+                          </h1>
+                          <div className="flex justify-center">
+                            <div className={`${themeColors.accent} text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 shadow-lg`}>
+                              <Gift className="w-3 h-3" />
+                              <span>You Have {box.cards.length} Special Card{box.cards.length !== 1 ? "s" : ""}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Spotify Embed */}
+                        {box.spotifyEmbed && (
+                          <div className="mb-4">
+                            <div dangerouslySetInnerHTML={{
+                              __html: box.spotifyEmbed.replace(/utm_source=generator/g, 'utm_source=generator&autoplay=1&auto_play=true')
+                            }} className="spotify-embed [&>iframe]:!h-[80px] [&>iframe]:!w-full [&>iframe]:rounded-lg" />
+                          </div>
+                        )}
+
+                        {/* Card Navigation */}
+                        {box.cards.length > 0 && (
+                          <>
+                            <div className="flex items-center justify-between mb-3">
+                              <button
+                                onClick={() => setCurrentPreviewCard(Math.max(0, currentPreviewCard - 1))}
+                                disabled={currentPreviewCard === 0}
+                                className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}
+                              >
+                                <ArrowLeft className="w-3 h-3 mr-1" />
+                                Prev
+                              </button>
+                              
+                              <div className="flex space-x-1">
+                                {box.cards.map((_, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => setCurrentPreviewCard(index)}
+                                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                                      index === currentPreviewCard ? `${themeColors.dots} scale-110` : `${themeColors.dotsInactive}`
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                              
+                              <button
+                                onClick={() => setCurrentPreviewCard(Math.min(box.cards.length - 1, currentPreviewCard + 1))}
+                                disabled={currentPreviewCard === box.cards.length - 1}
+                                className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}
+                              >
+                                Next
+                                <ArrowRight className="w-3 h-3 ml-1" />
+                              </button>
+                            </div>
+
+                            {/* Single Card Display */}
+                            <div className="mb-4">
+                              {(() => {
+                                const card = box.cards[currentPreviewCard];
+                                if (!card) return null;
+                                return (
+                                  <div className={`w-full min-h-32 rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
+                                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-white/20 rounded-full"></div>
+                                    <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-white/15 rounded-full"></div>
+                                    
+                                    <div className="p-3 flex flex-col text-white relative min-h-32">
+                                      {card.unlockDelay > 0 ? (
+                                        <div className="text-center py-4">
+                                          <div className="mb-2">
+                                            <div className="relative inline-block">
+                                              <Lock className="w-6 h-6 mx-auto mb-1 opacity-60" />
+                                              <div className="absolute -inset-1 bg-white/10 rounded-full blur-lg"></div>
+                                            </div>
+                                          </div>
+                                          <h3 className="text-sm font-bold mb-1">Locked...</h3>
+                                          <p className="text-white/80 text-xs">
+                                            This card unlocks in {card.unlockDelay} day{card.unlockDelay > 1 ? 's' : ''}
+                                          </p>
+                                        </div>
+                                      ) : (
+                                        <div className="relative space-y-2">
+                                          <div className="flex items-center justify-between">
+                                            <div className="bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
+                                              <span className="text-xs font-medium">Card {currentPreviewCard + 1} of {box.cards.length}</span>
+                                            </div>
+                                            {(card.audio || card.audio_url) && (
+                                              <div className="text-white/80 p-1">
+                                                <Play className="w-3 h-3" />
+                                              </div>
+                                            )}
+                                          </div>
+                                          
+                                          {/* Image if available */}
+                                          {(card.imagePreview || card.image_url) && (
+                                            <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                              <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full h-20 object-cover rounded" />
+                                            </div>
+                                          )}
+                                          
+                                          {/* Message */}
+                                          {card.message && card.message.trim() && (
+                                            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 flex-1">
+                                              <p className="text-xs leading-relaxed text-white/95">
+                                                {card.message}
+                                              </p>
+                                            </div>
+                                          )}
+                                          
+                                          {/* Audio indicator */}
+                                          {(card.audio || card.audio_url) && (
+                                            <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                              <Volume2 className="w-3 h-3" />
+                                              <div>
+                                                <p className="text-xs font-medium">Audio Message</p>
+                                                <p className="text-xs text-white/80">Tap play to listen</p>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          </>
+                        )}
+
+                        {/* Empty state when no cards */}
+                        {box.cards.length === 0 && (
+                          <div className="mb-4 text-center py-6">
+                            <Gift className="w-10 h-10 mx-auto mb-2 text-gray-400" />
+                            <p className="text-sm text-gray-500">Add your first card to see the preview</p>
+                          </div>
+                        )}
+
+                        {/* Action Buttons */}
+                        <div className="space-y-2">
+                          <button className={`w-full bg-gradient-to-r ${themeColors.shareButton} text-white py-2 rounded-xl font-medium text-xs shadow-lg`}>
+                            Share This Magical Experience
+                          </button>
+                          
+                          <button className={`w-full bg-white/80 backdrop-blur-sm border ${themeColors.outlineButton} ${themeColors.button} py-2 rounded-xl font-medium text-xs`}>
+                            Create Your Own Gift Box
+                          </button>
+                        </div>
+                        
+                        {/* Footer */}
+                        <div className="text-center mt-3">
+                          <div className="inline-flex items-center space-x-1 text-gray-600">
+                            <Heart className="w-3 h-3 text-red-500 fill-current" />
+                            <span className="text-xs">Made with love using My Hidden Gift</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
+
+            {/* Box Configuration Card */}
+            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+              
+              <div className="relative p-4 sm:p-6 lg:p-8">
+                <div className="text-center mb-4 sm:mb-6 lg:mb-8">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-3 lg:mb-4">
+                    Create Your Gift Box
+                  </h1>
+                  <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+                    Design a magical experience with personalized cards, messages, and memories
+                  </p>
+                </div>
+
+                <div className="space-y-4 sm:space-y-6">
+                  <div>
+                    <Label htmlFor="title" className="text-sm font-medium mb-3 block">Box Title</Label>
+                    <Input id="title" placeholder="e.g., Happy Birthday Sarah!" value={box.title} onChange={e => updateBox('title', e.target.value)} className="bg-white/80 backdrop-blur-sm border-purple-200 focus:border-purple-400 transition-colors text-sm sm:text-base" />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="emoji" className="text-sm font-medium mb-3 block">Box Emoji</Label>
+                    <div className="grid grid-cols-5 sm:flex sm:flex-wrap gap-2">
+                      {['🎁', '🎉', '🎂', '❤️', '🌟', '💝', '🎈', '🌈', '✨', '🦄'].map(emoji => <button key={emoji} onClick={() => updateBox('emoji', emoji)} className={`text-xl sm:text-2xl p-2 rounded-lg border-2 transition-all duration-300 hover:scale-110 ${box.emoji === emoji ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
+                          {emoji}
+                        </button>)}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="spotify" className="text-sm font-medium mb-3 block">Spotify Embed (Optional)</Label>
+                    <Textarea id="spotify" placeholder="Paste your Spotify embed code here..." value={box.spotifyEmbed || ''} onChange={e => updateBox('spotifyEmbed', e.target.value)} className="bg-white/80 backdrop-blur-sm border-purple-200 focus:border-purple-400 transition-colors h-16 sm:h-20 text-sm" />
+                    <p className="text-xs text-gray-500 mt-2">
+                      Get embed code from Spotify: Share → Embed track/playlist
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
             {/* Gift Box Details */}
             <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
               <div className="p-6 sm:p-8">
