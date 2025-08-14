@@ -637,10 +637,10 @@ const BoxBuilder = () => {
                                     <span className="text-xs font-medium">Card 1 of {box.cards.length}</span>
                                   </div>
                                   
-                                  {/* Image if available */}
-                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                      <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full h-12 object-cover rounded" />
-                                    </div>}
+                                   {/* Image if available */}
+                                   {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                       <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full object-contain rounded" />
+                                     </div>}
                                   
                                   {/* Message */}
                                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
@@ -762,10 +762,10 @@ const BoxBuilder = () => {
                                     <span className="text-xs font-medium">Card 1 of {box.cards.length}</span>
                                   </div>
                                   
-                                  {/* Image if available */}
-                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                      <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full h-12 object-cover rounded" />
-                                    </div>}
+                                   {/* Image if available */}
+                                   {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                       <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full object-contain rounded" />
+                                     </div>}
                                   
                                   {/* Message */}
                                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
