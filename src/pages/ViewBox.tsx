@@ -42,6 +42,7 @@ const ViewBox = () => {
   const [cardsAnimation, setCardsAnimation] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right' | null>(null);
 
   // Load box data from Supabase
   useEffect(() => {
@@ -219,20 +220,24 @@ const ViewBox = () => {
   };
   const nextCard = () => {
     if (currentCardIndex < box!.cards.length - 1) {
+      setSlideDirection('left');
       setIsTransitioning(true);
       setTimeout(() => {
         setCurrentCardIndex(currentCardIndex + 1);
+        setSlideDirection(null);
         setIsTransitioning(false);
-      }, 150);
+      }, 300);
     }
   };
   const prevCard = () => {
     if (currentCardIndex > 0) {
+      setSlideDirection('right');
       setIsTransitioning(true);
       setTimeout(() => {
         setCurrentCardIndex(currentCardIndex - 1);
+        setSlideDirection(null);
         setIsTransitioning(false);
-      }, 150);
+      }, 300);
     }
   };
   const shareBox = () => {
@@ -321,7 +326,15 @@ const ViewBox = () => {
                   <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full"></div>
                   <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/15 rounded-full"></div>
                   
-                  <div className={`relative p-8 text-white transition-all duration-300 ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
+                  <div className={`relative p-8 text-white transition-all duration-300 ease-in-out ${
+                    isTransitioning 
+                      ? slideDirection === 'left' 
+                        ? 'transform -translate-x-full opacity-0' 
+                        : slideDirection === 'right'
+                        ? 'transform translate-x-full opacity-0'
+                        : 'opacity-0'
+                      : 'transform translate-x-0 opacity-100'
+                  }`}>
                     {isCardUnlocked ? <div className="space-y-6">
                         <div className="flex items-center justify-between">
                           <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-2">
