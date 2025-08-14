@@ -353,7 +353,7 @@ const ViewBox = () => {
                           </div>
                         </div>
                         
-                        <h3 className="text-2xl font-bold mb-3">Locked with Love</h3>
+                        <h3 className="text-2xl font-bold mb-3">Locked...</h3>
                         <p className="text-white/80 mb-6 text-lg">
                           {canUnlockCard(currentCardIndex) ? "This special moment is ready to be revealed!" : getRemainingTime(currentCardIndex) || `This card unlocks in ${card.unlockDelay} day${card.unlockDelay > 1 ? 's' : ''}`}
                         </p>
