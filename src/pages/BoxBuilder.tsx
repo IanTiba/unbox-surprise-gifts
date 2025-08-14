@@ -621,43 +621,51 @@ const BoxBuilder = () => {
                           </div>
                         </div>
                         
-                        {/* Cards Section - showing first card like in ViewBox */}
-                        <div className="flex-1 mb-6">
-                           {box.cards.length > 0 && <div className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                             background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
-                           }}>
+                         {/* Cards Section - showing all cards */}
+                         <div className="flex-1 mb-6 space-y-4">
+                           {box.cards.map((card, index) => (
+                             <div key={card.id} className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                               background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                             }}>
                                <div className="p-4 flex flex-col text-white relative min-h-48">
-                                {/* Decorative elements like in ViewBox */}
-                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
-                                <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
-                                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white/15 rounded-full"></div>
-                                
-                                <div className="relative space-y-3">
-                                  <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start">
-                                    <span className="text-xs font-medium">Card 1 of {box.cards.length}</span>
-                                  </div>
-                                  
+                                 {/* Decorative elements */}
+                                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                                 <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
+                                 <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white/15 rounded-full"></div>
+                                 
+                                 <div className="relative space-y-3">
+                                   <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start">
+                                     <span className="text-xs font-medium">Card {index + 1} of {box.cards.length}</span>
+                                   </div>
+                                   
                                    {/* Image if available */}
-                                   {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                       <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full object-contain rounded" />
+                                   {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                       <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full object-contain rounded" />
                                      </div>}
-                                  
-                                  {/* Message */}
-                                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
-                                    <p className="text-sm leading-relaxed text-white/95">
-                                      {box.cards[0]?.message || 'Your heartfelt message here...'}
-                                    </p>
-                                  </div>
-                                  
-                                  {/* Audio indicator */}
-                                  {box.cards[0]?.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
-                                      <Volume2 className="w-3 h-3" />
-                                      <span className="text-xs">Audio Message</span>
-                                    </div>}
-                                </div>
-                              </div>
-                            </div>}
-                        </div>
+                                   
+                                   {/* Message */}
+                                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
+                                     <p className="text-sm leading-relaxed text-white/95">
+                                       {card.message || 'Your heartfelt message here...'}
+                                     </p>
+                                   </div>
+                                   
+                                   {/* Audio indicator */}
+                                   {card.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                       <Volume2 className="w-3 h-3" />
+                                       <span className="text-xs">Audio Message</span>
+                                     </div>}
+                                   
+                                   {/* Unlock delay indicator */}
+                                   {card.unlockDelay && card.unlockDelay > 0 && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                       <Clock className="w-3 h-3" />
+                                       <span className="text-xs">Unlocks in {card.unlockDelay} day(s)</span>
+                                     </div>}
+                                 </div>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
                         
                         {/* Action Buttons - matching ViewBox */}
                         <div className="space-y-2">
@@ -746,43 +754,51 @@ const BoxBuilder = () => {
                           </div>
                         </div>
                         
-                        {/* Cards Section - showing first card like in ViewBox */}
-                        <div className="flex-1 mb-6">
-                           {box.cards.length > 0 && <div className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                         {/* Cards Section - showing all cards */}
+                         <div className="flex-1 mb-6 space-y-4">
+                           {box.cards.map((card, index) => (
+                             <div key={card.id} className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
                            background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
                          }}>
-                              <div className="p-4 flex flex-col text-white relative min-h-48">
-                                {/* Decorative elements like in ViewBox */}
-                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
-                                <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
-                                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white/15 rounded-full"></div>
-                                
-                                <div className="relative space-y-3">
-                                  <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start">
-                                    <span className="text-xs font-medium">Card 1 of {box.cards.length}</span>
-                                  </div>
-                                  
+                               <div className="p-4 flex flex-col text-white relative min-h-48">
+                                 {/* Decorative elements */}
+                                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                                 <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
+                                 <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white/15 rounded-full"></div>
+                                 
+                                 <div className="relative space-y-3">
+                                   <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start">
+                                     <span className="text-xs font-medium">Card {index + 1} of {box.cards.length}</span>
+                                   </div>
+                                   
                                    {/* Image if available */}
-                                   {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                       <img src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} alt="Card preview" className="w-full object-contain rounded" />
+                                   {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                       <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full object-contain rounded" />
                                      </div>}
-                                  
-                                  {/* Message */}
-                                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
-                                    <p className="text-sm leading-relaxed text-white/95">
-                                      {box.cards[0]?.message || 'Your heartfelt message here...'}
-                                    </p>
-                                  </div>
-                                  
-                                  {/* Audio indicator */}
-                                  {box.cards[0]?.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
-                                      <Volume2 className="w-3 h-3" />
-                                      <span className="text-xs">Audio Message</span>
-                                    </div>}
-                                </div>
-                              </div>
-                            </div>}
-                        </div>
+                                   
+                                   {/* Message */}
+                                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
+                                     <p className="text-sm leading-relaxed text-white/95">
+                                       {card.message || 'Your heartfelt message here...'}
+                                     </p>
+                                   </div>
+                                   
+                                   {/* Audio indicator */}
+                                   {card.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                       <Volume2 className="w-3 h-3" />
+                                       <span className="text-xs">Audio Message</span>
+                                     </div>}
+                                   
+                                   {/* Unlock delay indicator */}
+                                   {card.unlockDelay && card.unlockDelay > 0 && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                       <Clock className="w-3 h-3" />
+                                       <span className="text-xs">Unlocks in {card.unlockDelay} day(s)</span>
+                                     </div>}
+                                 </div>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
                         
                         {/* Action Buttons - matching ViewBox */}
                         <div className="space-y-2">
