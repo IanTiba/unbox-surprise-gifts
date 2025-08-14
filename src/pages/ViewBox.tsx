@@ -331,11 +331,13 @@ const ViewBox = () => {
                         </div>
                       )}
                       
-                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                        <p className="text-lg leading-relaxed font-medium text-white/95">
-                          {card.message}
-                        </p>
-                      </div>
+                       {card.message && card.message.trim() && (
+                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                           <p className="text-lg leading-relaxed font-medium text-white/95">
+                             {card.message}
+                           </p>
+                         </div>
+                       )}
                       
                       {card.audio_url && (
                         <div className="space-y-3">
