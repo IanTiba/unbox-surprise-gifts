@@ -148,6 +148,16 @@ export default {
 					'50%': { 
 						boxShadow: '0 0 40px hsl(var(--primary-glow) / 0.6)' 
 					}
+				},
+				'confetti-fall': {
+					'0%': {
+						transform: 'translateY(-100px) rotate(0deg)',
+						opacity: '1'
+					},
+					'100%': {
+						transform: 'translateY(100vh) rotate(360deg)',
+						opacity: '0'
+					}
 				}
 			},
 			animation: {
@@ -157,7 +167,8 @@ export default {
 				'scale-in': 'scale-in 0.4s ease-out',
 				'card-flip': 'card-flip 0.8s ease-in-out',
 				'bounce-in': 'bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-				'glow-pulse': 'glow-pulse 2s ease-in-out infinite'
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+				'confetti-fall': 'confetti-fall linear infinite'
 			}
 		}
 	},

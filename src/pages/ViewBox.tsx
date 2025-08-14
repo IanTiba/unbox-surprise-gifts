@@ -238,16 +238,14 @@ const ViewBox = () => {
       {/* Confetti Animation */}
       {confettiTriggered && box.hasConfetti && (
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
-          {[...Array(30)].map((_, i) => (
+          {[...Array(50)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-bounce"
+              className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-confetti-fall"
               style={{
                 left: `${Math.random() * 100}%`,
-                top: `-${Math.random() * 100}px`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${3 + Math.random() * 4}s`,
-                animationIterationCount: 'infinite'
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${4 + Math.random() * 3}s`,
               }}
             />
           ))}
