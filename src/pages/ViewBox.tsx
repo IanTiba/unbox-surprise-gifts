@@ -253,12 +253,13 @@ const ViewBox = () => {
           {[...Array(30)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"
+              className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-bounce"
               style={{
                 left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${1 + Math.random() * 2}s`
+                top: `-${Math.random() * 100}px`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${3 + Math.random() * 4}s`,
+                animationIterationCount: 'infinite'
               }}
             />
           ))}
