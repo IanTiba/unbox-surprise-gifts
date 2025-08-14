@@ -134,7 +134,7 @@ const CheckoutForm = ({ box, email, setEmail }: {
             has_background_music: box.hasBackgroundMusic,
             cards: cardsData,
             user_id: null,
-            is_public: true
+            is_public: false
           })
           .select()
           .single();
@@ -234,7 +234,7 @@ const CheckoutForm = ({ box, email, setEmail }: {
             has_background_music: box.hasBackgroundMusic,
             cards: cardsData,
             user_id: null,
-            is_public: true
+            is_public: false
           })
           .select()
           .single();
