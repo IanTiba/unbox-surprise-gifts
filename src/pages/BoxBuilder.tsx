@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Gift, Plus, Trash2, Image, Mic, Clock, Sparkles, Music, ArrowLeft, Eye, X, Play, Square, Volume2 } from "lucide-react";
+import { Gift, Plus, Trash2, Image, Mic, Clock, Sparkles, Music, ArrowLeft, Eye, X, Play, Square, Volume2, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -597,82 +597,98 @@ const BoxBuilder = () => {
                       </div>
                       
                       {/* Gift Page Content */}
-                      <div className="pt-12 p-6 h-full flex flex-col">
-                        {/* 3D Gift Box Icon */}
-                        <div className="text-center mb-4">
-                          <div className="w-20 h-20 mx-auto mb-4 relative">
-                            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg transform rotate-3 shadow-lg"></div>
-                            <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 rounded-lg transform -rotate-3 shadow-lg"></div>
-                            <div className="relative w-full h-full flex items-center justify-center">
-                              <div className="text-2xl">{box.emoji}</div>
-                            </div>
-                          </div>
+                      <div className="p-6 h-full flex flex-col">
+                        {/* Header Section - matching ViewBox structure */}
+                        <div className="text-center mb-6">
+                          {/* Large emoji */}
+                          <div className="text-6xl mb-3 filter drop-shadow-lg">{box.emoji}</div>
                           
                           {/* Title */}
-                          <h1 className="text-2xl font-bold text-purple-600 mb-4">
+                          <h1 className="text-xl font-bold text-purple-600 mb-3 leading-tight">
                             {box.title || 'Your Gift Box'}
                           </h1>
                           
-                          {/* Badges */}
-                          <div className="flex justify-center space-x-3 mb-6">
-                            <div className="bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center space-x-2">
-                              <Gift className="w-4 h-4" />
+                          {/* Badges - matching ViewBox */}
+                          <div className="flex justify-center space-x-2 mb-6">
+                            <div className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+                              <Gift className="w-3 h-3" />
                               <span>{box.cards.length} Special Card{box.cards.length !== 1 ? 's' : ''}</span>
                             </div>
-                            <div className="bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 px-4 py-2 rounded-full text-sm font-medium flex items-center space-x-2">
-                              <Sparkles className="w-4 h-4" />
+                            <div className="bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+                              <Sparkles className="w-3 h-3" />
                               <span>Gift Box</span>
                             </div>
                           </div>
                         </div>
                         
-                        {/* Main Card Preview */}
+                        {/* Cards Section - showing first card like in ViewBox */}
                         <div className="flex-1 mb-6">
-                          <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                            background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 
-                                       box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
-                                       'linear-gradient(135deg, #f97316, #eab308)'
-                          }}>
-                            <div className="p-6 h-full flex flex-col text-white">
-                              <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start mb-4">
-                                <span className="text-sm font-medium">Card 1 of {box.cards.length}</span>
-                              </div>
-                              
-                              <div className="flex-1 flex items-center justify-center">
-                                <p className="text-xl font-medium text-center">
-                                  {box.cards[0]?.message || 'Your heartfelt message here...'}
-                                </p>
-                              </div>
-                              
-                              {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && (
-                                <div className="mt-4">
-                                  <img 
-                                    src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} 
-                                    alt="Card preview" 
-                                    className="w-full h-16 object-cover rounded-lg opacity-90" 
-                                  />
+                          {box.cards.length > 0 && (
+                            <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                              background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 
+                                         box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
+                                         'linear-gradient(135deg, #f97316, #eab308)'
+                            }}>
+                              <div className="p-4 h-full flex flex-col text-white relative">
+                                {/* Decorative elements like in ViewBox */}
+                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                                <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
+                                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white/15 rounded-full"></div>
+                                
+                                <div className="relative space-y-3">
+                                  <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start">
+                                    <span className="text-xs font-medium">Card 1 of {box.cards.length}</span>
+                                  </div>
+                                  
+                                  {/* Image if available */}
+                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && (
+                                    <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                      <img 
+                                        src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} 
+                                        alt="Card preview" 
+                                        className="w-full h-12 object-cover rounded" 
+                                      />
+                                    </div>
+                                  )}
+                                  
+                                  {/* Message */}
+                                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
+                                    <p className="text-sm leading-relaxed text-white/95">
+                                      {box.cards[0]?.message || 'Your heartfelt message here...'}
+                                    </p>
+                                  </div>
+                                  
+                                  {/* Audio indicator */}
+                                  {box.cards[0]?.audio && (
+                                    <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                      <Volume2 className="w-3 h-3" />
+                                      <span className="text-xs">Audio Message</span>
+                                    </div>
+                                  )}
                                 </div>
-                              )}
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                         
-                        {/* Action Buttons */}
-                        <div className="space-y-3">
-                          <button className="w-full bg-purple-500 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg">
+                        {/* Action Buttons - matching ViewBox */}
+                        <div className="space-y-2">
+                          <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-2xl font-medium text-sm shadow-lg">
                             Share This Magical Experience
                           </button>
                           
-                          <button className="w-full bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 py-3 rounded-2xl font-medium">
+                          <button className="w-full bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 py-2 rounded-2xl font-medium text-sm">
                             Create Your Own Gift Box
                           </button>
                         </div>
                         
-                        {/* Footer */}
-                        <div className="text-center mt-4">
-                          <p className="text-sm text-gray-500">
-                            💝 Made with love using My Hidden Gift ✨
-                          </p>
+                        {/* Footer - matching ViewBox */}
+                        <div className="text-center mt-3">
+                          <div className="inline-flex items-center space-x-1 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1">
+                            <Heart className="w-3 h-3 text-red-500" />
+                            <span className="text-xs text-gray-700">Made with love using My Hidden Gift</span>
+                            <Sparkles className="w-3 h-3 text-purple-500" />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -722,82 +738,98 @@ const BoxBuilder = () => {
                       </div>
                       
                       {/* Gift Page Content */}
-                      <div className="pt-12 p-6 h-full flex flex-col">
-                        {/* 3D Gift Box Icon */}
-                        <div className="text-center mb-4">
-                          <div className="w-20 h-20 mx-auto mb-4 relative">
-                            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg transform rotate-3 shadow-lg"></div>
-                            <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 rounded-lg transform -rotate-3 shadow-lg"></div>
-                            <div className="relative w-full h-full flex items-center justify-center">
-                              <div className="text-2xl">{box.emoji}</div>
-                            </div>
-                          </div>
+                      <div className="p-6 h-full flex flex-col">
+                        {/* Header Section - matching ViewBox structure */}
+                        <div className="text-center mb-6">
+                          {/* Large emoji */}
+                          <div className="text-6xl mb-3 filter drop-shadow-lg">{box.emoji}</div>
                           
                           {/* Title */}
-                          <h1 className="text-2xl font-bold text-purple-600 mb-4">
+                          <h1 className="text-xl font-bold text-purple-600 mb-3 leading-tight">
                             {box.title || 'Your Gift Box'}
                           </h1>
                           
-                          {/* Badges */}
-                          <div className="flex justify-center space-x-3 mb-6">
-                            <div className="bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center space-x-2">
-                              <Gift className="w-4 h-4" />
+                          {/* Badges - matching ViewBox */}
+                          <div className="flex justify-center space-x-2 mb-6">
+                            <div className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+                              <Gift className="w-3 h-3" />
                               <span>{box.cards.length} Special Card{box.cards.length !== 1 ? 's' : ''}</span>
                             </div>
-                            <div className="bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 px-4 py-2 rounded-full text-sm font-medium flex items-center space-x-2">
-                              <Sparkles className="w-4 h-4" />
+                            <div className="bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+                              <Sparkles className="w-3 h-3" />
                               <span>Gift Box</span>
                             </div>
                           </div>
                         </div>
                         
-                        {/* Main Card Preview */}
+                        {/* Cards Section - showing first card like in ViewBox */}
                         <div className="flex-1 mb-6">
-                          <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                            background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 
-                                       box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
-                                       'linear-gradient(135deg, #f97316, #eab308)'
-                          }}>
-                            <div className="p-6 h-full flex flex-col text-white">
-                              <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start mb-4">
-                                <span className="text-sm font-medium">Card 1 of {box.cards.length}</span>
-                              </div>
-                              
-                              <div className="flex-1 flex items-center justify-center">
-                                <p className="text-xl font-medium text-center">
-                                  {box.cards[0]?.message || 'Your heartfelt message here...'}
-                                </p>
-                              </div>
-                              
-                              {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && (
-                                <div className="mt-4">
-                                  <img 
-                                    src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} 
-                                    alt="Card preview" 
-                                    className="w-full h-16 object-cover rounded-lg opacity-90" 
-                                  />
+                          {box.cards.length > 0 && (
+                            <div className="w-full h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                              background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 
+                                         box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 
+                                         'linear-gradient(135deg, #f97316, #eab308)'
+                            }}>
+                              <div className="p-4 h-full flex flex-col text-white relative">
+                                {/* Decorative elements like in ViewBox */}
+                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                                <div className="absolute -top-2 -right-2 w-4 h-4 bg-white/20 rounded-full"></div>
+                                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-white/15 rounded-full"></div>
+                                
+                                <div className="relative space-y-3">
+                                  <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 self-start">
+                                    <span className="text-xs font-medium">Card 1 of {box.cards.length}</span>
+                                  </div>
+                                  
+                                  {/* Image if available */}
+                                  {(box.cards[0]?.imagePreview || box.cards[0]?.image_url) && (
+                                    <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                      <img 
+                                        src={box.cards[0]?.image_url || box.cards[0]?.imagePreview} 
+                                        alt="Card preview" 
+                                        className="w-full h-12 object-cover rounded" 
+                                      />
+                                    </div>
+                                  )}
+                                  
+                                  {/* Message */}
+                                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex-1">
+                                    <p className="text-sm leading-relaxed text-white/95">
+                                      {box.cards[0]?.message || 'Your heartfelt message here...'}
+                                    </p>
+                                  </div>
+                                  
+                                  {/* Audio indicator */}
+                                  {box.cards[0]?.audio && (
+                                    <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                      <Volume2 className="w-3 h-3" />
+                                      <span className="text-xs">Audio Message</span>
+                                    </div>
+                                  )}
                                 </div>
-                              )}
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                         
-                        {/* Action Buttons */}
-                        <div className="space-y-3">
-                          <button className="w-full bg-purple-500 text-white py-4 rounded-2xl font-semibold text-lg shadow-lg">
+                        {/* Action Buttons - matching ViewBox */}
+                        <div className="space-y-2">
+                          <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-2xl font-medium text-sm shadow-lg">
                             Share This Magical Experience
                           </button>
                           
-                          <button className="w-full bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 py-3 rounded-2xl font-medium">
+                          <button className="w-full bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 py-2 rounded-2xl font-medium text-sm">
                             Create Your Own Gift Box
                           </button>
                         </div>
                         
-                        {/* Footer */}
-                        <div className="text-center mt-4">
-                          <p className="text-sm text-gray-500">
-                            💝 Made with love using My Hidden Gift ✨
-                          </p>
+                        {/* Footer - matching ViewBox */}
+                        <div className="text-center mt-3">
+                          <div className="inline-flex items-center space-x-1 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1">
+                            <Heart className="w-3 h-3 text-red-500" />
+                            <span className="text-xs text-gray-700">Made with love using My Hidden Gift</span>
+                            <Sparkles className="w-3 h-3 text-purple-500" />
+                          </div>
                         </div>
                       </div>
                     </div>
