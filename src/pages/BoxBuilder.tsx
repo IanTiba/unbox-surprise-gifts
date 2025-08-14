@@ -612,7 +612,7 @@ const BoxBuilder = () => {
                            <div className="flex justify-center space-x-2 mb-6">
                              <div className="bg-purple-500 text-white px-2 py-1 rounded-full text-[10px] font-medium flex items-center space-x-1">
                                <Gift className="w-2 h-2" />
-                               <span>{box.cards.length} Card{box.cards.length !== 1 ? "s" : ""}</span>
+                               <span>{box.cards.length} Special Card{box.cards.length !== 1 ? "s" : ""}</span>
                              </div>
                              <div className="bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 px-2 py-1 rounded-full text-[10px] font-medium flex items-center space-x-1">
                                <Sparkles className="w-2 h-2" />
@@ -745,7 +745,7 @@ const BoxBuilder = () => {
                            <div className="flex justify-center space-x-2 mb-6">
                              <div className="bg-purple-500 text-white px-2 py-1 rounded-full text-[10px] font-medium flex items-center space-x-1">
                                <Gift className="w-2 h-2" />
-                               <span>{box.cards.length} Card{box.cards.length !== 1 ? "s" : ""}</span>
+                               <span>{box.cards.length} Special Card{box.cards.length !== 1 ? "s" : ""}</span>
                              </div>
                              <div className="bg-white/80 backdrop-blur-sm border border-purple-200 text-purple-600 px-2 py-1 rounded-full text-[10px] font-medium flex items-center space-x-1">
                                <Sparkles className="w-2 h-2" />
