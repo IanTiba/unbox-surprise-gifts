@@ -43,6 +43,7 @@ interface GiftBox {
   hasConfetti: boolean;
   hasBackgroundMusic: boolean;
   emoji: string;
+  spotifyEmbed?: string;
 }
 
 const CheckoutForm = ({ box, email, setEmail }: { 
@@ -132,6 +133,7 @@ const CheckoutForm = ({ box, email, setEmail }: {
             theme: box.theme,
             has_confetti: box.hasConfetti,
             has_background_music: box.hasBackgroundMusic,
+            spotify_embed: box.spotifyEmbed || null,
             cards: cardsData,
             user_id: null,
             is_public: false
@@ -232,6 +234,7 @@ const CheckoutForm = ({ box, email, setEmail }: {
             theme: box.theme,
             has_confetti: box.hasConfetti,
             has_background_music: box.hasBackgroundMusic,
+            spotify_embed: box.spotifyEmbed || null,
             cards: cardsData,
             user_id: null,
             is_public: false

@@ -24,6 +24,7 @@ export type Database = {
           id: string
           is_public: boolean | null
           slug: string
+          spotify_embed: string | null
           theme: string | null
           title: string
           updated_at: string
@@ -38,6 +39,7 @@ export type Database = {
           id?: string
           is_public?: boolean | null
           slug: string
+          spotify_embed?: string | null
           theme?: string | null
           title: string
           updated_at?: string
@@ -52,6 +54,7 @@ export type Database = {
           id?: string
           is_public?: boolean | null
           slug?: string
+          spotify_embed?: string | null
           theme?: string | null
           title?: string
           updated_at?: string
