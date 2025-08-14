@@ -816,7 +816,8 @@ const BoxBuilder = () => {
           </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 export default BoxBuilder;
