@@ -597,7 +597,7 @@ const BoxBuilder = () => {
                       </div>
                       
                       {/* Gift Page Content */}
-                      <div className="p-6 h-full flex flex-col">
+                       <div className="p-6 flex flex-col overflow-y-auto h-full">
                         {/* Header Section - matching ViewBox structure */}
                         <div className="text-center mb-6">
                           {/* Large emoji */}
@@ -722,7 +722,7 @@ const BoxBuilder = () => {
                       </div>
                       
                       {/* Gift Page Content */}
-                      <div className="p-6 h-full flex flex-col">
+                      <div className="p-6 flex flex-col overflow-y-auto h-full">
                         {/* Header Section - matching ViewBox structure */}
                         <div className="text-center mb-6">
                           {/* Large emoji */}
