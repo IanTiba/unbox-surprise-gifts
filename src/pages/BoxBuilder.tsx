@@ -139,13 +139,16 @@ const BoxBuilder = () => {
         audio: true
       });
       const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+      
       recorder.ondataavailable = event => {
         if (event.data.size > 0) {
+          chunks.push(event.data);
           setAudioChunks(prev => [...prev, event.data]);
         }
       };
       recorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, {
+        const audioBlob = new Blob(chunks, {
           type: 'audio/wav'
         });
         updateCard(cardId, 'audio', audioBlob);
