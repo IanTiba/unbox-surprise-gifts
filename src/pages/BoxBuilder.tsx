@@ -190,6 +190,56 @@ const BoxBuilder = () => {
     updateCard(cardId, 'imagePreview', undefined);
   };
 
+  // Audio Upload Function
+  const uploadAudio = async (cardId: string, audioBlob: Blob) => {
+    try {
+      // Add to uploading set
+      setUploadingImages(prev => new Set([...prev, cardId]));
+      setUploadErrors(prev => {
+        const newMap = new Map(prev);
+        newMap.delete(cardId);
+        return newMap;
+      });
+
+      // Create a temporary slug for organizing files
+      const tempSlug = box.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 40) || 'untitled';
+      const fileName = `${tempSlug}/${cardId}-${Date.now()}.wav`;
+      
+      const { data, error } = await supabase.storage
+        .from('gift-media')
+        .upload(fileName, audioBlob);
+
+      if (error) {
+        throw error;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('gift-media')
+        .getPublicUrl(fileName);
+
+      // Update card with audio URL from Supabase storage
+      updateCard(cardId, 'audio_url', publicUrl);
+      
+      console.log('Audio uploaded successfully. Card ID:', cardId, 'Public URL:', publicUrl);
+
+    } catch (error) {
+      console.error('Audio upload error:', error);
+      setUploadErrors(prev => new Map([...prev, [cardId, 'Audio upload failed. Please try again.']]));
+      toast({
+        title: "Audio upload failed",
+        description: "Please try recording the audio again.",
+        variant: "destructive"
+      });
+    } finally {
+      // Remove from uploading set
+      setUploadingImages(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(cardId);
+        return newSet;
+      });
+    }
+  };
+
   // Audio Recording Functions
   const startRecording = async (cardId: string) => {
     try {
@@ -201,17 +251,21 @@ const BoxBuilder = () => {
       mediaRecorder.ondataavailable = event => {
         audioChunks.push(event.data);
       };
-      mediaRecorder.onstop = () => {
+      mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunks, {
           type: 'audio/wav'
         });
         const audioUrl = URL.createObjectURL(audioBlob);
         updateCard(cardId, 'audio', audioBlob);
         updateCard(cardId, 'audioUrl', audioUrl);
+        
+        // Automatically upload audio to Supabase
+        await uploadAudio(cardId, audioBlob);
+        
         stream.getTracks().forEach(track => track.stop());
         toast({
           title: "Recording saved",
-          description: "Your audio message has been recorded."
+          description: "Your audio message has been recorded and uploaded."
         });
       };
       mediaRecorderRef.current = mediaRecorder;
@@ -244,6 +298,7 @@ const BoxBuilder = () => {
     }
     updateCard(cardId, 'audio', undefined);
     updateCard(cardId, 'audioUrl', undefined);
+    updateCard(cardId, 'audio_url', undefined);
   };
   const handlePreviewAndCheckout = () => {
     // Check if any uploads are still pending
@@ -265,7 +320,7 @@ const BoxBuilder = () => {
   };
   const getPrice = () => {
     const cardCount = box.cards.length;
-    const hasAudio = box.cards.some(card => card.audio);
+    const hasAudio = box.cards.some(card => card.audio || card.audio_url);
     const hasDelays = box.cards.some(card => card.unlockDelay && card.unlockDelay > 0);
     if (hasDelays) return 9.99;
     if (cardCount > 5 || hasAudio || box.hasConfetti) return 7.99;
@@ -434,9 +489,9 @@ const BoxBuilder = () => {
                                         <Mic className="w-4 h-4 mr-2" />
                                         Record
                                       </Button>}
-                                    {card.audio && !isRecording && <Button variant="ghost" size="sm" onClick={() => removeAudio(card.id)} className="text-red-500 hover:bg-red-50">
-                                        <X className="w-4 h-4" />
-                                      </Button>}
+                                     {(card.audio || card.audio_url) && !isRecording && <Button variant="ghost" size="sm" onClick={() => removeAudio(card.id)} className="text-red-500 hover:bg-red-50">
+                                         <X className="w-4 h-4" />
+                                       </Button>}
                                   </div>
                                   
                                   {card.audioUrl && <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
@@ -676,11 +731,11 @@ const BoxBuilder = () => {
                                      </p>
                                    </div>
                                    
-                                   {/* Audio indicator */}
-                                   {card.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
-                                       <Volume2 className="w-3 h-3" />
-                                       <span className="text-xs">Audio Message</span>
-                                     </div>}
+                                    {/* Audio indicator */}
+                                    {(card.audio || card.audio_url) && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                        <Volume2 className="w-3 h-3" />
+                                        <span className="text-xs">Audio Message</span>
+                                      </div>}
                                    
                                    {/* Unlock delay indicator */}
                                    {card.unlockDelay && card.unlockDelay > 0 && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
@@ -834,11 +889,11 @@ const BoxBuilder = () => {
                                      </p>
                                    </div>
                                    
-                                   {/* Audio indicator */}
-                                   {card.audio && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
-                                       <Volume2 className="w-3 h-3" />
-                                       <span className="text-xs">Audio Message</span>
-                                     </div>}
+                                    {/* Audio indicator */}
+                                    {(card.audio || card.audio_url) && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                        <Volume2 className="w-3 h-3" />
+                                        <span className="text-xs">Audio Message</span>
+                                      </div>}
                                    
                                    {/* Unlock delay indicator */}
                                    {card.unlockDelay && card.unlockDelay > 0 && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
