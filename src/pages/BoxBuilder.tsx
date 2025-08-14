@@ -88,11 +88,11 @@ const BoxBuilder = () => {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${cardId}-${Date.now()}.${fileExt}`;
-      const filePath = `gift-images/${fileName}`;
+      const filePath = `images/${fileName}`;
       const {
         data,
         error
-      } = await supabase.storage.from('gift-images').upload(filePath, file);
+      } = await supabase.storage.from('gift-media').upload(filePath, file);
       if (error) {
         console.error('Upload error:', error);
         toast({
@@ -106,7 +106,7 @@ const BoxBuilder = () => {
         data: {
           publicUrl
         }
-      } = supabase.storage.from('gift-images').getPublicUrl(filePath);
+      } = supabase.storage.from('gift-media').getPublicUrl(filePath);
       updateCard(cardId, 'image_url', publicUrl);
       updateCard(cardId, 'imagePreview', URL.createObjectURL(file));
       toast({
@@ -179,11 +179,11 @@ const BoxBuilder = () => {
     setUploadingAudio(prev => new Set([...prev, cardId]));
     try {
       const fileName = `${cardId}-${Date.now()}.wav`;
-      const filePath = `gift-audio/${fileName}`;
+      const filePath = `audio/${fileName}`;
       const {
         data,
         error
-      } = await supabase.storage.from('gift-audio').upload(filePath, audioBlob);
+      } = await supabase.storage.from('gift-media').upload(filePath, audioBlob);
       if (error) {
         console.error('Audio upload error:', error);
         toast({
@@ -197,7 +197,7 @@ const BoxBuilder = () => {
         data: {
           publicUrl
         }
-      } = supabase.storage.from('gift-audio').getPublicUrl(filePath);
+      } = supabase.storage.from('gift-media').getPublicUrl(filePath);
       updateCard(cardId, 'audio_url', publicUrl);
       toast({
         title: "Audio uploaded",
