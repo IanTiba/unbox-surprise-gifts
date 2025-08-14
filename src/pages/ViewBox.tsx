@@ -370,19 +370,19 @@ const ViewBox = () => {
         </div>
 
         {/* Enhanced Actions */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <Button 
             onClick={shareBox}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl py-6 text-lg font-medium"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl py-3 text-base font-medium"
           >
-            <Share2 className="w-5 h-5 mr-3" />
+            <Share2 className="w-4 h-4 mr-2" />
             Share This Magical Experience
           </Button>
           
           <Button 
             onClick={() => navigate('/')}
             variant="outline" 
-            className="w-full bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg py-4"
+            className="w-full bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg py-2"
           >
             <Gift className="w-4 h-4 mr-2" />
             Create Your Own Gift Box
