@@ -599,7 +599,31 @@ const BoxBuilder = () => {
                        </div>
                       
                       {/* Gift Page Content */}
-                       <div className="p-6 flex flex-col overflow-y-auto h-full">
+                       <div className="p-6 flex flex-col overflow-y-auto h-full relative">
+                         {/* Confetti Animation */}
+                         {box.hasConfetti && (
+                           <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                             {[...Array(20)].map((_, i) => (
+                               <div
+                                 key={i}
+                                 className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"
+                                 style={{
+                                   left: `${Math.random() * 100}%`,
+                                   animationDelay: `${Math.random() * 2}s`,
+                                   animationDuration: `${2 + Math.random() * 2}s`,
+                                   transform: `translateY(-100px)`,
+                                   animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
+                                 }}
+                               />
+                             ))}
+                             <style>{`
+                               @keyframes confetti-fall {
+                                 0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+                                 100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+                               }
+                             `}</style>
+                           </div>
+                         )}
                         {/* Header Section - matching ViewBox structure */}
                         <div className="text-center mb-6">
                           {/* Large emoji */}
@@ -733,7 +757,31 @@ const BoxBuilder = () => {
                        </div>
                       
                       {/* Gift Page Content */}
-                      <div className="p-6 flex flex-col overflow-y-auto h-full">
+                       <div className="p-6 flex flex-col overflow-y-auto h-full relative">
+                         {/* Confetti Animation */}
+                         {box.hasConfetti && (
+                           <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                             {[...Array(20)].map((_, i) => (
+                               <div
+                                 key={i}
+                                 className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"
+                                 style={{
+                                   left: `${Math.random() * 100}%`,
+                                   animationDelay: `${Math.random() * 2}s`,
+                                   animationDuration: `${2 + Math.random() * 2}s`,
+                                   transform: `translateY(-100px)`,
+                                   animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
+                                 }}
+                               />
+                             ))}
+                             <style>{`
+                               @keyframes confetti-fall {
+                                 0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+                                 100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+                               }
+                             `}</style>
+                           </div>
+                         )}
                         {/* Header Section - matching ViewBox structure */}
                         <div className="text-center mb-6">
                           {/* Large emoji */}
