@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 // Initialize Stripe - Replace with your actual publishable key from Stripe dashboard
-const stripePromise = loadStripe("pk_live_51RvonVEwmfKzkxPuZcQr9ntWeICOco2Jwz77vb1iEI5g0juxK01OZYckhgo3wu1R3QWCPywJJWgn0BLGqDs2Ku1P00SGSrBc0T");
+const stripePromise = loadStripe("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");
 
 interface GiftCard {
   id: string;
