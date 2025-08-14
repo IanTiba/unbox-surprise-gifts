@@ -423,14 +423,16 @@ const BoxBuilder = () => {
       </header>
 
       <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6">
-        <div className="flex flex-col xl:flex-row gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex-1 space-y-6 order-1">
+        {/* Responsive Grid Layout */}
+        <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Main Content */}
+          <div className="space-y-6 order-2 lg:order-1">
             {/* Mobile Preview Toggle */}
-            <div className="xl:hidden">
+            <div className="lg:hidden">
               <Button
                 onClick={() => setShowMobilePreview(!showMobilePreview)}
                 variant="outline"
-                className="w-full mb-4"
+                className="w-full mb-4 bg-white/80 backdrop-blur-sm"
               >
                 {showMobilePreview ? "Hide Preview" : "Show Preview"}
               </Button>
@@ -438,20 +440,18 @@ const BoxBuilder = () => {
 
             {/* Mobile Preview */}
             {showMobilePreview && (
-              <div className="xl:hidden mb-6">
-                <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
-                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-                  
-                  <div className="relative p-4">
-                    <div className="text-center mb-4">
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+              <div className="lg:hidden mb-6">
+                <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50/50 backdrop-blur-sm">
+                  <div className="relative p-3 sm:p-4">
+                    <div className="text-center mb-3">
+                      <h2 className={`text-base sm:text-lg font-bold bg-gradient-to-r ${themeColors.text} bg-clip-text text-transparent mb-2`}>
                         Live Preview
                       </h2>
                       <p className="text-xs text-gray-600">See how recipients will experience your gift</p>
                     </div>
                     
                     {/* Mobile Preview Content */}
-                    <div className={`rounded-xl overflow-hidden bg-gradient-to-br ${themeColors.secondary} p-4 relative min-h-[400px]`}>
+                    <div className={`rounded-xl overflow-hidden bg-gradient-to-br ${themeColors.secondary} p-3 sm:p-4 relative min-h-[350px] sm:min-h-[400px]`}>
                       {/* Ambient Background Elements */}
                       <div className="absolute inset-0 overflow-hidden">
                         <div className={`absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br ${themeColors.ambient.primary} rounded-full blur-xl opacity-60`}></div>
@@ -903,7 +903,7 @@ const BoxBuilder = () => {
           </div>
 
           {/* Live Preview for Desktop */}
-          <div className="hidden xl:block xl:sticky xl:top-8 animate-scale-in order-2">
+          <div className="hidden lg:block lg:sticky lg:top-8 animate-scale-in order-1 lg:order-2">
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               
