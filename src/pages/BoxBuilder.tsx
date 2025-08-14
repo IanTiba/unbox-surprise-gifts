@@ -616,14 +616,7 @@ const BoxBuilder = () => {
                     <Input id="title" placeholder="e.g., Happy Birthday Sarah!" value={box.title} onChange={e => updateBox('title', e.target.value)} className="bg-white/80 backdrop-blur-sm border-purple-200 focus:border-purple-400 transition-colors text-sm sm:text-base" />
                   </div>
 
-                  <div>
-                    <Label htmlFor="emoji" className="text-sm font-medium mb-3 block">Box Emoji</Label>
-                    <div className="grid grid-cols-5 sm:flex sm:flex-wrap gap-2">
-                      {['🎁', '🎉', '🎂', '❤️', '🌟', '💝', '🎈', '🌈', '✨', '🦄'].map(emoji => <button key={emoji} onClick={() => updateBox('emoji', emoji)} className={`text-xl sm:text-2xl p-2 rounded-lg border-2 transition-all duration-300 hover:scale-110 ${box.emoji === emoji ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}>
-                          {emoji}
-                        </button>)}
-                    </div>
-                  </div>
+                  
 
                   <div>
                     <Label htmlFor="spotify" className="text-sm font-medium mb-3 block">Spotify Music (Optional)</Label>
