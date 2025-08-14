@@ -164,6 +164,60 @@ const ViewBox = () => {
           shareButton: 'from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700',
           outlineButton: 'border-orange-200'
         };
+      case 'emerald-green':
+        return {
+          primary: 'from-emerald-500 via-green-500 to-teal-400',
+          secondary: 'from-emerald-100 to-green-100',
+          accent: 'bg-emerald-500',
+          glow: 'shadow-emerald-500/30',
+          ambient: {
+            primary: 'from-emerald-400/20 to-green-400/20',
+            secondary: 'from-teal-400/20 to-emerald-400/20',
+            tertiary: 'from-green-300/10 to-teal-300/10'
+          },
+          text: 'from-emerald-600 to-green-600',
+          button: 'text-emerald-600 hover:bg-emerald-100',
+          dots: 'bg-emerald-600',
+          dotsInactive: 'bg-emerald-200 hover:bg-emerald-300',
+          shareButton: 'from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700',
+          outlineButton: 'border-emerald-200'
+        };
+      case 'elegant-black':
+        return {
+          primary: 'from-gray-600 via-slate-600 to-zinc-500',
+          secondary: 'from-gray-100 to-slate-100',
+          accent: 'bg-gray-600',
+          glow: 'shadow-gray-600/30',
+          ambient: {
+            primary: 'from-gray-400/20 to-slate-400/20',
+            secondary: 'from-zinc-400/20 to-gray-400/20',
+            tertiary: 'from-slate-300/10 to-zinc-300/10'
+          },
+          text: 'from-gray-700 to-slate-700',
+          button: 'text-gray-700 hover:bg-gray-100',
+          dots: 'bg-gray-700',
+          dotsInactive: 'bg-gray-200 hover:bg-gray-300',
+          shareButton: 'from-gray-700 to-slate-700 hover:from-gray-800 hover:to-slate-800',
+          outlineButton: 'border-gray-200'
+        };
+      case 'romantic-red':
+        return {
+          primary: 'from-red-500 via-rose-500 to-pink-400',
+          secondary: 'from-red-100 to-rose-100',
+          accent: 'bg-red-500',
+          glow: 'shadow-red-500/30',
+          ambient: {
+            primary: 'from-red-400/20 to-rose-400/20',
+            secondary: 'from-pink-400/20 to-red-400/20',
+            tertiary: 'from-rose-300/10 to-pink-300/10'
+          },
+          text: 'from-red-600 to-rose-600',
+          button: 'text-red-600 hover:bg-red-100',
+          dots: 'bg-red-600',
+          dotsInactive: 'bg-red-200 hover:bg-red-300',
+          shareButton: 'from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700',
+          outlineButton: 'border-red-200'
+        };
       default:
         return {
           primary: 'from-purple-500 via-pink-500 to-rose-400',
