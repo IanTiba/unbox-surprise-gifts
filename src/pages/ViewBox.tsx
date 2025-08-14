@@ -41,6 +41,7 @@ const ViewBox = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [cardsAnimation, setCardsAnimation] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Load box data from Supabase
   useEffect(() => {
@@ -218,12 +219,20 @@ const ViewBox = () => {
   };
   const nextCard = () => {
     if (currentCardIndex < box!.cards.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentCardIndex(currentCardIndex + 1);
+        setIsTransitioning(false);
+      }, 150);
     }
   };
   const prevCard = () => {
     if (currentCardIndex > 0) {
-      setCurrentCardIndex(currentCardIndex - 1);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentCardIndex(currentCardIndex - 1);
+        setIsTransitioning(false);
+      }, 150);
     }
   };
   const shareBox = () => {
@@ -312,7 +321,7 @@ const ViewBox = () => {
                   <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full"></div>
                   <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/15 rounded-full"></div>
                   
-                  <div className="relative p-8 text-white">
+                  <div className={`relative p-8 text-white transition-all duration-300 ${isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
                     {isCardUnlocked ? <div className="space-y-6">
                         <div className="flex items-center justify-between">
                           <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-2">
