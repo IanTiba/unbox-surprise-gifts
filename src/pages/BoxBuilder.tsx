@@ -306,66 +306,67 @@ const BoxBuilder = () => {
       </div>
 
       {/* Enhanced Header */}
-      <header className="relative z-10 px-6 py-6 bg-white/80 backdrop-blur-lg border-b border-purple-200/50 shadow-lg">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <header className="relative z-10 px-4 sm:px-6 py-4 sm:py-6 bg-white/80 backdrop-blur-lg border-b border-purple-200/50 shadow-lg">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="flex items-center hover:bg-purple-100/50 transition-all duration-300"
+            className="flex items-center hover:bg-purple-100/50 transition-all duration-300 self-start sm:self-center"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            <span className="hidden sm:inline">Back to Home</span>
+            <span className="sm:hidden">Back</span>
           </Button>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 text-center sm:text-left">
             <div className="relative">
-              <Gift className="w-8 h-8 text-purple-600" />
+              <Gift className="w-6 sm:w-8 h-6 sm:h-8 text-purple-600" />
               <div className="absolute -inset-2 bg-purple-600/20 rounded-full blur-md animate-glow-pulse"></div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Box Builder
               </h1>
-              <p className="text-sm text-purple-600/70">Create magical moments</p>
+              <p className="text-xs sm:text-sm text-purple-600/70">Create magical moments</p>
             </div>
           </div>
-          <div className="text-right">
-            <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg">
-              <p className="text-sm font-semibold">{getPriceTier()}</p>
-              <p className="text-lg font-bold">${getPrice()}</p>
+          <div className="text-center sm:text-right">
+            <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 sm:px-4 py-2 rounded-full shadow-lg">
+              <p className="text-xs sm:text-sm font-semibold">{getPriceTier()}</p>
+              <p className="text-base sm:text-lg font-bold">${getPrice()}</p>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
           {/* Enhanced Builder Form */}
-          <div className="space-y-8 animate-fade-in">
+          <div className="space-y-6 sm:space-y-8 animate-fade-in order-2 xl:order-1">
             {/* Box Title Section */}
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               <div className="absolute -top-4 -right-4 w-8 h-8 bg-purple-400/20 rounded-full"></div>
               <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-pink-400/15 rounded-full"></div>
               
-              <div className="relative p-8 space-y-6">
+              <div className="relative p-6 sm:p-8 space-y-4 sm:space-y-6">
                 <div className="flex items-center space-x-3">
                   <div className="relative">
                     <Gift className="w-6 h-6 text-purple-600" />
                     <div className="absolute -inset-1 bg-purple-600/20 rounded-full blur-sm"></div>
                   </div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                     Gift Box Details
                   </h2>
                 </div>
                 
                 <div className="space-y-3">
-                  <Label htmlFor="title" className="text-lg font-medium text-gray-700">Box Title</Label>
+                  <Label htmlFor="title" className="text-base sm:text-lg font-medium text-gray-700">Box Title</Label>
                   <Input
                     id="title"
                     placeholder="e.g., To Maria, Happy Birthday! 🎉"
                     value={box.title}
                     onChange={(e) => updateBox('title', e.target.value)}
-                    className="text-lg py-3 border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm"
+                    className="text-base sm:text-lg py-3 border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm"
                   />
                 </div>
               </div>
@@ -375,18 +376,18 @@ const BoxBuilder = () => {
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               
-              <div className="relative p-8 space-y-6">
-                <div className="flex items-center justify-between">
+              <div className="relative p-6 sm:p-8 space-y-4 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
                   <div className="flex items-center space-x-3">
-                    <Sparkles className="w-6 h-6 text-purple-600" />
-                    <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    <Sparkles className="w-5 sm:w-6 h-5 sm:h-6 text-purple-600" />
+                    <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                       Cards ({box.cards.length}/7)
                     </h2>
                   </div>
                   <Button
                     onClick={addCard}
                     disabled={box.cards.length >= 7}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg transition-all duration-300 hover:scale-105"
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto"
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -394,19 +395,19 @@ const BoxBuilder = () => {
                   </Button>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {box.cards.map((card, index) => (
                     <div key={card.id} className="relative">
                       <Card className="border-0 shadow-lg overflow-hidden bg-gradient-to-br from-white to-pink-50/50 hover:shadow-xl transition-all duration-300">
                         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-400 to-pink-400"></div>
                         
-                        <div className="p-6 space-y-4">
+                        <div className="p-4 sm:p-6 space-y-4">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                              <div className="w-6 sm:w-8 h-6 sm:h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
                                 {index + 1}
                               </div>
-                              <h3 className="text-lg font-semibold text-gray-800">Card {index + 1}</h3>
+                              <h3 className="text-base sm:text-lg font-semibold text-gray-800">Card {index + 1}</h3>
                             </div>
                             {box.cards.length > 1 && (
                               <Button
@@ -422,7 +423,7 @@ const BoxBuilder = () => {
 
                           <div className="space-y-4">
                             <div>
-                              <Label className="text-base font-medium text-gray-700">Message *</Label>
+                              <Label className="text-sm sm:text-base font-medium text-gray-700">Message *</Label>
                               <Textarea
                                 placeholder="Write your heartfelt message... ✨"
                                 value={card.message}
@@ -431,21 +432,21 @@ const BoxBuilder = () => {
                               />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
                               {/* Enhanced Image Upload */}
                               <div className="space-y-3">
-                                <Label className="text-base font-medium text-gray-700 flex items-center">
+                                <Label className="text-sm sm:text-base font-medium text-gray-700 flex items-center">
                                   <Image className="w-4 h-4 mr-2 text-purple-600" />
                                   Image (optional)
                                 </Label>
                                 <div className="space-y-3">
-                                  <div className="flex items-center space-x-2">
-                                    <Button 
+                                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                                    <Button
                                       variant="outline" 
                                       size="sm"
                                       onClick={() => handleImageUpload(card.id)}
                                       disabled={uploadingImages.has(card.id)}
-                                      className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 transition-all duration-200"
+                                      className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 transition-all duration-200 w-full sm:w-auto"
                                     >
                                       <Image className="w-4 h-4 mr-2" />
                                       {uploadingImages.has(card.id) ? 'Uploading...' : 'Upload'}
@@ -498,18 +499,18 @@ const BoxBuilder = () => {
 
                               {/* Enhanced Audio Recording */}
                               <div className="space-y-3">
-                                <Label className="text-base font-medium text-gray-700 flex items-center">
+                                <Label className="text-sm sm:text-base font-medium text-gray-700 flex items-center">
                                   <Volume2 className="w-4 h-4 mr-2 text-purple-600" />
                                   Audio (optional)
                                 </Label>
                                 <div className="space-y-3">
-                                  <div className="flex items-center space-x-2">
+                                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                                     {isRecording === card.id ? (
                                       <Button 
                                         variant="destructive" 
                                         size="sm"
                                         onClick={stopRecording}
-                                        className="bg-red-500 hover:bg-red-600 animate-pulse"
+                                        className="bg-red-500 hover:bg-red-600 animate-pulse w-full sm:w-auto"
                                       >
                                         <Square className="w-4 h-4 mr-2" />
                                         Stop
@@ -519,7 +520,7 @@ const BoxBuilder = () => {
                                         variant="outline" 
                                         size="sm"
                                         onClick={() => startRecording(card.id)}
-                                        className="border-purple-200 hover:bg-purple-50 hover:border-purple-300"
+                                        className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 w-full sm:w-auto"
                                       >
                                         <Mic className="w-4 h-4 mr-2" />
                                         Record
@@ -557,11 +558,11 @@ const BoxBuilder = () => {
 
                             {/* Enhanced Unlock Delay */}
                             <div className="space-y-3">
-                              <Label className="text-base font-medium text-gray-700 flex items-center">
+                              <Label className="text-sm sm:text-base font-medium text-gray-700 flex items-center">
                                 <Clock className="w-4 h-4 mr-2 text-purple-600" />
                                 Unlock Delay (optional)
                               </Label>
-                              <div className="flex items-center space-x-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
                                 <Input
                                   type="number"
                                   placeholder="0"
@@ -571,7 +572,7 @@ const BoxBuilder = () => {
                                   value={card.unlockDelay || ''}
                                   onChange={(e) => updateCard(card.id, 'unlockDelay', parseInt(e.target.value) || 0)}
                                 />
-                                <span className="text-sm font-medium text-purple-700">
+                                <span className="text-xs sm:text-sm font-medium text-purple-700">
                                   {card.unlockDelay ? `Unlocks in ${card.unlockDelay} day(s)` : 'Unlocks immediately'}
                                 </span>
                               </div>
@@ -589,25 +590,25 @@ const BoxBuilder = () => {
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               
-              <div className="relative p-8 space-y-6">
+              <div className="relative p-6 sm:p-8 space-y-4 sm:space-y-6">
                 <div className="flex items-center space-x-3">
-                  <Sparkles className="w-6 h-6 text-purple-600" />
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  <Sparkles className="w-5 sm:w-6 h-5 sm:h-6 text-purple-600" />
+                  <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                     Customization
                   </h2>
                 </div>
                 
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {/* Enhanced Emoji Selection */}
                   <div className="space-y-3">
-                    <Label className="text-lg font-medium text-gray-700">Box Icon</Label>
-                    <div className="grid grid-cols-6 gap-3">
+                    <Label className="text-base sm:text-lg font-medium text-gray-700">Box Icon</Label>
+                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 sm:gap-3">
                       {['🎁', '🎉', '💝', '🎂', '🎊', '💐', '🌟', '💎', '🏆', '🎈', '🍰', '💌'].map((emoji) => (
                         <button
                           key={emoji}
                           onClick={() => updateBox('emoji', emoji)}
-                          className={`h-14 w-14 rounded-xl border-2 transition-all duration-300 text-3xl hover:scale-110 hover:shadow-lg ${
-                            box.emoji === emoji 
+                          className={`h-12 sm:h-14 w-12 sm:w-14 rounded-xl border-2 transition-all duration-300 text-2xl sm:text-3xl hover:scale-110 hover:shadow-lg ${
+                            box.emoji === emoji
                               ? 'border-purple-500 bg-purple-100 shadow-lg scale-105' 
                               : 'border-purple-200 hover:border-purple-400 hover:bg-purple-50'
                           }`}
@@ -620,8 +621,8 @@ const BoxBuilder = () => {
 
                   {/* Enhanced Theme Selection */}
                   <div className="space-y-3">
-                    <Label className="text-lg font-medium text-gray-700">Visual Theme</Label>
-                    <div className="grid grid-cols-3 gap-4">
+                    <Label className="text-base sm:text-lg font-medium text-gray-700">Visual Theme</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                       {[
                         { name: 'purple-pink', gradient: 'linear-gradient(135deg, #a855f7, #ec4899)', label: 'Magical Purple' },
                         { name: 'blue-teal', gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)', label: 'Ocean Blue' },
@@ -630,13 +631,13 @@ const BoxBuilder = () => {
                         <button
                           key={theme.name}
                           onClick={() => updateBox('theme', theme.name)}
-                          className={`relative h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${
+                          className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${
                             box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-purple-200'
                           }`}
                           style={{ background: theme.gradient }}
                         >
                           <div className="absolute inset-0 bg-white/10 hover:bg-white/20 transition-all duration-300"></div>
-                          <div className="absolute bottom-2 left-2 right-2 text-white text-xs font-medium text-center">
+                          <div className="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 right-1 sm:right-2 text-white text-xs font-medium text-center">
                             {theme.label}
                           </div>
                         </button>
@@ -654,8 +655,8 @@ const BoxBuilder = () => {
                           <Sparkles className="w-5 h-5 text-purple-600" />
                         </div>
                         <div>
-                          <Label className="text-base font-medium text-gray-800">Confetti Animation</Label>
-                          <p className="text-sm text-gray-600">Add magical sparkles when opened</p>
+                          <Label className="text-sm sm:text-base font-medium text-gray-800">Confetti Animation</Label>
+                          <p className="text-xs sm:text-sm text-gray-600">Add magical sparkles when opened</p>
                         </div>
                       </div>
                       <Switch
@@ -671,8 +672,8 @@ const BoxBuilder = () => {
                           <Music className="w-5 h-5 text-purple-600" />
                         </div>
                         <div>
-                          <Label className="text-base font-medium text-gray-800">Background Music</Label>
-                          <p className="text-sm text-gray-600">Enhance the experience with music</p>
+                          <Label className="text-sm sm:text-base font-medium text-gray-800">Background Music</Label>
+                          <p className="text-xs sm:text-sm text-gray-600">Enhance the experience with music</p>
                         </div>
                       </div>
                       <Switch
@@ -690,10 +691,10 @@ const BoxBuilder = () => {
             <Button
               onClick={handlePreviewAndCheckout}
               size="lg"
-              className="w-full text-lg py-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              className="w-full text-base sm:text-lg py-4 sm:py-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
               disabled={uploadingImages.size > 0 || !box.title.trim() || !box.cards.some(card => card.message.trim())}
             >
-              <Eye className="w-5 h-5 mr-3" />
+              <Eye className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3" />
               {uploadingImages.size > 0 
                 ? `Uploading ${uploadingImages.size} image${uploadingImages.size > 1 ? 's' : ''}...`
                 : `Preview & Checkout ($${getPrice()})`
@@ -702,21 +703,21 @@ const BoxBuilder = () => {
           </div>
 
           {/* Enhanced Live Preview */}
-          <div className="lg:sticky lg:top-8 animate-scale-in">
+          <div className="xl:sticky xl:top-8 animate-scale-in order-1 xl:order-2">
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               
-              <div className="relative p-8">
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+              <div className="relative p-6 sm:p-8">
+                <div className="text-center mb-4 sm:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
                     Live Preview
                   </h2>
-                  <p className="text-sm text-gray-600">See how recipients will experience your gift</p>
+                  <p className="text-xs sm:text-sm text-gray-600">See how recipients will experience your gift</p>
                 </div>
                 
                 {/* Enhanced Mobile Mockup */}
-                <div className="mx-auto w-72 h-[400px] bg-gray-900 rounded-3xl p-3 shadow-2xl relative">
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gray-700 rounded-full mt-2"></div>
+                <div className="mx-auto w-64 sm:w-72 h-80 sm:h-[400px] bg-gray-900 rounded-3xl p-2 sm:p-3 shadow-2xl relative">
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 sm:w-16 h-1 bg-gray-700 rounded-full mt-1 sm:mt-2"></div>
                   
                   <div 
                     className="w-full h-full rounded-2xl overflow-hidden relative shadow-inner"
@@ -734,34 +735,34 @@ const BoxBuilder = () => {
                       <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
                     </div>
                     
-                    <div className="relative p-6 text-white text-center h-full flex flex-col">
-                      <div className="text-6xl mb-4 animate-bounce-in">{box.emoji}</div>
-                      <h3 className="text-lg font-bold mb-2 leading-tight">
+                    <div className="relative p-4 sm:p-6 text-white text-center h-full flex flex-col">
+                      <div className="text-4xl sm:text-6xl mb-3 sm:mb-4 animate-bounce-in">{box.emoji}</div>
+                      <h3 className="text-base sm:text-lg font-bold mb-2 leading-tight">
                         {box.title || 'Your Gift Box'}
                       </h3>
-                      <p className="text-sm opacity-80 mb-6">
+                      <p className="text-xs sm:text-sm opacity-80 mb-4 sm:mb-6">
                         {box.cards.length} magical surprise{box.cards.length !== 1 ? 's' : ''} waiting
                       </p>
                       
-                      <div className="space-y-3 flex-1 overflow-hidden">
+                      <div className="space-y-2 sm:space-y-3 flex-1 overflow-hidden">
                         {box.cards.slice(0, 3).map((card, index) => (
                           <div
                             key={card.id}
-                            className="bg-white/20 backdrop-blur-sm rounded-lg p-3 text-left transform hover:scale-105 transition-all duration-200"
+                            className="bg-white/20 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-left transform hover:scale-105 transition-all duration-200"
                           >
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium">
+                            <div className="flex items-center justify-between mb-1 sm:mb-2">
+                              <span className="text-xs sm:text-sm font-medium">
                                 Card {index + 1}
                               </span>
                               <div className="flex items-center space-x-1">
                                 {(card.image || card.image_url) && (
-                                  <Image className="w-3 h-3 text-white/80" />
+                                  <Image className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
                                 )}
                                 {card.audio && (
-                                  <Volume2 className="w-3 h-3 text-white/80" />
+                                  <Volume2 className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
                                 )}
                                 {card.unlockDelay && card.unlockDelay > 0 && (
-                                  <Clock className="w-3 h-3 text-white/80" />
+                                  <Clock className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
                                 )}
                               </div>
                             </div>
@@ -769,11 +770,11 @@ const BoxBuilder = () => {
                               {card.message || 'Your heartfelt message here...'}
                             </p>
                             {(card.imagePreview || card.image_url) && (
-                              <div className="mt-2">
+                              <div className="mt-1 sm:mt-2">
                                 <img 
                                   src={card.image_url || card.imagePreview} 
                                   alt="Card preview" 
-                                  className="w-full h-12 object-cover rounded opacity-90"
+                                  className="w-full h-10 sm:h-12 object-cover rounded opacity-90"
                                 />
                               </div>
                             )}
@@ -788,16 +789,16 @@ const BoxBuilder = () => {
                       </div>
 
                       {(box.hasConfetti || box.hasBackgroundMusic) && (
-                        <div className="flex items-center justify-center space-x-4 mt-4 pt-4 border-t border-white/20">
+                        <div className="flex items-center justify-center space-x-2 sm:space-x-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/20">
                           {box.hasConfetti && (
                             <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
-                              <Sparkles className="w-3 h-3" />
+                              <Sparkles className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                               <span className="text-xs">Confetti</span>
                             </div>
                           )}
                           {box.hasBackgroundMusic && (
                             <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
-                              <Music className="w-3 h-3" />
+                              <Music className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                               <span className="text-xs">Music</span>
                             </div>
                           )}
@@ -807,8 +808,8 @@ const BoxBuilder = () => {
                   </div>
                 </div>
 
-                <div className="mt-6 text-center">
-                  <p className="text-sm text-gray-600 bg-purple-50 rounded-lg p-3 border border-purple-200">
+                <div className="mt-4 sm:mt-6 text-center">
+                  <p className="text-xs sm:text-sm text-gray-600 bg-purple-50 rounded-lg p-2 sm:p-3 border border-purple-200">
                     ✨ This is how recipients will see your magical gift box
                   </p>
                 </div>
