@@ -19,14 +19,26 @@ serve(async (req) => {
     });
 
     // Parse request body
-    const { amount, email, giftBox } = await req.json();
+    const { amount, email, giftBox, testMode } = await req.json();
 
     // Validate required fields
     if (!amount || !email || !giftBox) {
       throw new Error("Missing required fields: amount, email, or giftBox");
     }
 
-    console.log(`Creating payment intent for ${email}, amount: $${amount}`);
+    console.log(`Creating payment intent for ${email}, amount: $${amount}, testMode: ${testMode}`);
+
+    // If in test mode, return a mock client secret
+    if (testMode) {
+      console.log("Test mode enabled - returning mock client secret");
+      return new Response(JSON.stringify({ 
+        client_secret: "pi_test_mock_client_secret",
+        payment_intent_id: "pi_test_mock_payment_intent"
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
 
     // Check if customer exists
     const customers = await stripe.customers.list({ email: email, limit: 1 });

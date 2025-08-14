@@ -56,6 +56,7 @@ const CheckoutForm = ({ box, email, setEmail }: {
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCancelAlert, setShowCancelAlert] = useState(false);
+  const [isTestMode, setIsTestMode] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -85,15 +86,6 @@ const CheckoutForm = ({ box, email, setEmail }: {
   const handlePayment = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
-      toast({
-        title: "Payment system not ready",
-        description: "Please wait a moment and try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!email.trim()) {
       toast({
         title: "Email required",
@@ -115,12 +107,75 @@ const CheckoutForm = ({ box, email, setEmail }: {
     setIsProcessing(true);
     
     try {
+      if (isTestMode) {
+        // Test mode: Skip payment and create gift box directly
+        const { data: slugData, error: slugError } = await supabase
+          .rpc('generate_unique_slug', { title_input: box.title });
+        
+        if (slugError) throw slugError;
+        const slug = slugData;
+
+        const cardsData = box.cards.map(card => ({
+          id: card.id,
+          message: card.message,
+          image_url: card.image_url || null,
+          audio_url: card.audio_url || null,
+          unlock_delay: card.unlockDelay || 0
+        }));
+
+        const { data: gift, error: giftError } = await supabase
+          .from('gifts')
+          .insert({
+            slug,
+            title: box.title,
+            emoji: box.emoji,
+            theme: box.theme,
+            has_confetti: box.hasConfetti,
+            has_background_music: box.hasBackgroundMusic,
+            cards: cardsData,
+            user_id: null,
+            is_public: true
+          })
+          .select()
+          .single();
+
+        if (giftError) throw giftError;
+
+        const shareLink = `${window.location.origin}/gift/${slug}`;
+        
+        toast({
+          title: "Test gift box created! 🧪",
+          description: "Your test gift box has been created (no payment processed).",
+        });
+        
+        navigate('/success', {
+          state: {
+            box: box,
+            slug: slug,
+            email: email,
+            shareLink: shareLink
+          }
+        });
+        return;
+      }
+
+      // Normal payment flow
+      if (!stripe || !elements) {
+        toast({
+          title: "Payment system not ready",
+          description: "Please wait a moment and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Create payment intent
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: {
           amount: getPrice(),
           email: email,
-          giftBox: box
+          giftBox: box,
+          testMode: false
         }
       });
 
@@ -206,8 +261,8 @@ const CheckoutForm = ({ box, email, setEmail }: {
     } catch (error) {
       console.error('Payment error:', error);
       toast({
-        title: "Payment failed",
-        description: error instanceof Error ? error.message : "There was an issue processing your payment. Please try again.",
+        title: isTestMode ? "Test mode error" : "Payment failed",
+        description: error instanceof Error ? error.message : "There was an issue processing your request. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -313,24 +368,48 @@ const CheckoutForm = ({ box, email, setEmail }: {
             <h2 className="text-xl font-semibold mb-4">Payment Details</h2>
             
             <div className="space-y-4">
-              <div>
-                <Label>Card Information</Label>
-                <div className="mt-2 p-3 border rounded-md">
-                  <CardElement 
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: '16px',
-                          color: '#424770',
-                          '::placeholder': {
-                            color: '#aab7c4',
+              {/* Test Mode Toggle */}
+              <div className="flex items-center space-x-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                <input
+                  type="checkbox"
+                  id="testMode"
+                  checked={isTestMode}
+                  onChange={(e) => setIsTestMode(e.target.checked)}
+                  className="rounded"
+                />
+                <Label htmlFor="testMode" className="text-sm text-yellow-800">
+                  🧪 Test Mode (Skip payment for testing)
+                </Label>
+              </div>
+
+              {!isTestMode && (
+                <div>
+                  <Label>Card Information</Label>
+                  <div className="mt-2 p-3 border rounded-md">
+                    <CardElement 
+                      options={{
+                        style: {
+                          base: {
+                            fontSize: '16px',
+                            color: '#424770',
+                            '::placeholder': {
+                              color: '#aab7c4',
+                            },
                           },
                         },
-                      },
-                    }}
-                  />
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {isTestMode && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+                  <p className="text-sm text-blue-800">
+                    ℹ️ Test mode is enabled. Your gift box will be created without processing payment.
+                  </p>
+                </div>
+              )}
             </div>
           </Card>
 
@@ -345,7 +424,7 @@ const CheckoutForm = ({ box, email, setEmail }: {
 
           <Button
             type="submit"
-            disabled={isProcessing || !stripe}
+            disabled={isProcessing || (!isTestMode && !stripe)}
             variant="hero"
             size="lg"
             className="w-full text-lg py-6"
@@ -353,7 +432,11 @@ const CheckoutForm = ({ box, email, setEmail }: {
             {isProcessing ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
-                Processing Payment...
+                {isTestMode ? 'Creating Test Gift Box...' : 'Processing Payment...'}
+              </>
+            ) : isTestMode ? (
+              <>
+                🧪 Create Test Gift Box (Free)
               </>
             ) : (
               <>
@@ -364,7 +447,10 @@ const CheckoutForm = ({ box, email, setEmail }: {
           </Button>
 
           <p className="text-xs text-center text-muted-foreground">
-            Secure payment powered by Stripe. Your payment information is encrypted and secure.
+            {isTestMode 
+              ? "Test mode: No payment will be processed. Perfect for testing the gift box creation flow."
+              : "Secure payment powered by Stripe. Your payment information is encrypted and secure."
+            }
           </p>
         </div>
       </div>
