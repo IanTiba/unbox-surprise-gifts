@@ -408,20 +408,6 @@ const BoxBuilder = () => {
             <span className="sm:hidden">Back</span>
           </Button>
           
-          <div className="flex items-center space-x-3 text-center sm:text-left">
-            <div className="relative">
-              
-            </div>
-            
-            <div className="flex flex-col items-center sm:items-end">
-              <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                ${getPrice()}
-              </div>
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">
-                {getPriceTier()}
-              </Badge>
-            </div>
-          </div>
         </div>
       </header>
 
@@ -590,7 +576,7 @@ const BoxBuilder = () => {
                         <div className="text-center mt-3">
                           <div className="inline-flex items-center space-x-1 text-gray-600">
                             <Heart className="w-3 h-3 text-red-500 fill-current" />
-                            <span className="text-xs">Made with love using My Hidden Gift</span>
+                            <span className="text-xs">Made with love</span>
                           </div>
                         </div>
                       </div>
@@ -1049,7 +1035,7 @@ const BoxBuilder = () => {
                             <div className="text-center mt-3">
                               <div className="inline-flex items-center space-x-1 text-gray-600">
                                 <Heart className="w-3 h-3 text-red-500 fill-current" />
-                                <span className="text-xs">Made with love using My Hidden Gift</span>
+                                <span className="text-xs">Made with love</span>
                               </div>
                             </div>
                           </div>
