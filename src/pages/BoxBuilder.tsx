@@ -578,7 +578,7 @@ const BoxBuilder = () => {
                 </div>
                 
                 {/* iPhone Mockup */}
-                <div className="mx-auto relative">
+                <div className="flex justify-center items-center">
                   {/* iPhone Frame */}
                   <div className="w-72 h-[580px] bg-black rounded-[3rem] p-3 shadow-2xl relative">
                     {/* Notch */}
