@@ -282,9 +282,9 @@ const ViewBox = () => {
         <div className="text-center mb-8 animate-fade-in">
           <div className="relative mb-6">
             <div className="text-8xl mb-4 animate-[scale_2s_ease-in-out_infinite] filter drop-shadow-lg" style={{
-              animation: 'scale 2s ease-in-out infinite',
-              animationTimingFunction: 'ease-in-out'
-            }}>{box.emoji}</div>
+            animation: 'scale 2s ease-in-out infinite',
+            animationTimingFunction: 'ease-in-out'
+          }}>{box.emoji}</div>
             
           </div>
           
@@ -329,15 +329,7 @@ const ViewBox = () => {
                   <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full"></div>
                   <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/15 rounded-full"></div>
                   
-                  <div className={`relative p-8 text-white transition-all duration-300 ease-in-out ${
-                    isTransitioning 
-                      ? slideDirection === 'left' 
-                        ? 'transform -translate-x-full opacity-0' 
-                        : slideDirection === 'right'
-                        ? 'transform translate-x-full opacity-0'
-                        : 'opacity-0'
-                      : 'transform translate-x-0 opacity-100'
-                  }`}>
+                  <div className={`relative p-8 text-white transition-all duration-300 ease-in-out ${isTransitioning ? slideDirection === 'left' ? 'transform -translate-x-full opacity-0' : slideDirection === 'right' ? 'transform translate-x-full opacity-0' : 'opacity-0' : 'transform translate-x-0 opacity-100'}`}>
                     {isCardUnlocked ? <div className="space-y-6">
                         <div className="flex items-center justify-between">
                           <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-2">
@@ -415,7 +407,7 @@ const ViewBox = () => {
         <div className="mt-12 text-center">
           <div className="inline-flex items-center space-x-2 bg-white/60 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
             <Heart className="w-4 h-4 text-red-500" />
-            <span className="text-sm font-medium text-gray-700">Made with love using Unbox Me</span>
+            <span className="text-sm font-medium text-gray-700">Made with love using My Hidden Gift</span>
             <Sparkles className="w-4 h-4 text-purple-500" />
           </div>
         </div>
