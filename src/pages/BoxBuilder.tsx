@@ -339,9 +339,9 @@ const BoxBuilder = () => {
       </header>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+        <div className="max-w-4xl mx-auto">
           {/* Enhanced Builder Form */}
-          <div className="space-y-6 sm:space-y-8 animate-fade-in order-2 xl:order-1">
+          <div className="space-y-6 sm:space-y-8 animate-fade-in">
             {/* Box Title Section */}
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
@@ -700,11 +700,9 @@ const BoxBuilder = () => {
                 : `Preview & Checkout ($${getPrice()})`
               }
             </Button>
-          </div>
 
-          {/* Enhanced Live Preview */}
-          <div className="xl:sticky xl:top-8 animate-scale-in order-1 xl:order-2">
-            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
+            {/* Enhanced Live Preview - Moved below payment button */}
+            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm animate-scale-in">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               
               <div className="relative p-6 sm:p-8">
@@ -818,8 +816,7 @@ const BoxBuilder = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 export default BoxBuilder;
