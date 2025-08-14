@@ -637,23 +637,7 @@ const BoxBuilder = () => {
             </Card>
             {/* Gift Box Details */}
             <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-              <div className="p-6 sm:p-8">
-                <h2 className="text-xl sm:text-2xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Gift Box Details
-                </h2>
-
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="spotify-embed" className="text-sm font-medium text-gray-700 mb-2 block">
-                      Spotify Embed (Optional)
-                    </Label>
-                    <Textarea id="spotify-embed" placeholder="Paste your Spotify embed code here..." value={box.spotifyEmbed || ""} onChange={e => updateBox('spotifyEmbed', e.target.value)} className="min-h-[80px] resize-none" />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Copy embed code from Spotify (Share → Embed track/playlist)
-                    </p>
-                  </div>
-                </div>
-              </div>
+              
             </Card>
 
             {/* Cards Section */}
