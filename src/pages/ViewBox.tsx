@@ -247,23 +247,20 @@ const ViewBox = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-pink-300/10 to-rose-300/10 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Enhanced Confetti Effect */}
+      {/* Confetti Animation */}
       {confettiTriggered && box.hasConfetti && (
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
-          {[...Array(100)].map((_, i) => (
+          {[...Array(30)].map((_, i) => (
             <div
               key={i}
-              className="absolute animate-bounce"
+              className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"
               style={{
                 left: `${Math.random() * 100}%`,
-                top: `-${Math.random() * 100}px`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${3 + Math.random() * 4}s`,
-                fontSize: `${12 + Math.random() * 8}px`
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${1 + Math.random() * 2}s`
               }}
-            >
-              {['🎉', '✨', '🎊', '💝', '🌟', '💫', '🎈'][Math.floor(Math.random() * 7)]}
-            </div>
+            />
           ))}
         </div>
       )}
