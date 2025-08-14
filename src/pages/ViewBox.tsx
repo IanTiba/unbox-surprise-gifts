@@ -314,7 +314,7 @@ const ViewBox = () => {
                 </div>
                 <div 
                   dangerouslySetInnerHTML={{ __html: box.spotifyEmbed }}
-                  className="spotify-embed"
+                  className="spotify-embed [&>iframe]:!h-[152px] [&>iframe]:!w-full"
                 />
               </div>
             </Card>
