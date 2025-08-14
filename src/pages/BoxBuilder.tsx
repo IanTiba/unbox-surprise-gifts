@@ -540,9 +540,9 @@ const BoxBuilder = () => {
                                           </div>
                                           
                                           {/* Image if available */}
-                                          {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                              <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full h-20 object-cover rounded" />
-                                            </div>}
+                                           {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                               <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full max-h-32 object-contain rounded" />
+                                             </div>}
                                           
                                           {/* Message */}
                                           {card.message && card.message.trim() && <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 flex-1">
@@ -1007,9 +1007,9 @@ const BoxBuilder = () => {
                                               </div>
                                               
                                               {/* Image if available */}
-                                              {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                                  <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full object-cover rounded" />
-                                                </div>}
+                                               {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                                   <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full max-h-32 object-contain rounded" />
+                                                 </div>}
                                               
                                               {/* Message */}
                                               {card.message && card.message.trim() && <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 flex-1">
