@@ -164,12 +164,38 @@ const ViewBox = () => {
     const card = box?.cards[cardIndex];
     if (!card || !box) return false;
     
-    const hoursToWait = card.unlockDelay;
+    // Convert days to hours (unlockDelay is in days from BoxBuilder)
+    const hoursToWait = card.unlockDelay * 24;
     const createdTime = box.createdAt.getTime();
     const currentTime = Date.now();
     const hoursPassed = (currentTime - createdTime) / (1000 * 60 * 60);
     
     return hoursPassed >= hoursToWait;
+  };
+
+  const getRemainingTime = (cardIndex: number) => {
+    const card = box?.cards[cardIndex];
+    if (!card || !box) return "";
+    
+    const hoursToWait = card.unlockDelay * 24;
+    const createdTime = box.createdAt.getTime();
+    const currentTime = Date.now();
+    const hoursPassed = (currentTime - createdTime) / (1000 * 60 * 60);
+    const hoursRemaining = Math.max(0, hoursToWait - hoursPassed);
+    
+    if (hoursRemaining <= 0) return "";
+    
+    const daysRemaining = Math.floor(hoursRemaining / 24);
+    const hoursOnly = Math.floor(hoursRemaining % 24);
+    
+    if (daysRemaining > 0) {
+      if (hoursOnly > 0) {
+        return `${daysRemaining} day${daysRemaining > 1 ? 's' : ''}, ${hoursOnly} hour${hoursOnly > 1 ? 's' : ''} remaining`;
+      }
+      return `${daysRemaining} day${daysRemaining > 1 ? 's' : ''} remaining`;
+    }
+    
+    return `${hoursOnly} hour${hoursOnly > 1 ? 's' : ''} remaining`;
   };
 
   const unlockCard = (cardIndex: number) => {
@@ -341,7 +367,7 @@ const ViewBox = () => {
                       <p className="text-white/80 mb-6 text-lg">
                         {canUnlockCard(index) 
                           ? "This special moment is ready to be revealed!"
-                          : `This card unlocks in ${card.unlockDelay} hours`
+                          : getRemainingTime(index) || `This card unlocks in ${card.unlockDelay} day${card.unlockDelay > 1 ? 's' : ''}`
                         }
                       </p>
                       
