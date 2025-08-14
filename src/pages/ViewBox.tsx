@@ -268,7 +268,7 @@ const ViewBox = () => {
         <div className="text-center mb-8 animate-fade-in">
           <div className="relative mb-6">
             <div className="text-8xl mb-4 animate-bounce-in filter drop-shadow-lg">{box.emoji}</div>
-            <div className={`absolute -inset-4 bg-gradient-to-r ${themeColors.text}/20 rounded-full blur-xl animate-glow-pulse`}></div>
+            
           </div>
           
           <h1 className={`text-3xl font-bold mb-3 bg-gradient-to-r ${themeColors.text} bg-clip-text text-transparent leading-tight`}>
