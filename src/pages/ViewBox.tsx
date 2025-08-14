@@ -111,28 +111,64 @@ const ViewBox = () => {
           primary: 'from-purple-500 via-pink-500 to-rose-400',
           secondary: 'from-purple-100 to-pink-100',
           accent: 'bg-purple-500',
-          glow: 'shadow-purple-500/30'
+          glow: 'shadow-purple-500/30',
+          ambient: {
+            primary: 'from-purple-400/20 to-pink-400/20',
+            secondary: 'from-blue-400/20 to-purple-400/20',
+            tertiary: 'from-pink-300/10 to-rose-300/10'
+          },
+          text: 'from-purple-600 to-pink-600',
+          button: 'text-purple-600 hover:bg-purple-100',
+          dots: 'bg-purple-600',
+          dotsInactive: 'bg-purple-200 hover:bg-purple-300'
         };
       case 'blue-teal':
         return {
           primary: 'from-blue-500 via-cyan-500 to-teal-400',
           secondary: 'from-blue-100 to-teal-100',
           accent: 'bg-blue-500',
-          glow: 'shadow-blue-500/30'
+          glow: 'shadow-blue-500/30',
+          ambient: {
+            primary: 'from-blue-400/20 to-cyan-400/20',
+            secondary: 'from-teal-400/20 to-blue-400/20',
+            tertiary: 'from-cyan-300/10 to-teal-300/10'
+          },
+          text: 'from-blue-600 to-teal-600',
+          button: 'text-blue-600 hover:bg-blue-100',
+          dots: 'bg-blue-600',
+          dotsInactive: 'bg-blue-200 hover:bg-blue-300'
         };
       case 'warm-sunset':
         return {
           primary: 'from-orange-500 via-amber-500 to-yellow-400',
           secondary: 'from-orange-100 to-yellow-100',
           accent: 'bg-orange-500',
-          glow: 'shadow-orange-500/30'
+          glow: 'shadow-orange-500/30',
+          ambient: {
+            primary: 'from-orange-400/20 to-amber-400/20',
+            secondary: 'from-yellow-400/20 to-orange-400/20',
+            tertiary: 'from-amber-300/10 to-yellow-300/10'
+          },
+          text: 'from-orange-600 to-amber-600',
+          button: 'text-orange-600 hover:bg-orange-100',
+          dots: 'bg-orange-600',
+          dotsInactive: 'bg-orange-200 hover:bg-orange-300'
         };
       default:
         return {
           primary: 'from-purple-500 via-pink-500 to-rose-400',
           secondary: 'from-purple-100 to-pink-100',
           accent: 'bg-purple-500',
-          glow: 'shadow-purple-500/30'
+          glow: 'shadow-purple-500/30',
+          ambient: {
+            primary: 'from-purple-400/20 to-pink-400/20',
+            secondary: 'from-blue-400/20 to-purple-400/20',
+            tertiary: 'from-pink-300/10 to-rose-300/10'
+          },
+          text: 'from-purple-600 to-pink-600',
+          button: 'text-purple-600 hover:bg-purple-100',
+          dots: 'bg-purple-600',
+          dotsInactive: 'bg-purple-200 hover:bg-purple-300'
         };
     }
   };
@@ -202,12 +238,12 @@ const ViewBox = () => {
   }
   if (!box) return null;
   const themeColors = getThemeColors(box.theme);
-  return <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 relative overflow-hidden">
+  return <div className={`min-h-screen bg-gradient-to-br ${themeColors.secondary} relative overflow-hidden`}>
       {/* Ambient Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-pink-300/10 to-rose-300/10 rounded-full blur-3xl"></div>
+        <div className={`absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br ${themeColors.ambient.primary} rounded-full blur-3xl`}></div>
+        <div className={`absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br ${themeColors.ambient.secondary} rounded-full blur-3xl`}></div>
+        <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br ${themeColors.ambient.tertiary} rounded-full blur-3xl`}></div>
       </div>
 
       {/* Confetti Animation */}
@@ -224,10 +260,10 @@ const ViewBox = () => {
         <div className="text-center mb-8 animate-fade-in">
           <div className="relative mb-6">
             <div className="text-8xl mb-4 animate-bounce-in filter drop-shadow-lg">{box.emoji}</div>
-            <div className="absolute -inset-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-xl animate-glow-pulse"></div>
+            <div className={`absolute -inset-4 bg-gradient-to-r ${themeColors.text}/20 rounded-full blur-xl animate-glow-pulse`}></div>
           </div>
           
-          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
+          <h1 className={`text-3xl font-bold mb-3 bg-gradient-to-r ${themeColors.text} bg-clip-text text-transparent leading-tight`}>
             {box.title}
           </h1>
           
@@ -242,16 +278,16 @@ const ViewBox = () => {
 
         {/* Card Carousel Navigation */}
         <div className="flex items-center justify-between mb-4">
-          <Button variant="ghost" size="sm" onClick={prevCard} disabled={currentCardIndex === 0} className="text-purple-600 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed">
+          <Button variant="ghost" size="sm" onClick={prevCard} disabled={currentCardIndex === 0} className={`${themeColors.button} disabled:opacity-50 disabled:cursor-not-allowed`}>
             <ArrowLeft className="w-4 h-4 mr-1" />
             Previous
           </Button>
           
           <div className="flex space-x-2">
-            {box.cards.map((_, index) => <button key={index} onClick={() => setCurrentCardIndex(index)} className={`w-3 h-3 rounded-full transition-all duration-200 ${index === currentCardIndex ? 'bg-purple-600 scale-110' : 'bg-purple-200 hover:bg-purple-300'}`} />)}
+            {box.cards.map((_, index) => <button key={index} onClick={() => setCurrentCardIndex(index)} className={`w-3 h-3 rounded-full transition-all duration-200 ${index === currentCardIndex ? `${themeColors.dots} scale-110` : `${themeColors.dotsInactive}`}`} />)}
           </div>
           
-          <Button variant="ghost" size="sm" onClick={nextCard} disabled={currentCardIndex === box.cards.length - 1} className="text-purple-600 hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed">
+          <Button variant="ghost" size="sm" onClick={nextCard} disabled={currentCardIndex === box.cards.length - 1} className={`${themeColors.button} disabled:opacity-50 disabled:cursor-not-allowed`}>
             Next
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
@@ -331,12 +367,12 @@ const ViewBox = () => {
 
         {/* Enhanced Actions */}
         <div className="space-y-3">
-          <Button onClick={shareBox} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl py-3 text-base font-medium">
+          <Button onClick={shareBox} className={`w-full bg-gradient-to-r ${themeColors.text} hover:from-${themeColors.text.split(' ')[0].replace('from-', '').replace('-600', '-700')} hover:to-${themeColors.text.split(' ')[2].replace('-600', '-700')} text-white shadow-xl py-3 text-base font-medium`}>
             <Share2 className="w-4 h-4 mr-2" />
             Share This Magical Experience
           </Button>
           
-          <Button onClick={() => navigate('/')} variant="outline" className="w-full bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg py-2">
+          <Button onClick={() => navigate('/')} variant="outline" className={`w-full bg-white/80 backdrop-blur-sm border-${themeColors.text.split(' ')[0].replace('from-', '').replace('-600', '-200')} hover:bg-white shadow-lg py-2`}>
             <Gift className="w-4 h-4 mr-2" />
             Create Your Own Gift Box
           </Button>
