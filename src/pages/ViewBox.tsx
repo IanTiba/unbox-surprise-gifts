@@ -295,7 +295,6 @@ const ViewBox = () => {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-2">
-                      <Heart className="w-4 h-4 mr-2" />
                       Card {currentCardIndex + 1} of {box.cards.length}
                     </Badge>
                     {currentCard.audio_url && (
