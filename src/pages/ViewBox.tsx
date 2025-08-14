@@ -306,7 +306,7 @@ const ViewBox = () => {
         {/* Spotify Embed */}
         {box.spotifyEmbed && (
           <div className={`mb-8 ${cardsAnimation ? 'animate-fade-in' : 'opacity-50'}`}>
-            <Card className={`border-0 shadow-xl overflow-hidden backdrop-blur-sm bg-transparent`}>
+            <Card className={`border-0 overflow-hidden backdrop-blur-sm bg-transparent`}>
               <div className="p-6">
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="w-5 h-5 bg-green-500 rounded-full"></div>
