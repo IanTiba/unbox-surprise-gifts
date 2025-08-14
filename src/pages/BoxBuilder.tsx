@@ -28,6 +28,7 @@ interface GiftBox {
   hasConfetti: boolean;
   hasBackgroundMusic: boolean;
   emoji: string;
+  spotifyEmbed?: string;
 }
 const BoxBuilder = () => {
   const navigate = useNavigate();
@@ -385,9 +386,25 @@ const BoxBuilder = () => {
                   </h2>
                 </div>
                 
-                <div className="space-y-3">
-                  <Label htmlFor="title" className="text-base sm:text-lg font-medium text-gray-700">Box Title</Label>
-                  <Input id="title" placeholder="e.g., To Maria, Happy Birthday! 🎉" value={box.title} onChange={e => updateBox('title', e.target.value)} className="text-base sm:text-lg py-3 border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm" />
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <Label htmlFor="title" className="text-base sm:text-lg font-medium text-gray-700">Box Title</Label>
+                    <Input id="title" placeholder="e.g., To Maria, Happy Birthday! 🎉" value={box.title} onChange={e => updateBox('title', e.target.value)} className="text-base sm:text-lg py-3 border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm" />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Label htmlFor="spotify" className="text-base sm:text-lg font-medium text-gray-700 flex items-center gap-2">
+                      <Music className="w-5 h-5 text-green-500" />
+                      Spotify Embed Code
+                    </Label>
+                    <Textarea 
+                      id="spotify" 
+                      placeholder="Paste your Spotify embed code here (optional)" 
+                      value={box.spotifyEmbed || ''} 
+                      onChange={e => updateBox('spotifyEmbed', e.target.value)} 
+                      className="text-sm border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm min-h-[80px]" 
+                    />
+                  </div>
                 </div>
               </div>
             </Card>
