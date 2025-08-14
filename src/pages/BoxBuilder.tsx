@@ -6,26 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Gift, 
-  Plus, 
-  Trash2, 
-  Image, 
-  Mic, 
-  Clock, 
-  Sparkles, 
-  Music,
-  ArrowLeft,
-  Eye,
-  X,
-  Play,
-  Square,
-  Volume2
-} from "lucide-react";
+import { Gift, Plus, Trash2, Image, Mic, Clock, Sparkles, Music, ArrowLeft, Eye, X, Play, Square, Volume2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-
 interface GiftCard {
   id: string;
   message: string;
@@ -37,7 +21,6 @@ interface GiftCard {
   audioUrl?: string;
   unlockDelay?: number;
 }
-
 interface GiftBox {
   title: string;
   cards: GiftCard[];
@@ -46,61 +29,71 @@ interface GiftBox {
   hasBackgroundMusic: boolean;
   emoji: string;
 }
-
 const BoxBuilder = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState<string | null>(null);
   const [recordingCardId, setRecordingCardId] = useState<string | null>(null);
   const [uploadingImages, setUploadingImages] = useState<Set<string>>(new Set());
   const [uploadErrors, setUploadErrors] = useState<Map<string, string>>(new Map());
-  
   const [box, setBox] = useState<GiftBox>({
     title: "",
-    cards: [{ id: "1", message: "" }],
+    cards: [{
+      id: "1",
+      message: ""
+    }],
     theme: "purple-pink",
     hasConfetti: false,
     hasBackgroundMusic: false,
-    emoji: "🎁",
+    emoji: "🎁"
   });
-
   const addCard = () => {
     if (box.cards.length < 7) {
       const newCard: GiftCard = {
         id: Date.now().toString(),
-        message: "",
+        message: ""
       };
-      setBox({ ...box, cards: [...box.cards, newCard] });
+      setBox({
+        ...box,
+        cards: [...box.cards, newCard]
+      });
     }
   };
-
   const removeCard = (cardId: string) => {
     if (box.cards.length > 1) {
       setBox({
         ...box,
-        cards: box.cards.filter(card => card.id !== cardId),
+        cards: box.cards.filter(card => card.id !== cardId)
       });
     }
   };
-
   const updateCard = (cardId: string, field: keyof GiftCard, value: any) => {
-    console.log('updateCard called:', { cardId, field, value });
+    console.log('updateCard called:', {
+      cardId,
+      field,
+      value
+    });
     setBox(prevBox => {
       const updatedBox = {
         ...prevBox,
-        cards: prevBox.cards.map(card =>
-          card.id === cardId ? { ...card, [field]: value } : card
-        ),
+        cards: prevBox.cards.map(card => card.id === cardId ? {
+          ...card,
+          [field]: value
+        } : card)
       };
       console.log('Updated box after updateCard:', updatedBox);
       return updatedBox;
     });
   };
-
   const updateBox = (field: keyof GiftBox, value: any) => {
-    setBox({ ...box, [field]: value });
+    setBox({
+      ...box,
+      [field]: value
+    });
   };
 
   // Image Upload Functions
@@ -108,7 +101,7 @@ const BoxBuilder = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = async (e) => {
+    input.onchange = async e => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         // Check file size (max 5MB)
@@ -116,7 +109,7 @@ const BoxBuilder = () => {
           toast({
             title: "File too large",
             description: "Please select an image smaller than 5MB.",
-            variant: "destructive",
+            variant: "destructive"
           });
           return;
         }
@@ -128,33 +121,29 @@ const BoxBuilder = () => {
           newErrors.delete(cardId);
           return newErrors;
         });
-
         try {
           // Create a temporary slug for organizing files
-          const tempSlug = box.title.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .slice(0, 40) || 'untitled';
-          
+          const tempSlug = box.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 40) || 'untitled';
           const fileExt = file.name.split('.').pop();
           const fileName = `${tempSlug}/${cardId}-${Date.now()}.${fileExt}`;
-
-          const { data, error } = await supabase.storage
-            .from('gift-media')
-            .upload(fileName, file);
-
+          const {
+            data,
+            error
+          } = await supabase.storage.from('gift-media').upload(fileName, file);
           if (error) {
             throw error;
           }
 
           // Get public URL
-          const { data: { publicUrl } } = supabase.storage
-            .from('gift-media')
-            .getPublicUrl(fileName);
+          const {
+            data: {
+              publicUrl
+            }
+          } = supabase.storage.from('gift-media').getPublicUrl(fileName);
 
           // Set preview for immediate display AND upload to Supabase
           const reader = new FileReader();
-          reader.onload = (e) => {
+          reader.onload = e => {
             const imagePreview = e.target?.result as string;
             updateCard(cardId, 'imagePreview', imagePreview);
           };
@@ -163,19 +152,17 @@ const BoxBuilder = () => {
           // Update card with image URL from Supabase storage
           updateCard(cardId, 'image', file);
           updateCard(cardId, 'image_url', publicUrl);
-          
           console.log('Image uploaded successfully. Card ID:', cardId, 'Public URL:', publicUrl);
           console.log('Updated card should have image_url:', publicUrl);
-          
+
           // Force a state update check
           setTimeout(() => {
             const updatedCard = box.cards.find(c => c.id === cardId);
             console.log('Card after update:', updatedCard);
           }, 100);
-          
           toast({
             title: "Image uploaded!",
-            description: "Your image has been added to the card.",
+            description: "Your image has been added to the card."
           });
         } catch (error) {
           console.error('Upload error:', error);
@@ -183,7 +170,7 @@ const BoxBuilder = () => {
           toast({
             title: "Upload failed",
             description: "Please try uploading the image again.",
-            variant: "destructive",
+            variant: "destructive"
           });
         } finally {
           // Remove from uploading set
@@ -197,7 +184,6 @@ const BoxBuilder = () => {
     };
     input.click();
   };
-
   const removeImage = (cardId: string) => {
     updateCard(cardId, 'image', undefined);
     updateCard(cardId, 'image_url', undefined);
@@ -207,46 +193,43 @@ const BoxBuilder = () => {
   // Audio Recording Functions
   const startRecording = async (cardId: string) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
       const mediaRecorder = new MediaRecorder(stream);
       const audioChunks: BlobPart[] = [];
-
-      mediaRecorder.ondataavailable = (event) => {
+      mediaRecorder.ondataavailable = event => {
         audioChunks.push(event.data);
       };
-
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunks, {
+          type: 'audio/wav'
+        });
         const audioUrl = URL.createObjectURL(audioBlob);
         updateCard(cardId, 'audio', audioBlob);
         updateCard(cardId, 'audioUrl', audioUrl);
-        
         stream.getTracks().forEach(track => track.stop());
-        
         toast({
           title: "Recording saved",
-          description: "Your audio message has been recorded.",
+          description: "Your audio message has been recorded."
         });
       };
-
       mediaRecorderRef.current = mediaRecorder;
       setIsRecording(cardId);
       setRecordingCardId(cardId);
       mediaRecorder.start();
-
       toast({
         title: "Recording started",
-        description: "Speak your message now...",
+        description: "Speak your message now..."
       });
     } catch (error) {
       toast({
         title: "Recording failed",
         description: "Could not access microphone. Please check permissions.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
@@ -254,7 +237,6 @@ const BoxBuilder = () => {
       setRecordingCardId(null);
     }
   };
-
   const removeAudio = (cardId: string) => {
     const card = box.cards.find(c => c.id === cardId);
     if (card?.audioUrl) {
@@ -263,41 +245,39 @@ const BoxBuilder = () => {
     updateCard(cardId, 'audio', undefined);
     updateCard(cardId, 'audioUrl', undefined);
   };
-
   const handlePreviewAndCheckout = () => {
     // Check if any uploads are still pending
     if (uploadingImages.size > 0) {
       toast({
         title: "Upload in progress",
         description: "Please wait for all images to finish uploading.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-    
-    // Navigate to checkout with box data
-    navigate('/checkout', { state: { box } });
-  };
 
+    // Navigate to checkout with box data
+    navigate('/checkout', {
+      state: {
+        box
+      }
+    });
+  };
   const getPrice = () => {
     const cardCount = box.cards.length;
     const hasAudio = box.cards.some(card => card.audio);
     const hasDelays = box.cards.some(card => card.unlockDelay && card.unlockDelay > 0);
-    
     if (hasDelays) return 9.99;
     if (cardCount > 5 || hasAudio || box.hasConfetti) return 7.99;
     return 4.99;
   };
-
   const getPriceTier = () => {
     const price = getPrice();
     if (price === 9.99) return "Time Capsule";
     if (price === 7.99) return "Deluxe";
     return "Standard";
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 relative overflow-hidden">
+  return <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 relative overflow-hidden">
       {/* Ambient Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
@@ -308,11 +288,7 @@ const BoxBuilder = () => {
       {/* Enhanced Header */}
       <header className="relative z-10 px-4 sm:px-6 py-4 sm:py-6 bg-white/80 backdrop-blur-lg border-b border-purple-200/50 shadow-lg">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/')}
-            className="flex items-center hover:bg-purple-100/50 transition-all duration-300 self-start sm:self-center"
-          >
+          <Button variant="ghost" onClick={() => navigate('/')} className="flex items-center hover:bg-purple-100/50 transition-all duration-300 self-start sm:self-center">
             <ArrowLeft className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Back to Home</span>
             <span className="sm:hidden">Back</span>
@@ -323,9 +299,7 @@ const BoxBuilder = () => {
               <div className="absolute -inset-2 bg-purple-600/20 rounded-full blur-md animate-glow-pulse"></div>
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Box Builder
-              </h1>
+              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">My Hidden Gift</h1>
               <p className="text-xs sm:text-sm text-purple-600/70">Create magical moments</p>
             </div>
           </div>
@@ -361,13 +335,7 @@ const BoxBuilder = () => {
                 
                 <div className="space-y-3">
                   <Label htmlFor="title" className="text-base sm:text-lg font-medium text-gray-700">Box Title</Label>
-                  <Input
-                    id="title"
-                    placeholder="e.g., To Maria, Happy Birthday! 🎉"
-                    value={box.title}
-                    onChange={(e) => updateBox('title', e.target.value)}
-                    className="text-base sm:text-lg py-3 border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm"
-                  />
+                  <Input id="title" placeholder="e.g., To Maria, Happy Birthday! 🎉" value={box.title} onChange={e => updateBox('title', e.target.value)} className="text-base sm:text-lg py-3 border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm" />
                 </div>
               </div>
             </Card>
@@ -384,20 +352,14 @@ const BoxBuilder = () => {
                       Cards ({box.cards.length}/7)
                     </h2>
                   </div>
-                  <Button
-                    onClick={addCard}
-                    disabled={box.cards.length >= 7}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto"
-                    size="sm"
-                  >
+                  <Button onClick={addCard} disabled={box.cards.length >= 7} className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg transition-all duration-300 hover:scale-105 w-full sm:w-auto" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Card
                   </Button>
                 </div>
 
                 <div className="space-y-4 sm:space-y-6">
-                  {box.cards.map((card, index) => (
-                    <div key={card.id} className="relative">
+                  {box.cards.map((card, index) => <div key={card.id} className="relative">
                       <Card className="border-0 shadow-lg overflow-hidden bg-gradient-to-br from-white to-pink-50/50 hover:shadow-xl transition-all duration-300">
                         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-400 to-pink-400"></div>
                         
@@ -409,27 +371,15 @@ const BoxBuilder = () => {
                               </div>
                               <h3 className="text-base sm:text-lg font-semibold text-gray-800">Card {index + 1}</h3>
                             </div>
-                            {box.cards.length > 1 && (
-                              <Button
-                                onClick={() => removeCard(card.id)}
-                                variant="ghost"
-                                size="sm"
-                                className="text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
-                              >
+                            {box.cards.length > 1 && <Button onClick={() => removeCard(card.id)} variant="ghost" size="sm" className="text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200">
                                 <Trash2 className="w-4 h-4" />
-                              </Button>
-                            )}
+                              </Button>}
                           </div>
 
                           <div className="space-y-4">
                             <div>
                               <Label className="text-sm sm:text-base font-medium text-gray-700">Message *</Label>
-                              <Textarea
-                                placeholder="Write your heartfelt message... ✨"
-                                value={card.message}
-                                onChange={(e) => updateCard(card.id, 'message', e.target.value)}
-                                className="mt-2 min-h-[100px] border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm"
-                              />
+                              <Textarea placeholder="Write your heartfelt message... ✨" value={card.message} onChange={e => updateCard(card.id, 'message', e.target.value)} className="mt-2 min-h-[100px] border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm" />
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
@@ -441,59 +391,31 @@ const BoxBuilder = () => {
                                 </Label>
                                 <div className="space-y-3">
                                   <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-                                    <Button
-                                      variant="outline" 
-                                      size="sm"
-                                      onClick={() => handleImageUpload(card.id)}
-                                      disabled={uploadingImages.has(card.id)}
-                                      className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 transition-all duration-200 w-full sm:w-auto"
-                                    >
+                                    <Button variant="outline" size="sm" onClick={() => handleImageUpload(card.id)} disabled={uploadingImages.has(card.id)} className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 transition-all duration-200 w-full sm:w-auto">
                                       <Image className="w-4 h-4 mr-2" />
                                       {uploadingImages.has(card.id) ? 'Uploading...' : 'Upload'}
                                     </Button>
-                                    {(card.image || card.image_url) && !uploadingImages.has(card.id) && (
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => removeImage(card.id)}
-                                        className="text-red-500 hover:bg-red-50"
-                                      >
+                                    {(card.image || card.image_url) && !uploadingImages.has(card.id) && <Button variant="ghost" size="sm" onClick={() => removeImage(card.id)} className="text-red-500 hover:bg-red-50">
                                         <X className="w-4 h-4" />
-                                      </Button>
-                                    )}
+                                      </Button>}
                                   </div>
                                   
-                                  {uploadingImages.has(card.id) && (
-                                    <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                  {uploadingImages.has(card.id) && <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
                                       <div className="animate-spin w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full"></div>
                                       <span className="text-sm font-medium text-purple-700">Uploading image...</span>
-                                    </div>
-                                  )}
+                                    </div>}
                                   
-                                  {uploadErrors.has(card.id) && (
-                                    <div className="p-3 bg-red-50 rounded-lg border border-red-200">
+                                  {uploadErrors.has(card.id) && <div className="p-3 bg-red-50 rounded-lg border border-red-200">
                                       <p className="text-sm text-red-600">{uploadErrors.get(card.id)}</p>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="mt-2 border-red-200 text-red-600 hover:bg-red-50"
-                                        onClick={() => handleImageUpload(card.id)}
-                                      >
+                                      <Button variant="outline" size="sm" className="mt-2 border-red-200 text-red-600 hover:bg-red-50" onClick={() => handleImageUpload(card.id)}>
                                         Retry Upload
                                       </Button>
-                                    </div>
-                                  )}
+                                    </div>}
                                   
-                                  {card.imagePreview && !uploadingImages.has(card.id) && (
-                                    <div className="relative group">
-                                      <img 
-                                        src={card.imagePreview} 
-                                        alt="Preview" 
-                                        className="w-20 h-20 object-cover rounded-lg shadow-md border-2 border-purple-200 group-hover:shadow-lg transition-all duration-200"
-                                      />
+                                  {card.imagePreview && !uploadingImages.has(card.id) && <div className="relative group">
+                                      <img src={card.imagePreview} alt="Preview" className="w-20 h-20 object-cover rounded-lg shadow-md border-2 border-purple-200 group-hover:shadow-lg transition-all duration-200" />
                                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-all duration-200"></div>
-                                    </div>
-                                  )}
+                                    </div>}
                                 </div>
                               </div>
 
@@ -505,53 +427,28 @@ const BoxBuilder = () => {
                                 </Label>
                                 <div className="space-y-3">
                                   <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-                                    {isRecording === card.id ? (
-                                      <Button 
-                                        variant="destructive" 
-                                        size="sm"
-                                        onClick={stopRecording}
-                                        className="bg-red-500 hover:bg-red-600 animate-pulse w-full sm:w-auto"
-                                      >
+                                    {isRecording === card.id ? <Button variant="destructive" size="sm" onClick={stopRecording} className="bg-red-500 hover:bg-red-600 animate-pulse w-full sm:w-auto">
                                         <Square className="w-4 h-4 mr-2" />
                                         Stop
-                                      </Button>
-                                    ) : (
-                                      <Button 
-                                        variant="outline" 
-                                        size="sm"
-                                        onClick={() => startRecording(card.id)}
-                                        className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 w-full sm:w-auto"
-                                      >
+                                      </Button> : <Button variant="outline" size="sm" onClick={() => startRecording(card.id)} className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 w-full sm:w-auto">
                                         <Mic className="w-4 h-4 mr-2" />
                                         Record
-                                      </Button>
-                                    )}
-                                    {card.audio && !isRecording && (
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => removeAudio(card.id)}
-                                        className="text-red-500 hover:bg-red-50"
-                                      >
+                                      </Button>}
+                                    {card.audio && !isRecording && <Button variant="ghost" size="sm" onClick={() => removeAudio(card.id)} className="text-red-500 hover:bg-red-50">
                                         <X className="w-4 h-4" />
-                                      </Button>
-                                    )}
+                                      </Button>}
                                   </div>
                                   
-                                  {card.audioUrl && (
-                                    <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                  {card.audioUrl && <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
                                       <audio controls className="w-full h-8">
                                         <source src={card.audioUrl} type="audio/wav" />
                                       </audio>
-                                    </div>
-                                  )}
+                                    </div>}
                                   
-                                  {isRecording === card.id && (
-                                    <div className="flex items-center space-x-3 text-red-500 p-3 bg-red-50 rounded-lg border border-red-200">
+                                  {isRecording === card.id && <div className="flex items-center space-x-3 text-red-500 p-3 bg-red-50 rounded-lg border border-red-200">
                                       <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
                                       <span className="text-sm font-medium">Recording in progress...</span>
-                                    </div>
-                                  )}
+                                    </div>}
                                 </div>
                               </div>
                             </div>
@@ -563,15 +460,7 @@ const BoxBuilder = () => {
                                 Unlock Delay (optional)
                               </Label>
                               <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                                <Input
-                                  type="number"
-                                  placeholder="0"
-                                  min="0"
-                                  max="30"
-                                  className="w-20 border-purple-200 focus:border-purple-400"
-                                  value={card.unlockDelay || ''}
-                                  onChange={(e) => updateCard(card.id, 'unlockDelay', parseInt(e.target.value) || 0)}
-                                />
+                                <Input type="number" placeholder="0" min="0" max="30" className="w-20 border-purple-200 focus:border-purple-400" value={card.unlockDelay || ''} onChange={e => updateCard(card.id, 'unlockDelay', parseInt(e.target.value) || 0)} />
                                 <span className="text-xs sm:text-sm font-medium text-purple-700">
                                   {card.unlockDelay ? `Unlocks in ${card.unlockDelay} day(s)` : 'Unlocks immediately'}
                                 </span>
@@ -580,8 +469,7 @@ const BoxBuilder = () => {
                           </div>
                         </div>
                       </Card>
-                    </div>
-                  ))}
+                    </div>)}
                 </div>
               </div>
             </Card>
@@ -603,19 +491,9 @@ const BoxBuilder = () => {
                   <div className="space-y-3">
                     <Label className="text-base sm:text-lg font-medium text-gray-700">Box Icon</Label>
                     <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 sm:gap-3">
-                      {['🎁', '🎉', '💝', '🎂', '🎊', '💐', '🌟', '💎', '🏆', '🎈', '🍰', '💌'].map((emoji) => (
-                        <button
-                          key={emoji}
-                          onClick={() => updateBox('emoji', emoji)}
-                          className={`h-12 sm:h-14 w-12 sm:w-14 rounded-xl border-2 transition-all duration-300 text-2xl sm:text-3xl hover:scale-110 hover:shadow-lg ${
-                            box.emoji === emoji
-                              ? 'border-purple-500 bg-purple-100 shadow-lg scale-105' 
-                              : 'border-purple-200 hover:border-purple-400 hover:bg-purple-50'
-                          }`}
-                        >
+                      {['🎁', '🎉', '💝', '🎂', '🎊', '💐', '🌟', '💎', '🏆', '🎈', '🍰', '💌'].map(emoji => <button key={emoji} onClick={() => updateBox('emoji', emoji)} className={`h-12 sm:h-14 w-12 sm:w-14 rounded-xl border-2 transition-all duration-300 text-2xl sm:text-3xl hover:scale-110 hover:shadow-lg ${box.emoji === emoji ? 'border-purple-500 bg-purple-100 shadow-lg scale-105' : 'border-purple-200 hover:border-purple-400 hover:bg-purple-50'}`}>
                           {emoji}
-                        </button>
-                      ))}
+                        </button>)}
                     </div>
                   </div>
 
@@ -623,25 +501,26 @@ const BoxBuilder = () => {
                   <div className="space-y-3">
                     <Label className="text-base sm:text-lg font-medium text-gray-700">Visual Theme</Label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                      {[
-                        { name: 'purple-pink', gradient: 'linear-gradient(135deg, #a855f7, #ec4899)', label: 'Magical Purple' },
-                        { name: 'blue-teal', gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)', label: 'Ocean Blue' },
-                        { name: 'warm-sunset', gradient: 'linear-gradient(135deg, #f97316, #eab308)', label: 'Warm Sunset' }
-                      ].map((theme) => (
-                        <button
-                          key={theme.name}
-                          onClick={() => updateBox('theme', theme.name)}
-                          className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${
-                            box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-purple-200'
-                          }`}
-                          style={{ background: theme.gradient }}
-                        >
+                      {[{
+                      name: 'purple-pink',
+                      gradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
+                      label: 'Magical Purple'
+                    }, {
+                      name: 'blue-teal',
+                      gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+                      label: 'Ocean Blue'
+                    }, {
+                      name: 'warm-sunset',
+                      gradient: 'linear-gradient(135deg, #f97316, #eab308)',
+                      label: 'Warm Sunset'
+                    }].map(theme => <button key={theme.name} onClick={() => updateBox('theme', theme.name)} className={`relative h-12 sm:h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-purple-200'}`} style={{
+                      background: theme.gradient
+                    }}>
                           <div className="absolute inset-0 bg-white/10 hover:bg-white/20 transition-all duration-300"></div>
                           <div className="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 right-1 sm:right-2 text-white text-xs font-medium text-center">
                             {theme.label}
                           </div>
-                        </button>
-                      ))}
+                        </button>)}
                     </div>
                   </div>
 
@@ -659,11 +538,7 @@ const BoxBuilder = () => {
                           <p className="text-xs sm:text-sm text-gray-600">Add magical sparkles when opened</p>
                         </div>
                       </div>
-                      <Switch
-                        checked={box.hasConfetti}
-                        onCheckedChange={(checked) => updateBox('hasConfetti', checked)}
-                        className="data-[state=checked]:bg-purple-500"
-                      />
+                      <Switch checked={box.hasConfetti} onCheckedChange={checked => updateBox('hasConfetti', checked)} className="data-[state=checked]:bg-purple-500" />
                     </div>
 
                     <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-200">
@@ -676,11 +551,7 @@ const BoxBuilder = () => {
                           <p className="text-xs sm:text-sm text-gray-600">Enhance the experience with music</p>
                         </div>
                       </div>
-                      <Switch
-                        checked={box.hasBackgroundMusic}
-                        onCheckedChange={(checked) => updateBox('hasBackgroundMusic', checked)}
-                        className="data-[state=checked]:bg-purple-500"
-                      />
+                      <Switch checked={box.hasBackgroundMusic} onCheckedChange={checked => updateBox('hasBackgroundMusic', checked)} className="data-[state=checked]:bg-purple-500" />
                     </div>
                   </div>
                 </div>
@@ -688,17 +559,9 @@ const BoxBuilder = () => {
             </Card>
 
             {/* Enhanced Preview & Checkout Button */}
-            <Button
-              onClick={handlePreviewAndCheckout}
-              size="lg"
-              className="w-full text-base sm:text-lg py-4 sm:py-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-              disabled={uploadingImages.size > 0 || !box.title.trim() || !box.cards.some(card => card.message.trim())}
-            >
+            <Button onClick={handlePreviewAndCheckout} size="lg" className="w-full text-base sm:text-lg py-4 sm:py-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105" disabled={uploadingImages.size > 0 || !box.title.trim() || !box.cards.some(card => card.message.trim())}>
               <Eye className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3" />
-              {uploadingImages.size > 0 
-                ? `Uploading ${uploadingImages.size} image${uploadingImages.size > 1 ? 's' : ''}...`
-                : `Preview & Checkout ($${getPrice()})`
-              }
+              {uploadingImages.size > 0 ? `Uploading ${uploadingImages.size} image${uploadingImages.size > 1 ? 's' : ''}...` : `Preview & Checkout ($${getPrice()})`}
             </Button>
 
             {/* Live Preview for Mobile - Below payment button */}
@@ -718,16 +581,9 @@ const BoxBuilder = () => {
                 <div className="mx-auto w-64 sm:w-72 h-80 sm:h-[400px] bg-gray-900 rounded-3xl p-2 sm:p-3 shadow-2xl relative">
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 sm:w-16 h-1 bg-gray-700 rounded-full mt-1 sm:mt-2"></div>
                   
-                  <div 
-                    className="w-full h-full rounded-2xl overflow-hidden relative shadow-inner"
-                    style={{
-                      background: box.theme === 'purple-pink' 
-                        ? 'linear-gradient(135deg, #a855f7, #ec4899)'
-                        : box.theme === 'blue-teal'
-                        ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
-                        : 'linear-gradient(135deg, #f97316, #eab308)'
-                    }}
-                  >
+                  <div className="w-full h-full rounded-2xl overflow-hidden relative shadow-inner" style={{
+                    background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                  }}>
                     {/* Ambient elements */}
                     <div className="absolute inset-0 overflow-hidden">
                       <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
@@ -744,65 +600,40 @@ const BoxBuilder = () => {
                       </p>
                       
                       <div className="space-y-2 sm:space-y-3 flex-1 overflow-hidden">
-                        {box.cards.slice(0, 3).map((card, index) => (
-                          <div
-                            key={card.id}
-                            className="bg-white/20 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-left transform hover:scale-105 transition-all duration-200"
-                          >
+                        {box.cards.slice(0, 3).map((card, index) => <div key={card.id} className="bg-white/20 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-left transform hover:scale-105 transition-all duration-200">
                             <div className="flex items-center justify-between mb-1 sm:mb-2">
                               <span className="text-xs sm:text-sm font-medium">
                                 Card {index + 1}
                               </span>
                               <div className="flex items-center space-x-1">
-                                {(card.image || card.image_url) && (
-                                  <Image className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
-                                )}
-                                {card.audio && (
-                                  <Volume2 className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
-                                )}
-                                {card.unlockDelay && card.unlockDelay > 0 && (
-                                  <Clock className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
-                                )}
+                                {(card.image || card.image_url) && <Image className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />}
+                                {card.audio && <Volume2 className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />}
+                                {card.unlockDelay && card.unlockDelay > 0 && <Clock className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />}
                               </div>
                             </div>
                             <p className="text-xs opacity-80 line-clamp-2">
                               {card.message || 'Your heartfelt message here...'}
                             </p>
-                            {(card.imagePreview || card.image_url) && (
-                              <div className="mt-1 sm:mt-2">
-                                <img 
-                                  src={card.image_url || card.imagePreview} 
-                                  alt="Card preview" 
-                                  className="w-full h-10 sm:h-12 object-cover rounded opacity-90"
-                                />
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                            {(card.imagePreview || card.image_url) && <div className="mt-1 sm:mt-2">
+                                <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full h-10 sm:h-12 object-cover rounded opacity-90" />
+                              </div>}
+                          </div>)}
                         
-                        {box.cards.length > 3 && (
-                          <div className="text-xs opacity-60 mt-2 bg-white/10 rounded-lg p-2">
+                        {box.cards.length > 3 && <div className="text-xs opacity-60 mt-2 bg-white/10 rounded-lg p-2">
                             +{box.cards.length - 3} more magical cards ✨
-                          </div>
-                        )}
+                          </div>}
                       </div>
 
-                      {(box.hasConfetti || box.hasBackgroundMusic) && (
-                        <div className="flex items-center justify-center space-x-2 sm:space-x-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/20">
-                          {box.hasConfetti && (
-                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                      {(box.hasConfetti || box.hasBackgroundMusic) && <div className="flex items-center justify-center space-x-2 sm:space-x-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/20">
+                          {box.hasConfetti && <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
                               <Sparkles className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                               <span className="text-xs">Confetti</span>
-                            </div>
-                          )}
-                          {box.hasBackgroundMusic && (
-                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                            </div>}
+                          {box.hasBackgroundMusic && <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
                               <Music className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                               <span className="text-xs">Music</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                            </div>}
+                        </div>}
                     </div>
                   </div>
                 </div>
@@ -834,16 +665,9 @@ const BoxBuilder = () => {
                 <div className="mx-auto w-64 sm:w-72 h-80 sm:h-[400px] bg-gray-900 rounded-3xl p-2 sm:p-3 shadow-2xl relative">
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 sm:w-16 h-1 bg-gray-700 rounded-full mt-1 sm:mt-2"></div>
                   
-                  <div 
-                    className="w-full h-full rounded-2xl overflow-hidden relative shadow-inner"
-                    style={{
-                      background: box.theme === 'purple-pink' 
-                        ? 'linear-gradient(135deg, #a855f7, #ec4899)'
-                        : box.theme === 'blue-teal'
-                        ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
-                        : 'linear-gradient(135deg, #f97316, #eab308)'
-                    }}
-                  >
+                  <div className="w-full h-full rounded-2xl overflow-hidden relative shadow-inner" style={{
+                  background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                }}>
                     {/* Ambient elements */}
                     <div className="absolute inset-0 overflow-hidden">
                       <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
@@ -860,65 +684,40 @@ const BoxBuilder = () => {
                       </p>
                       
                       <div className="space-y-2 sm:space-y-3 flex-1 overflow-hidden">
-                        {box.cards.slice(0, 3).map((card, index) => (
-                          <div
-                            key={card.id}
-                            className="bg-white/20 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-left transform hover:scale-105 transition-all duration-200"
-                          >
+                        {box.cards.slice(0, 3).map((card, index) => <div key={card.id} className="bg-white/20 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-left transform hover:scale-105 transition-all duration-200">
                             <div className="flex items-center justify-between mb-1 sm:mb-2">
                               <span className="text-xs sm:text-sm font-medium">
                                 Card {index + 1}
                               </span>
                               <div className="flex items-center space-x-1">
-                                {(card.image || card.image_url) && (
-                                  <Image className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
-                                )}
-                                {card.audio && (
-                                  <Volume2 className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
-                                )}
-                                {card.unlockDelay && card.unlockDelay > 0 && (
-                                  <Clock className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />
-                                )}
+                                {(card.image || card.image_url) && <Image className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />}
+                                {card.audio && <Volume2 className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />}
+                                {card.unlockDelay && card.unlockDelay > 0 && <Clock className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-white/80" />}
                               </div>
                             </div>
                             <p className="text-xs opacity-80 line-clamp-2">
                               {card.message || 'Your heartfelt message here...'}
                             </p>
-                            {(card.imagePreview || card.image_url) && (
-                              <div className="mt-1 sm:mt-2">
-                                <img 
-                                  src={card.image_url || card.imagePreview} 
-                                  alt="Card preview" 
-                                  className="w-full h-10 sm:h-12 object-cover rounded opacity-90"
-                                />
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                            {(card.imagePreview || card.image_url) && <div className="mt-1 sm:mt-2">
+                                <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full h-10 sm:h-12 object-cover rounded opacity-90" />
+                              </div>}
+                          </div>)}
                         
-                        {box.cards.length > 3 && (
-                          <div className="text-xs opacity-60 mt-2 bg-white/10 rounded-lg p-2">
+                        {box.cards.length > 3 && <div className="text-xs opacity-60 mt-2 bg-white/10 rounded-lg p-2">
                             +{box.cards.length - 3} more magical cards ✨
-                          </div>
-                        )}
+                          </div>}
                       </div>
 
-                      {(box.hasConfetti || box.hasBackgroundMusic) && (
-                        <div className="flex items-center justify-center space-x-2 sm:space-x-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/20">
-                          {box.hasConfetti && (
-                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                      {(box.hasConfetti || box.hasBackgroundMusic) && <div className="flex items-center justify-center space-x-2 sm:space-x-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-white/20">
+                          {box.hasConfetti && <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
                               <Sparkles className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                               <span className="text-xs">Confetti</span>
-                            </div>
-                          )}
-                          {box.hasBackgroundMusic && (
-                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                            </div>}
+                          {box.hasBackgroundMusic && <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
                               <Music className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                               <span className="text-xs">Music</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                            </div>}
+                        </div>}
                     </div>
                   </div>
                 </div>
@@ -933,8 +732,6 @@ const BoxBuilder = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default BoxBuilder;
