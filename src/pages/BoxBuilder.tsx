@@ -407,7 +407,7 @@ const BoxBuilder = () => {
           
           <div className="flex items-center space-x-3 text-center sm:text-left">
             <div className="relative">
-              <Input type="text" placeholder="Your Gift Box Title" value={box.title} onChange={e => updateBox('title', e.target.value)} className="text-lg sm:text-xl font-bold text-center sm:text-left w-full sm:w-auto min-w-[200px] bg-white/50 border-purple-200 focus:border-purple-400 shadow-sm" />
+              
             </div>
             
             <div className="flex flex-col items-center sm:items-end">
@@ -429,18 +429,13 @@ const BoxBuilder = () => {
           <div className="space-y-6 order-2 lg:order-1">
             {/* Mobile Preview Toggle */}
             <div className="lg:hidden">
-              <Button
-                onClick={() => setShowMobilePreview(!showMobilePreview)}
-                variant="outline"
-                className="w-full mb-4 bg-white/80 backdrop-blur-sm"
-              >
+              <Button onClick={() => setShowMobilePreview(!showMobilePreview)} variant="outline" className="w-full mb-4 bg-white/80 backdrop-blur-sm">
                 {showMobilePreview ? "Hide Preview" : "Show Preview"}
               </Button>
             </div>
 
             {/* Mobile Preview */}
-            {showMobilePreview && (
-              <div className="lg:hidden mb-6">
+            {showMobilePreview && <div className="lg:hidden mb-6">
                 <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50/50 backdrop-blur-sm">
                   <div className="relative p-3 sm:p-4">
                     <div className="text-center mb-3">
@@ -459,26 +454,18 @@ const BoxBuilder = () => {
                       </div>
 
                       {/* Confetti Animation */}
-                      {box.hasConfetti && (
-                        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                          {[...Array(15)].map((_, i) => (
-                            <div
-                              key={i}
-                              className={`absolute w-1 h-1 bg-gradient-to-r ${themeColors.primary} rounded-full opacity-80`}
-                              style={{
-                                left: `${Math.random() * 100}%`,
-                                animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
-                              }}
-                            />
-                          ))}
+                      {box.hasConfetti && <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                          {[...Array(15)].map((_, i) => <div key={i} className={`absolute w-1 h-1 bg-gradient-to-r ${themeColors.primary} rounded-full opacity-80`} style={{
+                      left: `${Math.random() * 100}%`,
+                      animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
+                    }} />)}
                           <style>{`
                             @keyframes confetti-fall {
                               0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
                               100% { transform: translateY(400px) rotate(360deg); opacity: 0; }
                             }
                           `}</style>
-                        </div>
-                      )}
+                        </div>}
 
                       <div className="relative z-10">
                         {/* Header Section */}
@@ -496,44 +483,25 @@ const BoxBuilder = () => {
                         </div>
 
                         {/* Spotify Embed */}
-                        {box.spotifyEmbed && (
-                          <div className="mb-4">
+                        {box.spotifyEmbed && <div className="mb-4">
                             <div dangerouslySetInnerHTML={{
-                              __html: box.spotifyEmbed.replace(/utm_source=generator/g, 'utm_source=generator&autoplay=1&auto_play=true')
-                            }} className="spotify-embed [&>iframe]:!h-[80px] [&>iframe]:!w-full [&>iframe]:rounded-lg" />
-                          </div>
-                        )}
+                        __html: box.spotifyEmbed.replace(/utm_source=generator/g, 'utm_source=generator&autoplay=1&auto_play=true')
+                      }} className="spotify-embed [&>iframe]:!h-[80px] [&>iframe]:!w-full [&>iframe]:rounded-lg" />
+                          </div>}
 
                         {/* Card Navigation */}
-                        {box.cards.length > 0 && (
-                          <>
+                        {box.cards.length > 0 && <>
                             <div className="flex items-center justify-between mb-3">
-                              <button
-                                onClick={() => setCurrentPreviewCard(Math.max(0, currentPreviewCard - 1))}
-                                disabled={currentPreviewCard === 0}
-                                className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}
-                              >
+                              <button onClick={() => setCurrentPreviewCard(Math.max(0, currentPreviewCard - 1))} disabled={currentPreviewCard === 0} className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}>
                                 <ArrowLeft className="w-3 h-3 mr-1" />
                                 Prev
                               </button>
                               
                               <div className="flex space-x-1">
-                                {box.cards.map((_, index) => (
-                                  <button
-                                    key={index}
-                                    onClick={() => setCurrentPreviewCard(index)}
-                                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                                      index === currentPreviewCard ? `${themeColors.dots} scale-110` : `${themeColors.dotsInactive}`
-                                    }`}
-                                  />
-                                ))}
+                                {box.cards.map((_, index) => <button key={index} onClick={() => setCurrentPreviewCard(index)} className={`w-2 h-2 rounded-full transition-all duration-200 ${index === currentPreviewCard ? `${themeColors.dots} scale-110` : `${themeColors.dotsInactive}`}`} />)}
                               </div>
                               
-                              <button
-                                onClick={() => setCurrentPreviewCard(Math.min(box.cards.length - 1, currentPreviewCard + 1))}
-                                disabled={currentPreviewCard === box.cards.length - 1}
-                                className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}
-                              >
+                              <button onClick={() => setCurrentPreviewCard(Math.min(box.cards.length - 1, currentPreviewCard + 1))} disabled={currentPreviewCard === box.cards.length - 1} className={`${themeColors.button} disabled:opacity-50 text-xs px-2 py-1 rounded-lg transition-all duration-200`}>
                                 Next
                                 <ArrowRight className="w-3 h-3 ml-1" />
                               </button>
@@ -542,17 +510,15 @@ const BoxBuilder = () => {
                             {/* Single Card Display */}
                             <div className="mb-4">
                               {(() => {
-                                const card = box.cards[currentPreviewCard];
-                                if (!card) return null;
-                                return (
-                                  <div className={`w-full min-h-32 rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
+                          const card = box.cards[currentPreviewCard];
+                          if (!card) return null;
+                          return <div className={`w-full min-h-32 rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
                                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
                                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-white/20 rounded-full"></div>
                                     <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-white/15 rounded-full"></div>
                                     
                                     <div className="p-3 flex flex-col text-white relative min-h-32">
-                                      {card.unlockDelay > 0 ? (
-                                        <div className="text-center py-4">
+                                      {card.unlockDelay > 0 ? <div className="text-center py-4">
                                           <div className="mb-2">
                                             <div className="relative inline-block">
                                               <Lock className="w-6 h-6 mx-auto mb-1 opacity-60" />
@@ -563,63 +529,48 @@ const BoxBuilder = () => {
                                           <p className="text-white/80 text-xs">
                                             This card unlocks in {card.unlockDelay} day{card.unlockDelay > 1 ? 's' : ''}
                                           </p>
-                                        </div>
-                                      ) : (
-                                        <div className="relative space-y-2">
+                                        </div> : <div className="relative space-y-2">
                                           <div className="flex items-center justify-between">
                                             <div className="bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
                                               <span className="text-xs font-medium">Card {currentPreviewCard + 1} of {box.cards.length}</span>
                                             </div>
-                                            {(card.audio || card.audio_url) && (
-                                              <div className="text-white/80 p-1">
+                                            {(card.audio || card.audio_url) && <div className="text-white/80 p-1">
                                                 <Play className="w-3 h-3" />
-                                              </div>
-                                            )}
+                                              </div>}
                                           </div>
                                           
                                           {/* Image if available */}
-                                          {(card.imagePreview || card.image_url) && (
-                                            <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                                          {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
                                               <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full h-20 object-cover rounded" />
-                                            </div>
-                                          )}
+                                            </div>}
                                           
                                           {/* Message */}
-                                          {card.message && card.message.trim() && (
-                                            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 flex-1">
+                                          {card.message && card.message.trim() && <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 flex-1">
                                               <p className="text-xs leading-relaxed text-white/95">
                                                 {card.message}
                                               </p>
-                                            </div>
-                                          )}
+                                            </div>}
                                           
                                           {/* Audio indicator */}
-                                          {(card.audio || card.audio_url) && (
-                                            <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
+                                          {(card.audio || card.audio_url) && <div className="flex items-center space-x-2 bg-white/15 backdrop-blur-sm rounded-lg p-2">
                                               <Volume2 className="w-3 h-3" />
                                               <div>
                                                 <p className="text-xs font-medium">Audio Message</p>
                                                 <p className="text-xs text-white/80">Tap play to listen</p>
                                               </div>
-                                            </div>
-                                          )}
-                                        </div>
-                                      )}
+                                            </div>}
+                                        </div>}
                                     </div>
-                                  </div>
-                                );
-                              })()}
+                                  </div>;
+                        })()}
                             </div>
-                          </>
-                        )}
+                          </>}
 
                         {/* Empty state when no cards */}
-                        {box.cards.length === 0 && (
-                          <div className="mb-4 text-center py-6">
+                        {box.cards.length === 0 && <div className="mb-4 text-center py-6">
                             <Gift className="w-10 h-10 mx-auto mb-2 text-gray-400" />
                             <p className="text-sm text-gray-500">Add your first card to see the preview</p>
-                          </div>
-                        )}
+                          </div>}
 
                         {/* Action Buttons */}
                         <div className="space-y-2">
@@ -643,8 +594,7 @@ const BoxBuilder = () => {
                     </div>
                   </div>
                 </Card>
-              </div>
-            )}
+              </div>}
 
             {/* Box Configuration Card */}
             <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
