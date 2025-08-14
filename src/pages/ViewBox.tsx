@@ -306,7 +306,7 @@ const ViewBox = () => {
         {/* Spotify Embed */}
         {box.spotifyEmbed && <div className={`mb-8 ${cardsAnimation ? 'animate-fade-in' : 'opacity-50'}`}>
             <Card className={`bg-transparent`}>
-              <div className="p-6">
+              <div>
                 
                 <div dangerouslySetInnerHTML={{
               __html: box.spotifyEmbed.replace(/utm_source=generator/g, 'utm_source=generator&autoplay=1&auto_play=true')
