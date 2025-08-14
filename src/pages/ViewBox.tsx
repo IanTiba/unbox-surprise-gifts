@@ -313,7 +313,9 @@ const ViewBox = () => {
                   <h3 className="text-lg font-semibold text-gray-800">Featured Music</h3>
                 </div>
                 <div 
-                  dangerouslySetInnerHTML={{ __html: box.spotifyEmbed }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: box.spotifyEmbed.replace(/utm_source=generator/g, 'utm_source=generator&autoplay=1&auto_play=true') 
+                  }}
                   className="spotify-embed [&>iframe]:!h-[152px] [&>iframe]:!w-full"
                 />
               </div>
