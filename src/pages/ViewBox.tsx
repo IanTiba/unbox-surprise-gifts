@@ -46,13 +46,12 @@ const ViewBox = () => {
   const { toast } = useToast();
   
   const [box, setBox] = useState<GiftBox | null>(null);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [unlockedCards, setUnlockedCards] = useState<Set<number>>(new Set([0]));
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [confettiTriggered, setConfettiTriggered] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [cardAnimation, setCardAnimation] = useState(false);
+  const [cardsAnimation, setCardsAnimation] = useState(false);
 
   // Load box data from Supabase
   useEffect(() => {
@@ -103,7 +102,7 @@ const ViewBox = () => {
 
         // Trigger entrance animation
         setTimeout(() => {
-          setCardAnimation(true);
+          setCardsAnimation(true);
         }, 500);
       } catch (error) {
         console.error('Error loading gift:', error);
@@ -176,24 +175,11 @@ const ViewBox = () => {
   const unlockCard = (cardIndex: number) => {
     if (canUnlockCard(cardIndex)) {
       setUnlockedCards(prev => new Set([...prev, cardIndex]));
-      setCurrentCardIndex(cardIndex);
       toast({
         title: "✨ Card Unlocked!",
         description: `Card ${cardIndex + 1} reveals its magical secret!`,
       });
     }
-  };
-
-  const navigateCard = (direction: 'prev' | 'next') => {
-    setCardAnimation(false);
-    setTimeout(() => {
-      if (direction === 'prev') {
-        setCurrentCardIndex(Math.max(0, currentCardIndex - 1));
-      } else {
-        setCurrentCardIndex(Math.min(box!.cards.length - 1, currentCardIndex + 1));
-      }
-      setCardAnimation(true);
-    }, 150);
   };
 
   const shareBox = () => {
@@ -224,8 +210,6 @@ const ViewBox = () => {
 
   if (!box) return null;
 
-  const currentCard = box.cards[currentCardIndex];
-  const isCardUnlocked = unlockedCards.has(currentCardIndex);
   const themeColors = getThemeColors(box.theme);
 
   return (
@@ -282,151 +266,107 @@ const ViewBox = () => {
           </div>
         </div>
 
-        {/* Enhanced Main Card */}
-        <div className={`mb-8 transform transition-all duration-500 ${cardAnimation ? 'animate-scale-in' : 'opacity-50 scale-95'}`}>
-          <Card className={`border-0 shadow-2xl overflow-hidden bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} shadow-xl relative`}>
-            {/* Decorative Elements */}
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
-            <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full"></div>
-            <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/15 rounded-full"></div>
+        {/* All Cards Displayed Vertically */}
+        <div className={`space-y-6 mb-8 ${cardsAnimation ? 'animate-fade-in' : 'opacity-50'}`}>
+          {box.cards.map((card, index) => {
+            const isCardUnlocked = unlockedCards.has(index);
             
-            <div className="relative p-8 text-white">
-              {isCardUnlocked ? (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-2">
-                      Card {currentCardIndex + 1} of {box.cards.length}
-                    </Badge>
-                    {currentCard.audio_url && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setIsPlaying(!isPlaying)}
-                        className="text-white hover:bg-white/20 backdrop-blur-sm"
-                      >
-                        {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-                      </Button>
-                    )}
-                  </div>
-                   
-                  {currentCard.image_url && (
-                    <div className="rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-sm p-2">
-                      <img 
-                        src={currentCard.image_url} 
-                        alt="Card attachment" 
-                        className="w-full h-auto object-cover rounded-lg"
-                      />
+            return (
+              <Card key={card.id} className={`border-0 shadow-2xl overflow-hidden bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} shadow-xl relative`}>
+                {/* Decorative Elements */}
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full"></div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-white/15 rounded-full"></div>
+                
+                <div className="relative p-8 text-white">
+                  {isCardUnlocked ? (
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm px-4 py-2">
+                          Card {index + 1} of {box.cards.length}
+                        </Badge>
+                        {card.audio_url && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setIsPlaying(!isPlaying)}
+                            className="text-white hover:bg-white/20 backdrop-blur-sm"
+                          >
+                            {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                          </Button>
+                        )}
+                      </div>
+                       
+                      {card.image_url && (
+                        <div className="rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-sm p-2">
+                          <img 
+                            src={card.image_url} 
+                            alt="Card attachment" 
+                            className="w-full h-auto object-cover rounded-lg"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                        <p className="text-lg leading-relaxed font-medium text-white/95">
+                          {card.message}
+                        </p>
+                      </div>
+                      
+                      {card.audio_url && (
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-sm rounded-xl p-4">
+                            <Volume2 className="w-5 h-5 flex-shrink-0" />
+                            <div>
+                              <p className="font-medium">Audio Message</p>
+                              <p className="text-sm text-white/80">Tap play to listen</p>
+                            </div>
+                          </div>
+                          <audio controls className="w-full rounded-lg">
+                            <source src={card.audio_url} type="audio/wav" />
+                          </audio>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                    <p className="text-lg leading-relaxed font-medium text-white/95">
-                      {currentCard.message}
-                    </p>
-                  </div>
-                  
-                  {currentCard.audio_url && (
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-sm rounded-xl p-4">
-                        <Volume2 className="w-5 h-5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium">Audio Message</p>
-                          <p className="text-sm text-white/80">Tap play to listen</p>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="mb-6">
+                        <div className="relative inline-block">
+                          <Lock className="w-16 h-16 mx-auto mb-4 opacity-60" />
+                          <div className="absolute -inset-2 bg-white/10 rounded-full blur-lg"></div>
                         </div>
                       </div>
-                      <audio controls className="w-full rounded-lg">
-                        <source src={currentCard.audio_url} type="audio/wav" />
-                      </audio>
+                      
+                      <h3 className="text-2xl font-bold mb-3">Locked with Love</h3>
+                      <p className="text-white/80 mb-6 text-lg">
+                        {canUnlockCard(index) 
+                          ? "This special moment is ready to be revealed!"
+                          : `This card unlocks in ${card.unlockDelay} hours`
+                        }
+                      </p>
+                      
+                      {canUnlockCard(index) && (
+                        <Button 
+                          onClick={() => unlockCard(index)}
+                          className="bg-white text-gray-800 hover:bg-white/90 shadow-lg px-8 py-3 text-lg font-medium"
+                        >
+                          <Sparkles className="w-5 h-5 mr-2" />
+                          Unlock Magic
+                        </Button>
+                      )}
+                      
+                      {!canUnlockCard(index) && (
+                        <div className="flex items-center justify-center space-x-2 text-white/60 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                          <Clock className="w-5 h-5" />
+                          <span className="font-medium">Patience makes it sweeter...</span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="mb-6">
-                    <div className="relative inline-block">
-                      <Lock className="w-16 h-16 mx-auto mb-4 opacity-60" />
-                      <div className="absolute -inset-2 bg-white/10 rounded-full blur-lg"></div>
-                    </div>
-                  </div>
-                  
-                  <h3 className="text-2xl font-bold mb-3">Locked with Love</h3>
-                  <p className="text-white/80 mb-6 text-lg">
-                    {canUnlockCard(currentCardIndex) 
-                      ? "This special moment is ready to be revealed!"
-                      : `This card unlocks in ${currentCard.unlockDelay} hours`
-                    }
-                  </p>
-                  
-                  {canUnlockCard(currentCardIndex) && (
-                    <Button 
-                      onClick={() => unlockCard(currentCardIndex)}
-                      className="bg-white text-gray-800 hover:bg-white/90 shadow-lg px-8 py-3 text-lg font-medium"
-                    >
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Unlock Magic
-                    </Button>
-                  )}
-                  
-                  {!canUnlockCard(currentCardIndex) && (
-                    <div className="flex items-center justify-center space-x-2 text-white/60 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                      <Clock className="w-5 h-5" />
-                      <span className="font-medium">Patience makes it sweeter...</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </Card>
-        </div>
-
-        {/* Enhanced Navigation */}
-        <div className="flex items-center justify-between mb-8">
-          <Button
-            variant="outline"
-            onClick={() => navigateCard('prev')}
-            disabled={currentCardIndex === 0}
-            className="bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Previous
-          </Button>
-
-          {/* Enhanced Progress Dots */}
-          <div className="flex space-x-2">
-            {box.cards.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCardAnimation(false);
-                  setTimeout(() => {
-                    setCurrentCardIndex(index);
-                    setCardAnimation(true);
-                  }, 150);
-                }}
-                className={`relative transition-all duration-300 ${
-                  index === currentCardIndex 
-                    ? 'w-8 h-4 bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg' 
-                    : unlockedCards.has(index)
-                    ? 'w-4 h-4 bg-purple-300 hover:bg-purple-400'
-                    : 'w-4 h-4 bg-gray-300 hover:bg-gray-400'
-                } rounded-full`}
-              >
-                {unlockedCards.has(index) && index !== currentCardIndex && (
-                  <div className="absolute inset-0 bg-white/30 rounded-full"></div>
-                )}
-              </button>
-            ))}
-          </div>
-
-          <Button
-            variant="outline"
-            onClick={() => navigateCard('next')}
-            disabled={currentCardIndex === box.cards.length - 1}
-            className="bg-white/80 backdrop-blur-sm border-purple-200 hover:bg-white shadow-lg"
-          >
-            Next
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Enhanced Actions */}
