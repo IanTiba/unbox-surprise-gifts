@@ -587,14 +587,30 @@ const BoxBuilder = () => {
                     {/* Screen */}
                     <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 rounded-[2.3rem] overflow-hidden relative">
                       {/* Status Bar */}
-                      <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 text-black text-sm font-medium z-10">
-                        <span>9:41</span>
-                        <div className="flex items-center space-x-1">
-                          <div className="w-4 h-2 border border-black rounded-sm">
-                            <div className="w-3 h-1 bg-black rounded-sm"></div>
-                          </div>
-                        </div>
-                      </div>
+                       <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 text-black text-sm font-medium z-10">
+                         <span>9:41</span>
+                         <div className="flex items-center space-x-1">
+                           {/* Cellular Signal */}
+                           <div className="flex items-end space-x-0.5">
+                             <div className="w-1 h-1 bg-black rounded-full"></div>
+                             <div className="w-1 h-1.5 bg-black rounded-full"></div>
+                             <div className="w-1 h-2 bg-black rounded-full"></div>
+                             <div className="w-1 h-2.5 bg-black rounded-full"></div>
+                           </div>
+                           {/* WiFi */}
+                           <div className="w-4 h-3 relative">
+                             <div className="absolute bottom-0 left-0 w-1 h-1 bg-black rounded-full"></div>
+                             <div className="absolute bottom-0 left-1 w-1 h-1.5 bg-black rounded-sm"></div>
+                             <div className="absolute bottom-0 left-2 w-1 h-2 bg-black rounded-sm"></div>
+                             <div className="absolute bottom-0 left-3 w-1 h-2.5 bg-black rounded-sm"></div>
+                           </div>
+                           {/* Battery */}
+                           <div className="w-6 h-3 border border-black rounded-sm relative">
+                             <div className="w-4 h-1.5 bg-black rounded-sm absolute top-0.5 left-0.5"></div>
+                             <div className="w-0.5 h-1 bg-black rounded-r absolute top-1 -right-1"></div>
+                           </div>
+                         </div>
+                       </div>
                       
                       {/* Gift Page Content */}
                        <div className="p-6 flex flex-col overflow-y-auto h-full">
@@ -720,14 +736,30 @@ const BoxBuilder = () => {
                     {/* Screen */}
                     <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 rounded-[2.3rem] overflow-hidden relative">
                       {/* Status Bar */}
-                      <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 text-black text-sm font-medium z-10">
-                        <span>9:41</span>
-                        <div className="flex items-center space-x-1">
-                          <div className="w-4 h-2 border border-black rounded-sm">
-                            <div className="w-3 h-1 bg-black rounded-sm"></div>
-                          </div>
-                        </div>
-                      </div>
+                       <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 text-black text-sm font-medium z-10">
+                         <span>9:41</span>
+                         <div className="flex items-center space-x-1">
+                           {/* Cellular Signal */}
+                           <div className="flex items-end space-x-0.5">
+                             <div className="w-1 h-1 bg-black rounded-full"></div>
+                             <div className="w-1 h-1.5 bg-black rounded-full"></div>
+                             <div className="w-1 h-2 bg-black rounded-full"></div>
+                             <div className="w-1 h-2.5 bg-black rounded-full"></div>
+                           </div>
+                           {/* WiFi */}
+                           <div className="w-4 h-3 relative">
+                             <div className="absolute bottom-0 left-0 w-1 h-1 bg-black rounded-full"></div>
+                             <div className="absolute bottom-0 left-1 w-1 h-1.5 bg-black rounded-sm"></div>
+                             <div className="absolute bottom-0 left-2 w-1 h-2 bg-black rounded-sm"></div>
+                             <div className="absolute bottom-0 left-3 w-1 h-2.5 bg-black rounded-sm"></div>
+                           </div>
+                           {/* Battery */}
+                           <div className="w-6 h-3 border border-black rounded-sm relative">
+                             <div className="w-4 h-1.5 bg-black rounded-sm absolute top-0.5 left-0.5"></div>
+                             <div className="w-0.5 h-1 bg-black rounded-r absolute top-1 -right-1"></div>
+                           </div>
+                         </div>
+                       </div>
                       
                       {/* Gift Page Content */}
                       <div className="p-6 flex flex-col overflow-y-auto h-full">
