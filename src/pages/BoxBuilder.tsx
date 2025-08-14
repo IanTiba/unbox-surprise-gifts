@@ -512,12 +512,12 @@ const BoxBuilder = () => {
                               {(() => {
                           const card = box.cards[currentPreviewCard];
                           if (!card) return null;
-                          return <div className={`w-full min-h-32 rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
+                          return <div className={`w-full rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
                                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
                                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-white/20 rounded-full"></div>
                                     <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-white/15 rounded-full"></div>
                                     
-                                    <div className="p-3 flex flex-col text-white relative min-h-32">
+                                    <div className="p-3 flex flex-col text-white relative">
                                       {card.unlockDelay > 0 ? <div className="text-center py-4">
                                           <div className="mb-2">
                                             <div className="relative inline-block">
@@ -541,7 +541,7 @@ const BoxBuilder = () => {
                                           
                                           {/* Image if available */}
                                            {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                               <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full max-h-32 object-contain rounded" />
+                                               <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full rounded" />
                                              </div>}
                                           
                                           {/* Message */}
@@ -978,13 +978,13 @@ const BoxBuilder = () => {
                                   {(() => {
                                 const card = box.cards[currentPreviewCard];
                                 if (!card) return null;
-                                return <div className={`w-full min-h-40 rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
+                                return <div className={`w-full rounded-xl overflow-hidden shadow-xl bg-gradient-to-br ${themeColors.primary} ${themeColors.glow} relative`}>
                                         {/* Decorative elements */}
                                         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
                                         <div className="absolute -top-2 -right-2 w-3 h-3 bg-white/20 rounded-full"></div>
                                         <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white/15 rounded-full"></div>
                                         
-                                        <div className="p-3 flex flex-col text-white relative min-h-40">
+                                        <div className="p-3 flex flex-col text-white relative">
                                           {card.unlockDelay > 0 ? <div className="text-center py-6">
                                               <div className="mb-3">
                                                 <div className="relative inline-block">
@@ -1008,7 +1008,7 @@ const BoxBuilder = () => {
                                               
                                               {/* Image if available */}
                                                {(card.imagePreview || card.image_url) && <div className="rounded-lg overflow-hidden bg-white/10 backdrop-blur-sm p-1">
-                                                   <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full max-h-32 object-contain rounded" />
+                                                   <img src={card.image_url || card.imagePreview} alt="Card preview" className="w-full rounded" />
                                                  </div>}
                                               
                                               {/* Message */}
