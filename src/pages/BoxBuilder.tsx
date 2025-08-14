@@ -51,6 +51,15 @@ const BoxBuilder = () => {
   const [uploadingImages, setUploadingImages] = useState<Set<string>>(new Set());
   const [uploadingAudio, setUploadingAudio] = useState<Set<string>>(new Set());
   const addCard = () => {
+    if (box.cards.length >= 7) {
+      toast({
+        title: "Card Limit Reached",
+        description: "You can only add up to 7 cards per gift box.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const newCard: GiftCard = {
       id: Date.now().toString(),
       message: "",
@@ -641,9 +650,13 @@ const BoxBuilder = () => {
                   <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                     Cards ({box.cards.length})
                   </h2>
-                  <Button onClick={addCard} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg">
+                  <Button 
+                    onClick={addCard} 
+                    disabled={box.cards.length >= 7}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Card
+                    Add Card {box.cards.length >= 7 ? '(Max 7)' : ''}
                   </Button>
                 </div>
 
@@ -737,7 +750,11 @@ const BoxBuilder = () => {
                   {box.cards.length === 0 && <div className="text-center py-12 border-2 border-dashed border-purple-200 rounded-xl">
                       <Gift className="w-12 h-12 mx-auto mb-4 text-purple-300" />
                       <p className="text-gray-500 mb-4">No cards added yet</p>
-                      <Button onClick={addCard} className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+                      <Button 
+                        onClick={addCard} 
+                        disabled={box.cards.length >= 7}
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Your First Card
                       </Button>
