@@ -204,24 +204,22 @@ const BoxBuilder = () => {
       // Create a temporary slug for organizing files
       const tempSlug = box.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 40) || 'untitled';
       const fileName = `${tempSlug}/${cardId}-${Date.now()}.wav`;
-      
-      const { data, error } = await supabase.storage
-        .from('gift-media')
-        .upload(fileName, audioBlob);
-
+      const {
+        data,
+        error
+      } = await supabase.storage.from('gift-media').upload(fileName, audioBlob);
       if (error) {
         throw error;
       }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('gift-media')
-        .getPublicUrl(fileName);
+      const {
+        data: {
+          publicUrl
+        }
+      } = supabase.storage.from('gift-media').getPublicUrl(fileName);
 
       // Update card with audio URL from Supabase storage
       updateCard(cardId, 'audio_url', publicUrl);
-      
       console.log('Audio uploaded successfully. Card ID:', cardId, 'Public URL:', publicUrl);
-
     } catch (error) {
       console.error('Audio upload error:', error);
       setUploadErrors(prev => new Map([...prev, [cardId, 'Audio upload failed. Please try again.']]));
@@ -258,10 +256,9 @@ const BoxBuilder = () => {
         const audioUrl = URL.createObjectURL(audioBlob);
         updateCard(cardId, 'audio', audioBlob);
         updateCard(cardId, 'audioUrl', audioUrl);
-        
+
         // Automatically upload audio to Supabase
         await uploadAudio(cardId, audioBlob);
-        
         stream.getTracks().forEach(track => track.stop());
         toast({
           title: "Recording saved",
@@ -596,18 +593,7 @@ const BoxBuilder = () => {
                       <Switch checked={box.hasConfetti} onCheckedChange={checked => updateBox('hasConfetti', checked)} className="data-[state=checked]:bg-purple-500" />
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-200">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2 bg-purple-100 rounded-lg">
-                          <Music className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div>
-                          <Label className="text-sm sm:text-base font-medium text-gray-800">Background Music</Label>
-                          <p className="text-xs sm:text-sm text-gray-600">Enhance the experience with music</p>
-                        </div>
-                      </div>
-                      <Switch checked={box.hasBackgroundMusic} onCheckedChange={checked => updateBox('hasBackgroundMusic', checked)} className="data-[state=checked]:bg-purple-500" />
-                    </div>
+                    
                   </div>
                 </div>
               </div>
@@ -656,29 +642,21 @@ const BoxBuilder = () => {
                       {/* Gift Page Content */}
                        <div className="p-6 flex flex-col overflow-y-auto h-full relative">
                          {/* Confetti Animation */}
-                         {box.hasConfetti && (
-                           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                             {[...Array(20)].map((_, i) => (
-                               <div
-                                 key={i}
-                                 className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"
-                                 style={{
-                                   left: `${Math.random() * 100}%`,
-                                   animationDelay: `${Math.random() * 2}s`,
-                                   animationDuration: `${2 + Math.random() * 2}s`,
-                                   transform: `translateY(-100px)`,
-                                   animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
-                                 }}
-                               />
-                             ))}
+                         {box.hasConfetti && <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                             {[...Array(20)].map((_, i) => <div key={i} className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse" style={{
+                            left: `${Math.random() * 100}%`,
+                            animationDelay: `${Math.random() * 2}s`,
+                            animationDuration: `${2 + Math.random() * 2}s`,
+                            transform: `translateY(-100px)`,
+                            animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
+                          }} />)}
                              <style>{`
                                @keyframes confetti-fall {
                                  0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
                                  100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
                                }
                              `}</style>
-                           </div>
-                         )}
+                           </div>}
                         {/* Header Section - matching ViewBox structure */}
                         <div className="text-center mb-6">
                           {/* Large emoji */}
@@ -704,10 +682,9 @@ const BoxBuilder = () => {
                         
                          {/* Cards Section - showing all cards */}
                          <div className="flex-1 mb-6 space-y-4">
-                           {box.cards.map((card, index) => (
-                             <div key={card.id} className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                               background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
-                             }}>
+                           {box.cards.map((card, index) => <div key={card.id} className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                            background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                          }}>
                                <div className="p-4 flex flex-col text-white relative min-h-48">
                                  {/* Decorative elements */}
                                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
@@ -744,8 +721,7 @@ const BoxBuilder = () => {
                                      </div>}
                                  </div>
                                </div>
-                             </div>
-                           ))}
+                             </div>)}
                          </div>
                         
                         {/* Action Buttons - matching ViewBox */}
@@ -814,29 +790,21 @@ const BoxBuilder = () => {
                       {/* Gift Page Content */}
                        <div className="p-6 flex flex-col overflow-y-auto h-full relative">
                          {/* Confetti Animation */}
-                         {box.hasConfetti && (
-                           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                             {[...Array(20)].map((_, i) => (
-                               <div
-                                 key={i}
-                                 className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"
-                                 style={{
-                                   left: `${Math.random() * 100}%`,
-                                   animationDelay: `${Math.random() * 2}s`,
-                                   animationDuration: `${2 + Math.random() * 2}s`,
-                                   transform: `translateY(-100px)`,
-                                   animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
-                                 }}
-                               />
-                             ))}
+                         {box.hasConfetti && <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                             {[...Array(20)].map((_, i) => <div key={i} className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse" style={{
+                          left: `${Math.random() * 100}%`,
+                          animationDelay: `${Math.random() * 2}s`,
+                          animationDuration: `${2 + Math.random() * 2}s`,
+                          transform: `translateY(-100px)`,
+                          animation: `confetti-fall ${2 + Math.random() * 2}s ${Math.random() * 2}s infinite linear`
+                        }} />)}
                              <style>{`
                                @keyframes confetti-fall {
                                  0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
                                  100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
                                }
                              `}</style>
-                           </div>
-                         )}
+                           </div>}
                         {/* Header Section - matching ViewBox structure */}
                         <div className="text-center mb-6">
                           {/* Large emoji */}
@@ -862,10 +830,9 @@ const BoxBuilder = () => {
                         
                          {/* Cards Section - showing all cards */}
                          <div className="flex-1 mb-6 space-y-4">
-                           {box.cards.map((card, index) => (
-                             <div key={card.id} className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
-                           background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
-                         }}>
+                           {box.cards.map((card, index) => <div key={card.id} className="w-full min-h-48 rounded-2xl overflow-hidden shadow-xl" style={{
+                          background: box.theme === 'purple-pink' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : box.theme === 'blue-teal' ? 'linear-gradient(135deg, #3b82f6, #06b6d4)' : 'linear-gradient(135deg, #f97316, #eab308)'
+                        }}>
                                <div className="p-4 flex flex-col text-white relative min-h-48">
                                  {/* Decorative elements */}
                                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
@@ -902,8 +869,7 @@ const BoxBuilder = () => {
                                      </div>}
                                  </div>
                                </div>
-                             </div>
-                           ))}
+                             </div>)}
                          </div>
                         
                         {/* Action Buttons - matching ViewBox */}
