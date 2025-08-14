@@ -237,7 +237,7 @@ const ViewBox = () => {
 
       {/* Confetti Animation */}
       {confettiTriggered && box.hasConfetti && (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
           {[...Array(50)].map((_, i) => (
             <div
               key={i}
