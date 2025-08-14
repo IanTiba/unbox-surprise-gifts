@@ -281,7 +281,10 @@ const ViewBox = () => {
         {/* Enhanced Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="relative mb-6">
-            <div className="text-8xl mb-4 animate-pulse filter drop-shadow-lg">{box.emoji}</div>
+            <div className="text-8xl mb-4 animate-[scale_2s_ease-in-out_infinite] filter drop-shadow-lg" style={{
+              animation: 'scale 2s ease-in-out infinite',
+              animationTimingFunction: 'ease-in-out'
+            }}>{box.emoji}</div>
             
           </div>
           
