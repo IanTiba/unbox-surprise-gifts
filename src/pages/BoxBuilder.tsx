@@ -297,63 +297,96 @@ const BoxBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      {/* Header */}
-      <header className="px-6 py-4 bg-card border-b border-border">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 relative overflow-hidden">
+      {/* Ambient Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-pink-300/10 to-rose-300/10 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Enhanced Header */}
+      <header className="relative z-10 px-6 py-6 bg-white/80 backdrop-blur-lg border-b border-purple-200/50 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="flex items-center"
+            className="flex items-center hover:bg-purple-100/50 transition-all duration-300"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
-          <div className="flex items-center space-x-2">
-            <Gift className="w-6 h-6 text-primary" />
-            <h1 className="text-xl font-bold">Box Builder</h1>
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <Gift className="w-8 h-8 text-purple-600" />
+              <div className="absolute -inset-2 bg-purple-600/20 rounded-full blur-md animate-glow-pulse"></div>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Box Builder
+              </h1>
+              <p className="text-sm text-purple-600/70">Create magical moments</p>
+            </div>
           </div>
           <div className="text-right">
-            <p className="text-sm text-muted-foreground">{getPriceTier()}</p>
-            <p className="text-lg font-bold text-primary">${getPrice()}</p>
+            <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg">
+              <p className="text-sm font-semibold">{getPriceTier()}</p>
+              <p className="text-lg font-bold">${getPrice()}</p>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Builder Form */}
-          <div className="space-y-6">
-            {/* Box Title */}
-            <Card className="p-6 bg-gradient-card border-0 shadow-card">
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold flex items-center">
-                  <Gift className="w-5 h-5 mr-2 text-primary" />
-                  Gift Box Details
-                </h2>
-                <div className="space-y-2">
-                  <Label htmlFor="title">Box Title</Label>
+          {/* Enhanced Builder Form */}
+          <div className="space-y-8 animate-fade-in">
+            {/* Box Title Section */}
+            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+              <div className="absolute -top-4 -right-4 w-8 h-8 bg-purple-400/20 rounded-full"></div>
+              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-pink-400/15 rounded-full"></div>
+              
+              <div className="relative p-8 space-y-6">
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <Gift className="w-6 h-6 text-purple-600" />
+                    <div className="absolute -inset-1 bg-purple-600/20 rounded-full blur-sm"></div>
+                  </div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    Gift Box Details
+                  </h2>
+                </div>
+                
+                <div className="space-y-3">
+                  <Label htmlFor="title" className="text-lg font-medium text-gray-700">Box Title</Label>
                   <Input
                     id="title"
-                    placeholder="e.g., To Maria, Happy Birthday!"
+                    placeholder="e.g., To Maria, Happy Birthday! 🎉"
                     value={box.title}
                     onChange={(e) => updateBox('title', e.target.value)}
+                    className="text-lg py-3 border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm"
                   />
                 </div>
               </div>
             </Card>
 
-            {/* Cards */}
-            <Card className="p-6 bg-gradient-card border-0 shadow-card">
-              <div className="space-y-4">
+            {/* Enhanced Cards Section */}
+            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+              
+              <div className="relative p-8 space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">
-                    Cards ({box.cards.length}/7)
-                  </h2>
+                  <div className="flex items-center space-x-3">
+                    <Sparkles className="w-6 h-6 text-purple-600" />
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      Cards ({box.cards.length}/7)
+                    </h2>
+                  </div>
                   <Button
                     onClick={addCard}
                     disabled={box.cards.length >= 7}
-                    variant="outline"
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg transition-all duration-300 hover:scale-105"
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -361,231 +394,291 @@ const BoxBuilder = () => {
                   </Button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {box.cards.map((card, index) => (
-                    <div key={card.id} className="p-4 border border-border rounded-lg bg-background">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-medium">Card {index + 1}</h3>
-                        {box.cards.length > 1 && (
-                          <Button
-                            onClick={() => removeCard(card.id)}
-                            variant="ghost"
-                            size="sm"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </div>
-
-                      <div className="space-y-3">
-                        <div>
-                          <Label>Message *</Label>
-                          <Textarea
-                            placeholder="Write your heartfelt message..."
-                            value={card.message}
-                            onChange={(e) => updateCard(card.id, 'message', e.target.value)}
-                            className="mt-1"
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Image (optional)</Label>
-                            <div className="mt-1 space-y-2">
-                              <div className="flex items-center space-x-2">
-                                 <Button 
-                                   variant="outline" 
-                                   size="sm"
-                                   onClick={() => handleImageUpload(card.id)}
-                                   disabled={uploadingImages.has(card.id)}
-                                 >
-                                   <Image className="w-4 h-4 mr-2" />
-                                   {uploadingImages.has(card.id) ? 'Uploading...' : 'Upload'}
-                                 </Button>
-                                 {(card.image || card.image_url) && !uploadingImages.has(card.id) && (
-                                   <Button
-                                     variant="ghost"
-                                     size="sm"
-                                     onClick={() => removeImage(card.id)}
-                                   >
-                                     <X className="w-4 h-4" />
-                                   </Button>
-                                 )}
-                               </div>
-                               
-                               {uploadingImages.has(card.id) && (
-                                 <div className="flex items-center space-x-2 p-2 bg-muted rounded-lg">
-                                   <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
-                                   <span className="text-sm">Uploading image...</span>
-                                 </div>
-                               )}
-                               
-                               {uploadErrors.has(card.id) && (
-                                 <div className="p-2 bg-destructive/10 rounded-lg">
-                                   <p className="text-sm text-destructive">{uploadErrors.get(card.id)}</p>
-                                   <Button
-                                     variant="outline"
-                                     size="sm"
-                                     className="mt-2"
-                                     onClick={() => handleImageUpload(card.id)}
-                                   >
-                                     Retry Upload
-                                   </Button>
-                                 </div>
-                               )}
-                               
-                               {card.imagePreview && !uploadingImages.has(card.id) && (
-                                 <img 
-                                   src={card.imagePreview} 
-                                   alt="Preview" 
-                                   className="w-16 h-16 object-cover rounded-lg border border-border"
-                                 />
-                               )}
-                            </div>
-                          </div>
-
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Audio (optional)</Label>
-                            <div className="mt-1 space-y-2">
-                              <div className="flex items-center space-x-2">
-                                {isRecording === card.id ? (
-                                  <Button 
-                                    variant="destructive" 
-                                    size="sm"
-                                    onClick={stopRecording}
-                                  >
-                                    <Square className="w-4 h-4 mr-2" />
-                                    Stop
-                                  </Button>
-                                ) : (
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    onClick={() => startRecording(card.id)}
-                                  >
-                                    <Mic className="w-4 h-4 mr-2" />
-                                    Record
-                                  </Button>
-                                )}
-                                {card.audio && !isRecording && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => removeAudio(card.id)}
-                                  >
-                                    <X className="w-4 h-4" />
-                                  </Button>
-                                )}
+                    <div key={card.id} className="relative">
+                      <Card className="border-0 shadow-lg overflow-hidden bg-gradient-to-br from-white to-pink-50/50 hover:shadow-xl transition-all duration-300">
+                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-400 to-pink-400"></div>
+                        
+                        <div className="p-6 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                {index + 1}
                               </div>
-                              {card.audioUrl && (
-                                <audio controls className="w-full h-8">
-                                  <source src={card.audioUrl} type="audio/wav" />
-                                </audio>
-                              )}
-                              {isRecording === card.id && (
-                                <div className="flex items-center space-x-2 text-red-500">
-                                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                                  <span className="text-xs">Recording...</span>
+                              <h3 className="text-lg font-semibold text-gray-800">Card {index + 1}</h3>
+                            </div>
+                            {box.cards.length > 1 && (
+                              <Button
+                                onClick={() => removeCard(card.id)}
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="space-y-4">
+                            <div>
+                              <Label className="text-base font-medium text-gray-700">Message *</Label>
+                              <Textarea
+                                placeholder="Write your heartfelt message... ✨"
+                                value={card.message}
+                                onChange={(e) => updateCard(card.id, 'message', e.target.value)}
+                                className="mt-2 min-h-[100px] border-purple-200 focus:border-purple-400 focus:ring-purple-400/20 bg-white/70 backdrop-blur-sm"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {/* Enhanced Image Upload */}
+                              <div className="space-y-3">
+                                <Label className="text-base font-medium text-gray-700 flex items-center">
+                                  <Image className="w-4 h-4 mr-2 text-purple-600" />
+                                  Image (optional)
+                                </Label>
+                                <div className="space-y-3">
+                                  <div className="flex items-center space-x-2">
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      onClick={() => handleImageUpload(card.id)}
+                                      disabled={uploadingImages.has(card.id)}
+                                      className="border-purple-200 hover:bg-purple-50 hover:border-purple-300 transition-all duration-200"
+                                    >
+                                      <Image className="w-4 h-4 mr-2" />
+                                      {uploadingImages.has(card.id) ? 'Uploading...' : 'Upload'}
+                                    </Button>
+                                    {(card.image || card.image_url) && !uploadingImages.has(card.id) && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => removeImage(card.id)}
+                                        className="text-red-500 hover:bg-red-50"
+                                      >
+                                        <X className="w-4 h-4" />
+                                      </Button>
+                                    )}
+                                  </div>
+                                  
+                                  {uploadingImages.has(card.id) && (
+                                    <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                      <div className="animate-spin w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full"></div>
+                                      <span className="text-sm font-medium text-purple-700">Uploading image...</span>
+                                    </div>
+                                  )}
+                                  
+                                  {uploadErrors.has(card.id) && (
+                                    <div className="p-3 bg-red-50 rounded-lg border border-red-200">
+                                      <p className="text-sm text-red-600">{uploadErrors.get(card.id)}</p>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="mt-2 border-red-200 text-red-600 hover:bg-red-50"
+                                        onClick={() => handleImageUpload(card.id)}
+                                      >
+                                        Retry Upload
+                                      </Button>
+                                    </div>
+                                  )}
+                                  
+                                  {card.imagePreview && !uploadingImages.has(card.id) && (
+                                    <div className="relative group">
+                                      <img 
+                                        src={card.imagePreview} 
+                                        alt="Preview" 
+                                        className="w-20 h-20 object-cover rounded-lg shadow-md border-2 border-purple-200 group-hover:shadow-lg transition-all duration-200"
+                                      />
+                                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-all duration-200"></div>
+                                    </div>
+                                  )}
                                 </div>
-                              )}
+                              </div>
+
+                              {/* Enhanced Audio Recording */}
+                              <div className="space-y-3">
+                                <Label className="text-base font-medium text-gray-700 flex items-center">
+                                  <Volume2 className="w-4 h-4 mr-2 text-purple-600" />
+                                  Audio (optional)
+                                </Label>
+                                <div className="space-y-3">
+                                  <div className="flex items-center space-x-2">
+                                    {isRecording === card.id ? (
+                                      <Button 
+                                        variant="destructive" 
+                                        size="sm"
+                                        onClick={stopRecording}
+                                        className="bg-red-500 hover:bg-red-600 animate-pulse"
+                                      >
+                                        <Square className="w-4 h-4 mr-2" />
+                                        Stop
+                                      </Button>
+                                    ) : (
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => startRecording(card.id)}
+                                        className="border-purple-200 hover:bg-purple-50 hover:border-purple-300"
+                                      >
+                                        <Mic className="w-4 h-4 mr-2" />
+                                        Record
+                                      </Button>
+                                    )}
+                                    {card.audio && !isRecording && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => removeAudio(card.id)}
+                                        className="text-red-500 hover:bg-red-50"
+                                      >
+                                        <X className="w-4 h-4" />
+                                      </Button>
+                                    )}
+                                  </div>
+                                  
+                                  {card.audioUrl && (
+                                    <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                      <audio controls className="w-full h-8">
+                                        <source src={card.audioUrl} type="audio/wav" />
+                                      </audio>
+                                    </div>
+                                  )}
+                                  
+                                  {isRecording === card.id && (
+                                    <div className="flex items-center space-x-3 text-red-500 p-3 bg-red-50 rounded-lg border border-red-200">
+                                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                                      <span className="text-sm font-medium">Recording in progress...</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Enhanced Unlock Delay */}
+                            <div className="space-y-3">
+                              <Label className="text-base font-medium text-gray-700 flex items-center">
+                                <Clock className="w-4 h-4 mr-2 text-purple-600" />
+                                Unlock Delay (optional)
+                              </Label>
+                              <div className="flex items-center space-x-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                <Input
+                                  type="number"
+                                  placeholder="0"
+                                  min="0"
+                                  max="30"
+                                  className="w-20 border-purple-200 focus:border-purple-400"
+                                  value={card.unlockDelay || ''}
+                                  onChange={(e) => updateCard(card.id, 'unlockDelay', parseInt(e.target.value) || 0)}
+                                />
+                                <span className="text-sm font-medium text-purple-700">
+                                  {card.unlockDelay ? `Unlocks in ${card.unlockDelay} day(s)` : 'Unlocks immediately'}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
-
-                        <div>
-                          <Label className="text-sm text-muted-foreground">
-                            Unlock Delay (optional)
-                          </Label>
-                          <div className="mt-1 flex items-center space-x-2">
-                            <Clock className="w-4 h-4 text-muted-foreground" />
-                            <Input
-                              type="number"
-                              placeholder="Days"
-                              min="0"
-                              max="30"
-                              className="w-20"
-                              value={card.unlockDelay || ''}
-                              onChange={(e) => updateCard(card.id, 'unlockDelay', parseInt(e.target.value) || 0)}
-                            />
-                            <span className="text-sm text-muted-foreground">
-                              {card.unlockDelay ? `Unlocks in ${card.unlockDelay} day(s)` : 'Unlocks immediately'}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                      </Card>
                     </div>
                   ))}
                 </div>
               </div>
             </Card>
 
-            {/* Customization */}
-            <Card className="p-6 bg-gradient-card border-0 shadow-card">
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">Customization</h2>
+            {/* Enhanced Customization Section */}
+            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+              
+              <div className="relative p-8 space-y-6">
+                <div className="flex items-center space-x-3">
+                  <Sparkles className="w-6 h-6 text-purple-600" />
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    Customization
+                  </h2>
+                </div>
                 
-                <div className="space-y-4">
-                <div>
-                  <Label>Box Icon</Label>
-                  <div className="mt-2 grid grid-cols-6 gap-2">
-                    {['🎁', '🎉', '💝', '🎂', '🎊', '💐', '🌟', '💎', '🏆', '🎈', '🍰', '💌'].map((emoji) => (
-                      <button
-                        key={emoji}
-                        onClick={() => updateBox('emoji', emoji)}
-                        className={`h-12 w-12 rounded-lg border-2 transition-all text-2xl hover:scale-110 ${
-                          box.emoji === emoji ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
-                        }`}
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label>Visual Theme</Label>
-                  <div className="mt-2 grid grid-cols-3 gap-2">
-                    {['purple-pink', 'blue-teal', 'warm-sunset'].map((theme) => (
-                      <button
-                        key={theme}
-                        onClick={() => updateBox('theme', theme)}
-                        className={`h-12 rounded-lg border-2 transition-all ${
-                          box.theme === theme ? 'border-primary' : 'border-border'
-                        }`}
-                        style={{
-                          background: theme === 'purple-pink' 
-                            ? 'linear-gradient(135deg, #a855f7, #ec4899)'
-                            : theme === 'blue-teal'
-                            ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
-                            : 'linear-gradient(135deg, #f97316, #eab308)'
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                  <Separator />
-
+                <div className="space-y-6">
+                  {/* Enhanced Emoji Selection */}
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Sparkles className="w-4 h-4 text-primary" />
-                        <Label>Confetti Animation</Label>
+                    <Label className="text-lg font-medium text-gray-700">Box Icon</Label>
+                    <div className="grid grid-cols-6 gap-3">
+                      {['🎁', '🎉', '💝', '🎂', '🎊', '💐', '🌟', '💎', '🏆', '🎈', '🍰', '💌'].map((emoji) => (
+                        <button
+                          key={emoji}
+                          onClick={() => updateBox('emoji', emoji)}
+                          className={`h-14 w-14 rounded-xl border-2 transition-all duration-300 text-3xl hover:scale-110 hover:shadow-lg ${
+                            box.emoji === emoji 
+                              ? 'border-purple-500 bg-purple-100 shadow-lg scale-105' 
+                              : 'border-purple-200 hover:border-purple-400 hover:bg-purple-50'
+                          }`}
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Enhanced Theme Selection */}
+                  <div className="space-y-3">
+                    <Label className="text-lg font-medium text-gray-700">Visual Theme</Label>
+                    <div className="grid grid-cols-3 gap-4">
+                      {[
+                        { name: 'purple-pink', gradient: 'linear-gradient(135deg, #a855f7, #ec4899)', label: 'Magical Purple' },
+                        { name: 'blue-teal', gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)', label: 'Ocean Blue' },
+                        { name: 'warm-sunset', gradient: 'linear-gradient(135deg, #f97316, #eab308)', label: 'Warm Sunset' }
+                      ].map((theme) => (
+                        <button
+                          key={theme.name}
+                          onClick={() => updateBox('theme', theme.name)}
+                          className={`relative h-16 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg overflow-hidden ${
+                            box.theme === theme.name ? 'border-purple-500 shadow-lg scale-105' : 'border-purple-200'
+                          }`}
+                          style={{ background: theme.gradient }}
+                        >
+                          <div className="absolute inset-0 bg-white/10 hover:bg-white/20 transition-all duration-300"></div>
+                          <div className="absolute bottom-2 left-2 right-2 text-white text-xs font-medium text-center">
+                            {theme.label}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator className="bg-purple-200" />
+
+                  {/* Enhanced Features */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-200">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <Sparkles className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <Label className="text-base font-medium text-gray-800">Confetti Animation</Label>
+                          <p className="text-sm text-gray-600">Add magical sparkles when opened</p>
+                        </div>
                       </div>
                       <Switch
                         checked={box.hasConfetti}
                         onCheckedChange={(checked) => updateBox('hasConfetti', checked)}
+                        className="data-[state=checked]:bg-purple-500"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Music className="w-4 h-4 text-primary" />
-                        <Label>Background Music</Label>
+                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-200">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <Music className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <Label className="text-base font-medium text-gray-800">Background Music</Label>
+                          <p className="text-sm text-gray-600">Enhance the experience with music</p>
+                        </div>
                       </div>
                       <Switch
                         checked={box.hasBackgroundMusic}
                         onCheckedChange={(checked) => updateBox('hasBackgroundMusic', checked)}
+                        className="data-[state=checked]:bg-purple-500"
                       />
                     </div>
                   </div>
@@ -593,14 +686,14 @@ const BoxBuilder = () => {
               </div>
             </Card>
 
+            {/* Enhanced Preview & Checkout Button */}
             <Button
               onClick={handlePreviewAndCheckout}
-              variant="hero"
               size="lg"
-              className="w-full text-lg py-6"
+              className="w-full text-lg py-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
               disabled={uploadingImages.size > 0 || !box.title.trim() || !box.cards.some(card => card.message.trim())}
             >
-              <Eye className="w-5 h-5 mr-2" />
+              <Eye className="w-5 h-5 mr-3" />
               {uploadingImages.size > 0 
                 ? `Uploading ${uploadingImages.size} image${uploadingImages.size > 1 ? 's' : ''}...`
                 : `Preview & Checkout ($${getPrice()})`
@@ -608,100 +701,117 @@ const BoxBuilder = () => {
             </Button>
           </div>
 
-          {/* Live Preview */}
-          <div className="lg:sticky lg:top-8">
-            <Card className="p-6 bg-gradient-card border-0 shadow-card">
-              <h2 className="text-xl font-semibold mb-4 text-center">Live Preview</h2>
+          {/* Enhanced Live Preview */}
+          <div className="lg:sticky lg:top-8 animate-scale-in">
+            <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-purple-50 backdrop-blur-sm">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
               
-              {/* Mobile Mockup */}
-              <div className="mx-auto w-64 h-96 bg-gray-900 rounded-3xl p-2 shadow-elegant">
-                <div 
-                  className="w-full h-full rounded-2xl overflow-hidden relative"
-                  style={{
-                    background: box.theme === 'purple-pink' 
-                      ? 'linear-gradient(135deg, #a855f7, #ec4899)'
-                      : box.theme === 'blue-teal'
-                      ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
-                      : 'linear-gradient(135deg, #f97316, #eab308)'
-                  }}
-                >
-                  <div className="p-6 text-white text-center">
-                    <div className="text-6xl mb-4">{box.emoji}</div>
-                    <h3 className="text-lg font-bold mb-2">
-                      {box.title || 'Your Gift Box'}
-                    </h3>
-                    <p className="text-sm opacity-80 mb-6">
-                      {box.cards.length} surprise{box.cards.length !== 1 ? 's' : ''} waiting
-                    </p>
-                    
-                    <div className="space-y-2">
-                      {box.cards.slice(0, 3).map((card, index) => (
-                        <div
-                          key={card.id}
-                          className="bg-white/20 backdrop-blur-sm rounded-lg p-3 text-left"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium">
-                              Card {index + 1}
-                            </span>
-                           <div className="flex items-center space-x-1">
-                             {(card.image || card.image_url) && (
-                               <Image className="w-3 h-3 text-white/80" />
-                             )}
-                             {card.audio && (
-                               <Volume2 className="w-3 h-3 text-white/80" />
-                             )}
-                             {card.unlockDelay && card.unlockDelay > 0 && (
-                               <Clock className="w-3 h-3 text-white/80" />
-                             )}
-                           </div>
-                          </div>
-                          <p className="text-xs opacity-80 truncate">
-                            {card.message || 'Your message here...'}
-                          </p>
-                           {(card.imagePreview || card.image_url) && (
-                             <div className="mt-2">
-                               <img 
-                                 src={card.image_url || card.imagePreview} 
-                                 alt="Card preview" 
-                                 className="w-full h-16 object-cover rounded opacity-90"
-                               />
-                             </div>
-                           )}
-                        </div>
-                      ))}
-                      
-                      {box.cards.length > 3 && (
-                        <div className="text-xs opacity-60 mt-2">
-                          +{box.cards.length - 3} more cards
-                        </div>
-                      )}
+              <div className="relative p-8">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                    Live Preview
+                  </h2>
+                  <p className="text-sm text-gray-600">See how recipients will experience your gift</p>
+                </div>
+                
+                {/* Enhanced Mobile Mockup */}
+                <div className="mx-auto w-72 h-[400px] bg-gray-900 rounded-3xl p-3 shadow-2xl relative">
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gray-700 rounded-full mt-2"></div>
+                  
+                  <div 
+                    className="w-full h-full rounded-2xl overflow-hidden relative shadow-inner"
+                    style={{
+                      background: box.theme === 'purple-pink' 
+                        ? 'linear-gradient(135deg, #a855f7, #ec4899)'
+                        : box.theme === 'blue-teal'
+                        ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
+                        : 'linear-gradient(135deg, #f97316, #eab308)'
+                    }}
+                  >
+                    {/* Ambient elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                      <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+                      <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
                     </div>
-
-                    {(box.hasConfetti || box.hasBackgroundMusic) && (
-                      <div className="flex items-center justify-center space-x-3 mt-4 pt-4 border-t border-white/20">
-                        {box.hasConfetti && (
-                          <div className="flex items-center space-x-1">
-                            <Sparkles className="w-3 h-3" />
-                            <span className="text-xs">Confetti</span>
+                    
+                    <div className="relative p-6 text-white text-center h-full flex flex-col">
+                      <div className="text-6xl mb-4 animate-bounce-in">{box.emoji}</div>
+                      <h3 className="text-lg font-bold mb-2 leading-tight">
+                        {box.title || 'Your Gift Box'}
+                      </h3>
+                      <p className="text-sm opacity-80 mb-6">
+                        {box.cards.length} magical surprise{box.cards.length !== 1 ? 's' : ''} waiting
+                      </p>
+                      
+                      <div className="space-y-3 flex-1 overflow-hidden">
+                        {box.cards.slice(0, 3).map((card, index) => (
+                          <div
+                            key={card.id}
+                            className="bg-white/20 backdrop-blur-sm rounded-lg p-3 text-left transform hover:scale-105 transition-all duration-200"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium">
+                                Card {index + 1}
+                              </span>
+                              <div className="flex items-center space-x-1">
+                                {(card.image || card.image_url) && (
+                                  <Image className="w-3 h-3 text-white/80" />
+                                )}
+                                {card.audio && (
+                                  <Volume2 className="w-3 h-3 text-white/80" />
+                                )}
+                                {card.unlockDelay && card.unlockDelay > 0 && (
+                                  <Clock className="w-3 h-3 text-white/80" />
+                                )}
+                              </div>
+                            </div>
+                            <p className="text-xs opacity-80 line-clamp-2">
+                              {card.message || 'Your heartfelt message here...'}
+                            </p>
+                            {(card.imagePreview || card.image_url) && (
+                              <div className="mt-2">
+                                <img 
+                                  src={card.image_url || card.imagePreview} 
+                                  alt="Card preview" 
+                                  className="w-full h-12 object-cover rounded opacity-90"
+                                />
+                              </div>
+                            )}
                           </div>
-                        )}
-                        {box.hasBackgroundMusic && (
-                          <div className="flex items-center space-x-1">
-                            <Music className="w-3 h-3" />
-                            <span className="text-xs">Music</span>
+                        ))}
+                        
+                        {box.cards.length > 3 && (
+                          <div className="text-xs opacity-60 mt-2 bg-white/10 rounded-lg p-2">
+                            +{box.cards.length - 3} more magical cards ✨
                           </div>
                         )}
                       </div>
-                    )}
+
+                      {(box.hasConfetti || box.hasBackgroundMusic) && (
+                        <div className="flex items-center justify-center space-x-4 mt-4 pt-4 border-t border-white/20">
+                          {box.hasConfetti && (
+                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                              <Sparkles className="w-3 h-3" />
+                              <span className="text-xs">Confetti</span>
+                            </div>
+                          )}
+                          {box.hasBackgroundMusic && (
+                            <div className="flex items-center space-x-1 bg-white/20 rounded-full px-3 py-1">
+                              <Music className="w-3 h-3" />
+                              <span className="text-xs">Music</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-4 text-center">
-                <p className="text-sm text-muted-foreground">
-                  This is how recipients will see your gift box
-                </p>
+                <div className="mt-6 text-center">
+                  <p className="text-sm text-gray-600 bg-purple-50 rounded-lg p-3 border border-purple-200">
+                    ✨ This is how recipients will see your magical gift box
+                  </p>
+                </div>
               </div>
             </Card>
           </div>
