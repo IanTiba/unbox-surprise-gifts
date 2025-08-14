@@ -44,6 +44,7 @@ const ViewBox = () => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right' | null>(null);
+  const [audioRefs, setAudioRefs] = useState<{ [key: string]: HTMLAudioElement }>({});
 
   // Load box data from Supabase
   useEffect(() => {
@@ -300,6 +301,32 @@ const ViewBox = () => {
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl);
   };
+
+  const playAudio = (audioUrl: string) => {
+    // Pause any currently playing audio
+    Object.values(audioRefs).forEach(audio => {
+      if (!audio.paused) {
+        audio.pause();
+      }
+    });
+
+    // Create or get audio element for this URL
+    let audio = audioRefs[audioUrl];
+    if (!audio) {
+      audio = new Audio(audioUrl);
+      setAudioRefs(prev => ({ ...prev, [audioUrl]: audio }));
+    }
+
+    // Play the audio
+    audio.play().catch(error => {
+      console.error('Error playing audio:', error);
+      toast({
+        title: "Audio Error",
+        description: "Could not play the audio message.",
+        variant: "destructive",
+      });
+    });
+  };
   if (isLoading) {
     return <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -418,7 +445,10 @@ const ViewBox = () => {
                             </p>
                           </div>}
                         
-                        {card.audio_url && <div className="flex items-center space-x-3 bg-white/15 backdrop-blur-sm rounded-xl p-4">
+                        {card.audio_url && <div 
+                            onClick={() => playAudio(card.audio_url)} 
+                            className="flex items-center space-x-3 bg-white/15 backdrop-blur-sm rounded-xl p-4 cursor-pointer hover:bg-white/25 transition-all duration-200"
+                          >
                             <Volume2 className="w-5 h-5 flex-shrink-0" />
                             <div>
                               <p className="font-medium">Audio Message</p>
