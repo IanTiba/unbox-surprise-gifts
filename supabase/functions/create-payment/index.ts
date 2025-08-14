@@ -13,13 +13,13 @@ serve(async (req) => {
   }
 
   try {
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    // Initialize Stripe - using the exact secret name from Supabase
+    const stripe = new Stripe(Deno.env.get("Stripe Secret Key") || "", {
       apiVersion: "2023-10-16",
     });
 
     // Parse request body
-    const { amount, email, giftBox } = await req.json();
+    const { amount, email, giftBox, cardData } = await req.json();
 
     // Validate required fields
     if (!amount || !email || !giftBox) {
@@ -28,9 +28,17 @@ serve(async (req) => {
 
     console.log(`Creating payment session for ${email}, amount: $${amount}`);
 
+    // Check if customer exists
+    const customers = await stripe.customers.list({ email: email, limit: 1 });
+    let customerId;
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+    }
+
     // Create a one-time payment session
     const session = await stripe.checkout.sessions.create({
-      customer_email: email,
+      customer: customerId,
+      customer_email: customerId ? undefined : email,
       line_items: [
         {
           price_data: {

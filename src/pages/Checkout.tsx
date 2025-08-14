@@ -47,6 +47,10 @@ const Checkout = () => {
   const box = location.state?.box as GiftBox;
   
   const [email, setEmail] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvc, setCvc] = useState("");
+  const [cardName, setCardName] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showCancelAlert, setShowCancelAlert] = useState(false);
 
@@ -92,6 +96,15 @@ const Checkout = () => {
       return;
     }
 
+    if (!cardNumber.trim() || !expiry.trim() || !cvc.trim() || !cardName.trim()) {
+      toast({
+        title: "Payment information required",
+        description: "Please fill in all payment details.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!box.title.trim()) {
       toast({
         title: "Box title required",
@@ -104,12 +117,18 @@ const Checkout = () => {
     setIsProcessing(true);
     
     try {
-      // Create Stripe payment session
+      // Create Stripe payment session with card information
       const { data, error } = await supabase.functions.invoke('create-payment', {
         body: {
           amount: getPrice(),
           email: email,
-          giftBox: box
+          giftBox: box,
+          cardData: {
+            number: cardNumber,
+            expiry: expiry,
+            cvc: cvc,
+            name: cardName
+          }
         }
       });
 
@@ -268,7 +287,16 @@ const Checkout = () => {
                   <Input
                     id="cardNumber"
                     placeholder="1234 5678 9012 3456"
+                    value={cardNumber}
+                    onChange={(e) => {
+                      // Format card number with spaces
+                      const value = e.target.value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
+                      if (value.replace(/\s/g, '').length <= 16) {
+                        setCardNumber(value);
+                      }
+                    }}
                     className="mt-1"
+                    maxLength={19}
                   />
                 </div>
 
@@ -278,7 +306,18 @@ const Checkout = () => {
                     <Input
                       id="expiry"
                       placeholder="MM/YY"
+                      value={expiry}
+                      onChange={(e) => {
+                        // Format expiry as MM/YY
+                        const value = e.target.value.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                          setExpiry(value.slice(0, 2) + '/' + value.slice(2, 4));
+                        } else {
+                          setExpiry(value);
+                        }
+                      }}
                       className="mt-1"
+                      maxLength={5}
                     />
                   </div>
                   <div>
@@ -286,7 +325,16 @@ const Checkout = () => {
                     <Input
                       id="cvc"
                       placeholder="123"
+                      value={cvc}
+                      onChange={(e) => {
+                        // Only allow numbers, max 4 digits
+                        const value = e.target.value.replace(/\D/g, '');
+                        if (value.length <= 4) {
+                          setCvc(value);
+                        }
+                      }}
                       className="mt-1"
+                      maxLength={4}
                     />
                   </div>
                 </div>
@@ -296,6 +344,8 @@ const Checkout = () => {
                   <Input
                     id="name"
                     placeholder="John Smith"
+                    value={cardName}
+                    onChange={(e) => setCardName(e.target.value)}
                     className="mt-1"
                   />
                 </div>
