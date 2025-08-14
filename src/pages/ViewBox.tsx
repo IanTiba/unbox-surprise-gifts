@@ -120,7 +120,9 @@ const ViewBox = () => {
           text: 'from-purple-600 to-pink-600',
           button: 'text-purple-600 hover:bg-purple-100',
           dots: 'bg-purple-600',
-          dotsInactive: 'bg-purple-200 hover:bg-purple-300'
+          dotsInactive: 'bg-purple-200 hover:bg-purple-300',
+          shareButton: 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700',
+          outlineButton: 'border-purple-200'
         };
       case 'blue-teal':
         return {
@@ -136,7 +138,9 @@ const ViewBox = () => {
           text: 'from-blue-600 to-teal-600',
           button: 'text-blue-600 hover:bg-blue-100',
           dots: 'bg-blue-600',
-          dotsInactive: 'bg-blue-200 hover:bg-blue-300'
+          dotsInactive: 'bg-blue-200 hover:bg-blue-300',
+          shareButton: 'from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700',
+          outlineButton: 'border-blue-200'
         };
       case 'warm-sunset':
         return {
@@ -152,7 +156,9 @@ const ViewBox = () => {
           text: 'from-orange-600 to-amber-600',
           button: 'text-orange-600 hover:bg-orange-100',
           dots: 'bg-orange-600',
-          dotsInactive: 'bg-orange-200 hover:bg-orange-300'
+          dotsInactive: 'bg-orange-200 hover:bg-orange-300',
+          shareButton: 'from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700',
+          outlineButton: 'border-orange-200'
         };
       default:
         return {
@@ -168,7 +174,9 @@ const ViewBox = () => {
           text: 'from-purple-600 to-pink-600',
           button: 'text-purple-600 hover:bg-purple-100',
           dots: 'bg-purple-600',
-          dotsInactive: 'bg-purple-200 hover:bg-purple-300'
+          dotsInactive: 'bg-purple-200 hover:bg-purple-300',
+          shareButton: 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700',
+          outlineButton: 'border-purple-200'
         };
     }
   };
@@ -367,12 +375,12 @@ const ViewBox = () => {
 
         {/* Enhanced Actions */}
         <div className="space-y-3">
-          <Button onClick={shareBox} className={`w-full bg-gradient-to-r ${themeColors.text} hover:from-${themeColors.text.split(' ')[0].replace('from-', '').replace('-600', '-700')} hover:to-${themeColors.text.split(' ')[2].replace('-600', '-700')} text-white shadow-xl py-3 text-base font-medium`}>
+          <Button onClick={shareBox} className={`w-full bg-gradient-to-r ${themeColors.shareButton} text-white shadow-xl py-3 text-base font-medium`}>
             <Share2 className="w-4 h-4 mr-2" />
             Share This Magical Experience
           </Button>
           
-          <Button onClick={() => navigate('/')} variant="outline" className={`w-full bg-white/80 backdrop-blur-sm border-${themeColors.text.split(' ')[0].replace('from-', '').replace('-600', '-200')} hover:bg-white shadow-lg py-2`}>
+          <Button onClick={() => navigate('/')} variant="outline" className={`w-full bg-white/80 backdrop-blur-sm ${themeColors.outlineButton} hover:bg-white shadow-lg py-2`}>
             <Gift className="w-4 h-4 mr-2" />
             Create Your Own Gift Box
           </Button>
