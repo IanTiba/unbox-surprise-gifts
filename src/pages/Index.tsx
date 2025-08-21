@@ -4,42 +4,27 @@ import { Gift, Heart, Sparkles, Clock, Share2, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-gift-boxes.jpg";
 import phoneMockup from "@/assets/phone-mockup.jpg";
-
 const Index = () => {
   const navigate = useNavigate();
-
   const handleCreateBox = () => {
     navigate('/builder');
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-subtle">
+  return <div className="min-h-screen bg-gradient-subtle">
       {/* Hero Section */}
       <section className="relative px-6 pt-20 pb-16 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-20" />
-        <img 
-          src={heroImage} 
-          alt="Digital gift boxes" 
-          className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-soft-light"
-        />
+        <img src={heroImage} alt="Digital gift boxes" className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-soft-light" />
         <div className="relative z-10 max-w-4xl mx-auto">
           <div className="mb-8 animate-bounce-in">
             <Gift className="w-16 h-16 mx-auto mb-6 text-primary animate-glow-pulse" />
-            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-hero bg-clip-text text-transparent mb-6">
-              Unbox Me
-            </h1>
+            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-hero bg-clip-text text-transparent mb-6">My Hidden Gift</h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Create magical digital gift boxes filled with surprise cards, messages, and memories
             </p>
           </div>
           
           <div className="animate-fade-in">
-            <Button 
-              variant="hero" 
-              size="lg" 
-              className="text-lg px-8 py-6 mb-4"
-              onClick={handleCreateBox}
-            >
+            <Button variant="hero" size="lg" className="text-lg px-8 py-6 mb-4" onClick={handleCreateBox}>
               <Gift className="w-6 h-6 mr-2" />
               Build Your Box
             </Button>
@@ -120,12 +105,7 @@ const Index = () => {
             </div>
           </div>
 
-          <Button 
-            variant="hero" 
-            size="lg" 
-            className="text-lg px-8 py-6"
-            onClick={handleCreateBox}
-          >
+          <Button variant="hero" size="lg" className="text-lg px-8 py-6" onClick={handleCreateBox}>
             <Gift className="w-6 h-6 mr-2" />
             Start Creating
           </Button>
@@ -144,8 +124,6 @@ const Index = () => {
           </p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
