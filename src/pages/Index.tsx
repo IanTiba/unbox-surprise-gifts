@@ -97,11 +97,6 @@ const Index = () => {
             
             <h1 className="text-6xl md:text-8xl font-bold bg-gradient-hero bg-clip-text text-transparent mb-8 leading-tight">
               Gifts That
-              <br />
-              <span className="relative">
-                Unfold Magic
-                <div className="absolute inset-x-0 -bottom-4 h-1 bg-gradient-primary rounded-full animate-pulse" />
-              </span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
