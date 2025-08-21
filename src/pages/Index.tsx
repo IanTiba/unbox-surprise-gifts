@@ -92,12 +92,7 @@ const Index = () => {
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="mb-12 animate-bounce-in">
             <div className="flex items-center justify-center mb-6">
-              <div className="relative">
-                <Gift className="w-20 h-20 text-primary animate-glow-pulse" />
-                <div className="absolute -top-2 -right-2">
-                  <Sparkles className="w-8 h-8 text-accent animate-pulse" />
-                </div>
-              </div>
+              <Gift className="w-20 h-20 text-primary" />
             </div>
             
             <h1 className="text-6xl md:text-8xl font-bold bg-gradient-hero bg-clip-text text-transparent mb-8 leading-tight">
